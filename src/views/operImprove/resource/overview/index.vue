@@ -36,46 +36,20 @@
     <el-row :gutter="20">
       <el-col :span="12">
         <div class="grid-content">
-          <div
-            style="
-              height: 50px;
-              padding: 0 5px;
-              background: #cde3ed;
-              display: flex;
-              justify-content: space-between;
-            "
-          >
+          <div class="title-style">
             <p>EverDB</p>
             <el-button
-              style="
-                float: right;
-                padding: 3px 0;
-                color: #67c23a;
-                font-size: 25px;
-              "
+              class="btn-style"
               type="text"
               icon="el-icon-message-solid"
             >
             </el-button>
           </div>
 
-          <ul style="padding: 15px 15px 0">
-            <li>
-              <div>集群leader</div>
-              <div>正常</div>
-            </li>
-            <li>
-              <div>CPU总数</div>
-
-              <div>12</div>
-            </li>
-            <li>
-              <div>节点健康状态</div>
-              <div>3 /3</div>
-            </li>
-            <li>
-              <div>内存总量</div>
-              <div>12</div>
+          <ul>
+            <li v-for="item in ulList.data" :index="item.title">
+              <div>{{ item.title }}</div>
+              <div>{{ item.num }}</div>
             </li>
           </ul>
 
@@ -110,34 +84,21 @@
       </el-col>
       <el-col :span="12">
         <div class="grid-content">
-          <div
-            style="
-              height: 50px;
-              padding: 0 5px;
-              background: #cde3ed;
-              display: flex;
-              justify-content: space-between;
-            "
-          >
+          <div class="title-style">
             <p>EverDB</p>
             <el-button
-              style="
-                float: right;
-                padding: 3px 0;
-                color: #67c23a;
-                font-size: 25px;
-              "
+              class="btn-style"
               type="text"
               icon="el-icon-message-solid"
             >
             </el-button>
           </div>
 
-          <ul style="padding: 15px 15px 0">
-            <li>集群leader</li>
-            <li>CPU总数</li>
-            <li>节点健康状态</li>
-            <li>内存总量</li>
+          <ul>
+            <li v-for="item in ulList.data" :index="item.title">
+              <div>{{ item.title }}</div>
+              <div>{{ item.num }}</div>
+            </li>
           </ul>
 
           <el-table
@@ -174,34 +135,21 @@
     <el-row :gutter="20">
       <el-col :span="12">
         <div class="grid-content bg-purple">
-          <div
-            style="
-              height: 50px;
-              padding: 0 5px;
-              background: #cde3ed;
-              display: flex;
-              justify-content: space-between;
-            "
-          >
+          <div class="title-style">
             <p>EverDB</p>
             <el-button
-              style="
-                float: right;
-                padding: 3px 0;
-                color: #67c23a;
-                font-size: 25px;
-              "
+              class="btn-style"
               type="text"
               icon="el-icon-message-solid"
             >
             </el-button>
           </div>
 
-          <ul style="padding: 15px 15px 0">
-            <li>集群leader</li>
-            <li>CPU总数</li>
-            <li>节点健康状态</li>
-            <li>内存总量</li>
+          <ul>
+            <li v-for="item in ulList.data" :index="item.title">
+              <div>{{ item.title }}</div>
+              <div>{{ item.num }}</div>
+            </li>
           </ul>
 
           <el-table
@@ -234,34 +182,21 @@
       >
       <el-col :span="12">
         <div class="grid-content bg-purple">
-          <div
-            style="
-              height: 50px;
-              padding: 0 5px;
-              background: #cde3ed;
-              display: flex;
-              justify-content: space-between;
-            "
-          >
+          <div class="title-style">
             <p>EverDB</p>
             <el-button
-              style="
-                float: right;
-                padding: 3px 0;
-                color: #67c23a;
-                font-size: 25px;
-              "
+              class="btn-style"
               type="text"
               icon="el-icon-message-solid"
             >
             </el-button>
           </div>
 
-          <ul style="padding: 15px 15px 0">
-            <li>集群leader</li>
-            <li>CPU总数</li>
-            <li>节点健康状态</li>
-            <li>内存总量</li>
+          <ul>
+            <li v-for="item in ulList.data" :index="item.title">
+              <div>{{ item.title }}</div>
+              <div>{{ item.num }}</div>
+            </li>
           </ul>
 
           <el-table
@@ -285,14 +220,12 @@
             >
             </el-table-column>
           </el-table>
-        </div></el-col
-      >
+        </div>
+      </el-col>
     </el-row>
   </div>
 </template>
 <script>
-import { mapGetters } from "vuex";
-
 export default {
   name: "Dashboard",
   computed: {},
@@ -346,55 +279,69 @@ export default {
         { label: "内存使用率", prop: "memoryUsage" },
         { label: "磁盘使用率", prop: "diskUsage" },
       ],
+
+      ulList: {
+        data: [
+          { title: "集群leader", num: "正常" },
+          { title: "CPU总数", num: "12" },
+          { title: "节点健康状态", num: "3/3" },
+          { title: "内存总量", num: "12" },
+        ],
+      },
     };
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.el-row {
-  margin-bottom: 20px;
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
-.bg-purple {
-  background: #ffffff;
-}
+$bg: #fff;
+$title-bg: #cde3ed;
+$bell-color: #67c23a;
+$li-underline: #e8e8e8;
+
 .grid-content {
-  background: #ffffff;
+  background: $bg;
   min-height: 100px;
 }
 
+.title-style {
+  display: flex;
+  justify-content: space-between;
+  height: 50px;
+  padding: 0 5px;
+  background: $title-bg;
+  .btn-style {
+    float: right;
+    padding: 3px 0;
+    color: $bell-color;
+    font-size: 25px;
+  }
+}
+
+/* 横线列表样式 */
 ul {
   display: flex;
   flex-wrap: wrap;
   list-style: none;
-  padding: 0;
-}
-li {
-  display: flex;
-  justify-content: space-between;
-  width: 48%;
-  border-bottom: 2px solid #e8e8e9;
-  padding-left: 10px;
-  padding-bottom: 10px;
-  margin-bottom: 20px;
-  margin-right: 15px; /* 添加右边距 */
-}
-li:before {
-  content: none; /* 去掉原点 */
-}
-li:nth-child(2n) {
-  margin-right: 0;
+  padding: 15px 15px 0;
+
+  li {
+    display: flex;
+    justify-content: space-between;
+    width: 48%;
+    border-bottom: 2px solid $li-underline;
+    // 上 右 下 左
+    padding: 0 0 10px 10px;
+    margin: 0 15px 20px 0;
+
+    &:nth-child(2n) {
+      margin-right: 0;
+    }
+  }
 }
 
-.el-table--border,
-.el-table--group {
-  border: 0px solid #ebeef5;
-}
-// .elTable {
-//   border: 1px solid #e8e8e9;
-//   border-top-width: 0px;
+// .el-table--border,
+// .el-table--group {
+//   border: 0px solid #ebeef5;
 // }
 </style>

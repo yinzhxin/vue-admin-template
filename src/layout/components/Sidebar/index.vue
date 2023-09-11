@@ -54,3 +54,9 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+  ::v-deep .el-scrollbar__wrap {
+    // overflow: hidden; 
+    height: 100%;
+}
+</style>

@@ -35,28 +35,14 @@
 
     <el-row :gutter="20">
       <el-col :span="6">
-        <div class="grid-content bg-purple" style="height: 640px">
-          <div
-            style="
-              height: 50px;
-              padding: 0 5px;
-              background: #cde3ed;
-              display: flex;
-              justify-content: space-between;
-            "
-          >
+        <div class="grid-content" style="height: 640px">
+          <div class="title-style">
             <p>EverDB</p>
             <el-button
-              style="
-                float: right;
-                padding: 3px 0;
-                color: #67c23a;
-                font-size: 25px;
-              "
+              class="btn-style"
               type="text"
               icon="el-icon-message-solid"
             >
-              <!-- 操作按钮 -->
             </el-button>
           </div>
           <el-table :data="tableData" style="width: 100%" :show-header="false">
@@ -70,32 +56,41 @@
       <el-col :span="18">
         <el-row>
           <el-col :span="24" style="margin-bottom: 20px">
-            <div class="bg-purple" style="height: 200px">
+            <div class="grid-content" style="height: 200px">
               <LineChart
                 :width="'100%'"
                 :height="'120%'"
-                :chartData="chartData1"
+                :chartData="chartData1.data"
+                :xAxisData="chartData1.xAxisData"
                 :title="`QPS / TPS`"
+                :isShowStyle="false"
+                :color="['#5470C6', '#91CC75', '#FAC858']"
               />
             </div>
           </el-col>
           <el-col :span="24" style="margin-bottom: 20px">
-            <div class="bg-purple" style="height: 200px">
+            <div class="grid-content" style="height: 200px">
               <LineChart
                 :width="'100%'"
                 :height="'120%'"
-                :chartData="chartData2"
+                :chartData="chartData2.data"
+                :xAxisData="chartData2.xAxisData"
                 :title="'数据库连接总数 / 数据库活跃连接总数'"
+                :isShowStyle="false"
+                :color="['#5470C6', '#91CC75', '#FAC858']"
               />
             </div>
           </el-col>
           <el-col :span="24">
-            <div class="bg-purple" style="height: 200px">
+            <div class="grid-content" style="height: 200px">
               <LineChart
                 :width="'100%'"
                 :height="'120%'"
-                :chartData="chartData3"
+                :chartData="chartData3.data"
+                :xAxisData="chartData3.xAxisData"
                 :title="'连接拒绝总数 / 慢SQL超时接次数 / 锁超时次数'"
+                :isShowStyle="false"
+                :color="['#5470C6', '#91CC75', '#FAC858']"
               />
             </div>
           </el-col>
@@ -105,15 +100,8 @@
 
     <el-row :gutter="20">
       <el-col :span="24">
-        <div class="grid-content bg-purple">
-          <div
-            style="
-              height: 50px;
-              background: #cde3ed;
-              display: flex;
-              align-items: center;
-            "
-          >
+        <div class="grid-content">
+          <div class="title-style2">
             <el-select
               v-model="value"
               placeholder="请选择"
@@ -158,10 +146,10 @@
   </div>
 </template>
 <script>
-import { mapGetters } from "vuex";
-import LineChart from "./components/LineChart";
+import LineChart from "@/views/echarts/LineChart.vue";
+
 export default {
-  name: "Dashboard",
+  name: "Resource2",
   components: { LineChart },
   computed: {},
   data() {
@@ -237,109 +225,89 @@ export default {
         { label: "CPU使用率", prop: "cpuUsage" },
       ],
 
-      chartData1: [
-        {
-          data: [0.35, 0.35, 0, 0.35, 0, 0.35, 0.35],
-          type: "line",
-          areaStyle: {
-            normal: {
-              opacity: 0.1,
-            },
+      chartData1: {
+        data: [
+          {
+            name: "a",
+            data: [0.35, 0.35, 0, 0.35, 0, 0.35, 0.35],
           },
-        },
-        {
-          data: [0.25, 0.25, 0.25, 0, 0.25, 0.25, 0],
-          type: "line",
-          areaStyle: {
-            normal: {
-              opacity: 0.1,
-            },
+          {
+            name: "b",
+            data: [0.25, 0.25, 0.25, 0, 0.25, 0.25, 0],
           },
-        },
-      ],
+        ],
+        xAxisData: ["9:00", "9:10", "9:20", "9:30", "9:40", "9:50", "10:00"],
+      },
 
-      chartData2: [
-        {
-          data: [9, 9, 9, 9, 9, 9, 9],
-          type: "line",
-          areaStyle: {
-            normal: {
-              opacity: 0.1,
-            },
+      chartData2: {
+        data: [
+          {
+            name: "a",
+            data: [9, 9, 9, 9, 9, 9, 9],
           },
-        },
-        {
-          data: [5, 5, 5, 4, 5, 5, 5],
-          type: "line",
-          areaStyle: {
-            normal: {
-              opacity: 0.1,
-            },
+          {
+            name: "b",
+            data: [5, 5, 5, 4, 5, 5, 5],
           },
-        },
-      ],
+        ],
+        xAxisData: ["9:00", "9:10", "9:20", "9:30", "9:40", "9:50", "10:00"],
+      },
 
-      chartData3: [
-        {
-          data: [9, 9, 9, 9, 9, 9, 9],
-          type: "line",
-          areaStyle: {
-            normal: {
-              opacity: 0.1,
-            },
+      chartData3: {
+        data: [
+          {
+            name: "a",
+            data: [9, 9, 9, 9, 9, 9, 9],
           },
-        },
-        {
-          data: [8, 9, 6, 6, 7, 6, 6],
-          type: "line",
-          areaStyle: {
-            normal: {
-              opacity: 0.1,
-            },
+          {
+            name: "b",
+            data: [8, 9, 6, 6, 7, 6, 6],
           },
-        },
-        {
-          data: [5, 5, 5, 4, 5, 5, 5],
-          type: "line",
-          areaStyle: {
-            normal: {
-              opacity: 0.1,
-            },
+          {
+            name: "c",
+            data: [5, 5, 5, 4, 5, 5, 5],
           },
-        },
-      ],
+        ],
+        xAxisData: ["9:00", "9:10", "9:20", "9:30", "9:40", "9:50", "10:00"],
+      },
     };
   },
 };
 </script>
 
 <style lang="scss" scoped>
-// .dashboard {
-//   &-container {
-//     margin: 30px;
-//   }
-// }
-.el-row {
-  margin-bottom: 20px;
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
-.el-col {
-  // border-radius: 4px;
-}
-.bg-purple {
-  background: #ffffff;
-}
+$bg: #fff;
+$title-bg: #cde3ed;
+$bell-color: #67c23a;
+
 .grid-content {
-  // border-radius: 4px;
+  background: $bg;
   min-height: 100px;
 }
 
 .el-card__header {
   padding: 0px !important;
   border-bottom: 1px solid #ebeef5;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
+}
+
+.title-style {
+  display: flex;
+  justify-content: space-between;
+  height: 50px;
+  padding: 0 5px;
+  background: $title-bg;
+  .btn-style {
+    float: right;
+    padding: 3px 0;
+    color: $bell-color;
+    font-size: 25px;
+  }
+}
+
+.title-style2 {
+  display: flex;
+  align-items: center;
+  height: 50px;
+  background: $title-bg;
 }
 </style>

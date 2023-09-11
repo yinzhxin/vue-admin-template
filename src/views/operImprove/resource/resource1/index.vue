@@ -36,23 +36,10 @@
     <el-row :gutter="20">
       <el-col :span="6">
         <div class="grid-content" style="height: 640px">
-          <div
-            style="
-              height: 50px;
-              padding: 0 5px;
-              background: #cde3ed;
-              display: flex;
-              justify-content: space-between;
-            "
-          >
+          <div class="title-style">
             <p>Redis</p>
             <el-button
-              style="
-                float: right;
-                padding: 3px 0;
-                color: #67c23a;
-                font-size: 25px;
-              "
+              class="btn-style"
               type="text"
               icon="el-icon-message-solid"
             >
@@ -73,8 +60,11 @@
               <LineChart
                 :width="'100%'"
                 :height="'110%'"
-                :chartData="chartData1"
+                :chart-data="chartData1.data"
+                :xAxisData="chartData1.xAxisData"
                 :title="`QPS`"
+                :isShowStyle="false"
+                :color="['#5470C6', '#91CC75']"
               />
             </div>
           </el-col>
@@ -83,8 +73,11 @@
               <LineChart
                 :width="'100%'"
                 :height="'110%'"
-                :chartData="chartData2"
+                :chart-data="chartData2.data"
+                :xAxisData="chartData2.xAxisData"
                 :title="'连接使用率'"
+                :isShowStyle="false"
+                :color="['#5470C6', '#91CC75']"
               />
             </div>
           </el-col>
@@ -94,15 +87,8 @@
 
     <el-row :gutter="20">
       <el-col :span="24">
-        <div class="grid-content bg-purple">
-          <div
-            style="
-              height: 50px;
-              background: #cde3ed;
-              display: flex;
-              align-items: center;
-            "
-          >
+        <div class="grid-content">
+          <div class="title-style2">
             <el-select
               v-model="value"
               placeholder="请选择"
@@ -147,9 +133,10 @@
   </div>
 </template>
 <script>
-import LineChart from "./components/LineChart";
+import LineChart from "@/views/echarts/LineChart.vue";
+
 export default {
-  name: "Dashboard",
+  name: "Resource1",
   components: { LineChart },
   computed: {},
   data() {
@@ -203,30 +190,63 @@ export default {
         { label: "磁盘使用率", prop: "diskUsage" },
       ],
 
-      chartData1: [2000, 2100, 2000, 2000, 2200, 2000, 2000],
+      chartData1: {
+        data: [
+          {
+            name: "a",
+            data: [2000, 2100, 2000, 2000, 2200, 2000, 2000],
+          },
+        ],
+        xAxisData: ["9:00", "9:10", "9:20", "9:30", "9:40", "9:50", "10:00"],
+      },
 
-      chartData2: [90, 90, 90, 90, 90, 90, 90],
+      chartData2: {
+        data: [
+          {
+            name: "b",
+            data: [90, 90, 90, 90, 90, 90, 90],
+          },
+        ],
+        xAxisData: ["9:00", "9:10", "9:20", "9:30", "9:40", "9:50", "10:00"],
+      },
     };
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.el-row {
-  margin-bottom: 20px;
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
+$bg: #fff;
+$title-bg: #cde3ed;
+$bell-color: #67c23a;
+
 .grid-content {
-  background: #ffffff;
+  background: $bg;
   min-height: 100px;
 }
 
 .el-card__header {
   padding: 0px !important;
   border-bottom: 1px solid #ebeef5;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
+}
+
+.title-style {
+  display: flex;
+  justify-content: space-between;
+  height: 50px;
+  padding: 0 5px;
+  background: $title-bg;
+  .btn-style {
+    float: right;
+    padding: 3px 0;
+    color: $bell-color;
+    font-size: 25px;
+  }
+}
+
+.title-style2 {
+  display: flex;
+  align-items: center;
+  height: 50px;
+  background: $title-bg;
 }
 </style>

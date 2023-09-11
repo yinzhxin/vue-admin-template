@@ -13,29 +13,23 @@
     <el-row :gutter="20">
       <el-col :span="10">
         <div class="grid-content">
-          <div class="title-style">
-            <strong>资源配额</strong>
-          </div>
+          <div class="title-style"><strong>资源配额</strong></div>
           <progress-card :chart-data="chartData2" />
         </div>
       </el-col>
 
       <el-col :span="9">
         <div class="grid-content">
-          <div class="title-style">
-            <strong>告警</strong>
-          </div>
-          <div class="container-text">
-            <span class="centered-text"> 未配置告警数据 无告警数据 </span>
+          <div class="title-style"><strong>告警</strong></div>
+          <div class="warning-style">
+            <span class="warning-content"> 未配置告警数据 无告警数据 </span>
           </div>
         </div>
       </el-col>
 
       <el-col :span="5">
         <div class="grid-content">
-          <div class="title-style">
-            <strong>事件</strong>
-          </div>
+          <div class="title-style"><strong>事件</strong></div>
           <div class="total-style">
             <div>近一天</div>
             <div>
@@ -48,11 +42,11 @@
             style="justify-content: space-around; margin-top: 60px"
           >
             <div>
-              <div class="color-box" style="background: #ea9d42"></div>
+              <div class="color-box" style="background: #ea9d42" />
               告警
             </div>
             <div>
-              <div class="color-box" style="background: #a2f04c"></div>
+              <div class="color-box" style="background: #a2f04c" />
               正常
             </div>
           </div>
@@ -66,7 +60,11 @@
           <RadiusPieChart
             :width="'100%'"
             :height="'300%'"
-            :chart-data="chartData"
+            :chart-data="chartData.data"
+            :color="chartData.color"
+            :label="chartData.label"
+            :radius="chartData.radius"
+            :center="chartData.center"
             :title="`应用`"
           />
         </div>
@@ -77,6 +75,7 @@
             :width="'100%'"
             :height="'300%'"
             :chart-data="chartData3"
+            :title="`应用`"
           />
         </div>
       </el-col>
@@ -91,7 +90,11 @@
                 <RadiusPieChart
                   :width="'100%'"
                   :height="'300%'"
-                  :chart-data="chartData"
+                  :chart-data="chartData.data"
+                  :color="chartData.color"
+                  :label="chartData.label"
+                  :radius="chartData.radius"
+                  :center="chartData.center"
                   :title="`容器组`"
                 />
               </div>
@@ -116,7 +119,16 @@
                   >
                   </el-option>
                 </el-select>
-                <LineChart :width="'100%'" :height="'300%'" />
+                <LineChart
+                  :width="'100%'"
+                  :height="'300%'"
+                  :chart-data="chartData4.data"
+                  :xAxisData="chartData4.xAxisData"
+                  :grid="chartData4.grid"
+                  :legend="chartData4.legend"
+                  :isAreaStyle="false"
+                  :color="['#BBF37F', '#D0685D', '#3F95E6']"
+                />
               </div>
             </el-col>
           </el-row>
@@ -165,7 +177,16 @@
               </el-option>
             </el-select>
           </div>
-          <LineChart2 :width="'100%'" :height="'300%'" />
+          <LineChart
+            :width="'100%'"
+            :height="'300%'"
+            :chart-data="chartData5.data"
+            :xAxisData="chartData5.xAxisData"
+            :grid="chartData5.grid"
+            :legend="chartData5.legend"
+            :isAreaStyle="false"
+            :color="['#BBF37F', '#68BBC4', '#84BC86']"
+          />
         </div>
       </el-col>
 
@@ -225,80 +246,77 @@
   </div>
 </template>
 <script>
-import { mapGetters } from "vuex";
-import RadiusPieChart from "./components/RadiusPieChart";
+import LineChart from "@/views/echarts/LineChart.vue";
+import RadiusPieChart from "@/views/echarts/RadiusPieChart.vue";
 import BarYChart from "./components/BarYChart";
-import LineChart from "./components/LineChart";
-import LineChart2 from "./components/LineChart2";
 import ProgressCard from "./components/ProgressCard";
 
 export default {
-  name: "Dashboard",
+  name: "StructOverview",
   components: {
     RadiusPieChart,
     BarYChart,
     LineChart,
-    LineChart2,
     ProgressCard,
   },
   data() {
     return {
       options: [
-        {
-          value: "选项1",
-          label: "黄金糕",
-        },
-        {
-          value: "选项2",
-          label: "双皮奶",
-        },
-        {
-          value: "选项3",
-          label: "蚵仔煎",
-        },
-        {
-          value: "选项4",
-          label: "龙须面",
-        },
-        {
-          value: "选项5",
-          label: "北京烤鸭",
-        },
+        { value: "选项1", label: "黄金糕" },
+        { value: "选项2", label: "双皮奶" },
       ],
+
       value: "",
+
       // 饼状图
-      chartData: [
-        {
-          label: "运行中",
-          value: 14,
-          itemStyle: { color: "#81B435" },
+      chartData: {
+        data: [
+          {
+            label: "运行中",
+            value: 14,
+          },
+          {
+            label: "部分运行",
+            value: 0,
+          },
+          {
+            label: "处理中",
+            value: 1,
+          },
+          {
+            label: "失败/异常",
+            value: 0,
+          },
+          {
+            label: "已停止",
+            value: 5,
+          },
+          {
+            label: "无计算组件",
+            value: 5,
+          },
+        ],
+        color: [
+          "#EA9D42",
+          "#81B435",
+          "#3F95E6",
+          "#BD3026",
+          "#CECECE",
+          "#EFEFEF",
+        ],
+        radius: ["45%", "50%"],
+        center: ["35%", "55%"],
+        // 饼图图形上的文本标签
+        label: {
+          show: true,
+          position: "center",
+          fontSize: "20px",
+          formatter(params) {
+            return `200 个`;
+          },
         },
-        {
-          label: "部分运行",
-          value: 0,
-          itemStyle: { color: "#EA9D42" },
-        },
-        {
-          label: "处理中",
-          value: 1,
-          itemStyle: { color: "#3F95E6" },
-        },
-        {
-          label: "失败/异常",
-          value: 0,
-          itemStyle: { color: "#BD3026" },
-        },
-        {
-          label: "已停止",
-          value: 5,
-          itemStyle: { color: "#CECECE" },
-        },
-        {
-          label: "无计算组件",
-          value: 5,
-          itemStyle: { color: "#EFEFEF" },
-        },
-      ],
+      },
+
       // 进度条图表
       chartData2: [
         {
@@ -337,6 +355,7 @@ export default {
           zpe: "不限制",
         },
       ],
+
       // 柱状图
       chartData3: {
         fields: [{ name: "运行中", flied: "yxz" }],
@@ -346,15 +365,94 @@ export default {
           { label: "守护进程集", yxz: "0" },
         ],
       },
-      // 柱状图
-      chartData3: {
-        fields: [{ name: "运行中", flied: "yxz" }],
+
+      // 折线图1
+      chartData4: {
         data: [
-          { label: "部署", yxz: "4" },
-          { label: "有状态副本集", yxz: "0" },
-          { label: "守护进程集", yxz: "0" },
+          {
+            name: "运行中",
+            data: [31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31],
+          },
+          {
+            name: "异常",
+            data: [0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0],
+          },
+          {
+            name: "共",
+            data: [31, 31, 31, 31, 31, 31, 32, 32, 31, 31, 31, 31, 31],
+          },
+        ],
+        grid: {
+          left: "2%",
+          right: "26%",
+          top: "10%",
+          containLabel: true,
+        },
+        legend: {
+          orient: "vertical",
+          left: "75%",
+          top: "7%",
+          data: ["运行中", "异常", "共"],
+        },
+        xAxisData: [
+          "14:00",
+          "14:05",
+          "14:10",
+          "14:15",
+          "14:20",
+          "14:25",
+          "14:30",
+          "14:35",
+          "14:40",
+          "14:45",
+          "14:50",
+          "14:55",
+          "15:00",
         ],
       },
+
+      // 折线图2
+      chartData5: {
+        data: [
+          {
+            name: "CPU",
+            data: [25, 25, 25, 25, 25, 25, 18, 18, 25, 25, 25, 25, 25],
+          },
+          {
+            name: "内存",
+            data: [12, 12, 12, 12, 12, 12, 10, 10, 12, 12, 12, 12, 12],
+          },
+          {
+            name: "存储",
+            data: [35, 35, 35, 35, 35, 35, 33, 33, 35, 35, 35, 35, 35],
+          },
+        ],
+        xAxisData: [
+          "14:00",
+          "14:05",
+          "14:10",
+          "14:15",
+          "14:20",
+          "14:25",
+          "14:30",
+          "14:35",
+          "14:40",
+          "14:45",
+          "14:50",
+          "14:55",
+          "15:00",
+        ],
+        // 方位调整
+        grid: {
+          containLabel: true,
+        },
+        // 图例配置
+        legend: {
+          bottom: "7%",
+          data: ["CPU", "内存", "存储"],
+        },
+      },
+
       // 容器组表头
       columns: [
         { label: "名称", prop: "name" },
@@ -362,6 +460,7 @@ export default {
         { label: "原因", prop: "reason" },
         { label: "触发时间", prop: "time" },
       ],
+
       // 容器组表格
       tableData: [
         { name: "ASDA_DSAFSDSV_2321413", memory: "367" },
@@ -373,6 +472,7 @@ export default {
         { name: "ASDA_DSAFSDSV_2321413", memory: "367" },
         { name: "ASDA_DSAFSDSV_2321413", memory: "367" },
       ],
+
       // 资源使用率表格
       tableData2: [
         {
@@ -388,57 +488,59 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.el-row {
-  margin-bottom: 20px;
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
+$bg: #ffffff;
+$dividing-line: #e8e8e8; //与li-underline颜色相同
+$text-color: #9e9e9e;
+
 .grid-content {
-  background: #ffffff;
+  background: $bg;
   min-height: 229px;
-  // overflow: hidden;
 }
+
+/* 左上角标题样式*/
 .title-style {
-  margin-top: 20px;
-  padding: 15px 0 0 15px;
   display: flex;
   justify-content: space-between;
+  margin-top: 20px;
+  padding: 15px 0 0 15px;
 }
+
+/* 事件样式 */
 .total-style {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
   margin-top: 20px;
+  .color-box {
+    display: inline-block;
+    vertical-align: bottom;
+    width: 20px;
+    height: 20px;
+  }
 }
-.container-text {
+
+/* 告警样式*/
+.warning-style {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 190px;
-  .centered-text {
+  .warning-content {
     text-align: center;
-    color: #9e9e9e;
+    color: $text-color;
   }
 }
-.color-box {
-  display: inline-block;
-  vertical-align: bottom;
-  width: 20px;
-  height: 20px;
-}
 
-/* 灰色竖线 */
+/* 灰色分割线样式 */
 .vertical-line {
   width: 2px;
   height: 240px;
-  margin-top: 40px;
-  margin-left: -10px;
-  background-color: #e8e8e8;
+  margin: 40px 0 0 -10px;
+  background-color: $dividing-line;
 }
 
 /* 表格样式 */
-.el-table--border {
-  border: 0px solid #ebeef5;
-}
+// .el-table--border {
+//   border: 0px solid #ebeef5;
+// }
 </style>

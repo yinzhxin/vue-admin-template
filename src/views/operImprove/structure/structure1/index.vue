@@ -2,120 +2,47 @@
   <div class="dashboard-container">
     <el-row :gutter="20">
       <el-col :span="12">
-        <div class="grid-content bg-purple">
+        <div class="grid-content">
           <div class="sss"><i class="el-icon-info icon"></i></div>
-          <div
-            style="
-              height: 50px;
-              padding-left: 60px;
-              background: #fff;
-              display: flex;
-              justify-content: space-between;
-            "
-          >
+          <div class="title-style">
             <p>EverDB</p>
           </div>
 
           <el-row :gutter="20" style="margin: 0 10px 20px">
             <el-col :span="8">
-              <div
-                class="grid-content bg-purple"
-                style="border: 2px solid #eee; border-radius: 5px"
-              >
-                <div
-                  style="
-                    padding: 0 10px;
-                    height: 30px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                  "
-                >
-                  <p style="font-size: 16px">存储</p>
-                </div>
+              <div style="border: 2px solid #eee; border-radius: 5px">
+                <div class="title-style2"><p>存储</p></div>
                 <RadiusPieChart
-                  :chart-data="chartData"
                   :width="'100%'"
                   :height="'150%'"
+                  :chart-data="chartData.data"
+                  :color="chartData.color"
+                  :radius="chartData.radius"
+                  :center="chartData.center"
+                  :isShowLegend="chartData.isShowLegend"
                 />
-                <div
-                  style="
-                    height: 10px;
-
-                    display: flex;
-                    justify-content: space-around;
-                    align-items: flex-end;
-                  "
-                >
-                  <div
-                    style="
-                    padding-top:-10px
-                      display: flex;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    116.99 / 1671.35T
-                  </div>
-                </div>
+                <div class="bottom-style">116.99 / 1671.35T</div>
               </div>
             </el-col>
 
             <el-col :span="16">
-              <div
-                class="grid-content bg-purple"
-                style="border: 2px solid #eee; border-radius: 5px"
-              >
-                <div
-                  style="
-                    padding: 0 10px;
-                    height: 30px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                  "
-                >
-                  <p style="font-size: 16px">容器</p>
+              <div style="border: 2px solid #eee; border-radius: 5px">
+                <div class="title-style2">
+                  <p>容器</p>
                   <el-button type="text">更多...</el-button>
                 </div>
 
-                <div
-                  style="
-                    padding-bottom: -100px;
-                    height: 45px;
-                    display: flex;
-                    justify-content: space-around;
-                    align-items: flex-end;
-                  "
-                >
-                  <div
-                    style="
-                      display: flex;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    <div style="margin-bottom: 10px">118</div>
+                <div class="num-style">
+                  <div>
+                    <div>118</div>
                     <div>总数</div>
                   </div>
-                  <div
-                    style="
-                      display: flex;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    <div style="margin-bottom: 10px">118</div>
+                  <div>
+                    <div>118</div>
                     <div>正常</div>
                   </div>
-                  <div
-                    style="
-                      display: flex;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    <div style="margin-bottom: 10px">0</div>
+                  <div>
+                    <div>0</div>
                     <div>异常</div>
                   </div>
                 </div>
@@ -127,113 +54,64 @@
 
           <el-row :gutter="20" style="margin: 0 10px 20px">
             <el-col :span="12">
-              <div
-                class="grid-content bg-purple"
-                style="border: 2px solid #eee; border-radius: 5px"
-              >
-                <div
-                  style="
-                    padding: 0 10px;
-                    height: 30px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                  "
-                >
-                  <p style="font-size: 16px">虚机</p>
+              <div style="border: 2px solid #eee; border-radius: 5px">
+                <div class="title-style2">
+                  <p>虚机</p>
                   <el-button type="text">更多...</el-button>
                 </div>
-
                 <RadiusPieChart
-                  :chart-data="chartData"
                   :width="'100%'"
                   :height="'150%'"
+                  :chart-data="chartData.data"
+                  :color="chartData.color"
+                  :radius="chartData.radius"
+                  :center="chartData.center"
+                  :isShowLegend="chartData.isShowLegend"
                 />
 
                 <div
-                  style="
-                    height: 50px;
-                    margin-bottom: 30px;
-                    display: flex;
-                    justify-content: space-around;
-                    align-items: flex-end;
-                  "
+                  class="num-style"
+                  style="height: 50px; margin-bottom: 30px"
                 >
-                  <div
-                    style="
-                      display: flex;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    <div style="margin-bottom: 10px">118</div>
+                  <div>
+                    <div>118</div>
                     <div>正常</div>
                   </div>
-                  <div
-                    style="
-                      display: flex;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    <div style="margin-bottom: 10px">0</div>
+                  <div>
+                    <div>0</div>
                     <div>异常</div>
                   </div>
                 </div>
               </div>
             </el-col>
             <el-col :span="12">
-              <div
-                class="grid-content bg-purple"
-                style="border: 2px solid #eee; border-radius: 5px"
-              >
+              <div style="border: 2px solid #eee; border-radius: 5px">
                 <div class="sss"><i class="el-icon-info icon"></i></div>
-                <div
-                  style="
-                    padding: 0 10px;
-                    height: 30px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                  "
-                >
-                  <p style="font-size: 16px">物理机</p>
+                <div class="title-style2">
+                  <p>物理机</p>
                   <el-button type="text">更多...</el-button>
                 </div>
 
                 <RadiusPieChart
-                  :chart-data="chartData"
                   :width="'100%'"
                   :height="'150%'"
+                  :chart-data="chartData.data"
+                  :color="chartData.color"
+                  :radius="chartData.radius"
+                  :center="chartData.center"
+                  :isShowLegend="chartData.isShowLegend"
                 />
 
                 <div
-                  style="
-                    height: 50px;
-                    margin-bottom: 30px;
-                    display: flex;
-                    justify-content: space-around;
-                    align-items: flex-end;
-                  "
+                  class="num-style"
+                  style="height: 50px; margin-bottom: 30px"
                 >
-                  <div
-                    style="
-                      display: flex;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    <div style="margin-bottom: 10px">118</div>
+                  <div>
+                    <div>118</div>
                     <div>正常</div>
                   </div>
-                  <div
-                    style="
-                      display: flex;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    <div style="margin-bottom: 10px">0</div>
+                  <div>
+                    <div>0</div>
                     <div>异常</div>
                   </div>
                 </div>
@@ -244,120 +122,49 @@
       </el-col>
 
       <el-col :span="12">
-        <div class="grid-content bg-purple">
+        <div class="grid-content">
           <div class="sss"><i class="el-icon-info icon"></i></div>
-          <div
-            style="
-              height: 50px;
-              padding-left: 60px;
-              background: #fff;
-              display: flex;
-              justify-content: space-between;
-            "
-          >
+          <div class="title-style">
             <p>EverDB</p>
           </div>
 
           <el-row :gutter="20" style="margin: 0 10px 20px">
             <el-col :span="8">
-              <div
-                class="grid-content bg-purple"
-                style="border: 2px solid #eee; border-radius: 5px"
-              >
-                <div
-                  style="
-                    padding: 0 10px;
-                    height: 30px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                  "
-                >
-                  <p style="font-size: 16px">存储</p>
+              <div style="border: 2px solid #eee; border-radius: 5px">
+                <div class="title-style2">
+                  <p>存储</p>
                 </div>
                 <RadiusPieChart
-                  :chart-data="chartData"
                   :width="'100%'"
                   :height="'150%'"
+                  :chart-data="chartData.data"
+                  :color="chartData.color"
+                  :radius="chartData.radius"
+                  :center="chartData.center"
+                  :isShowLegend="chartData.isShowLegend"
                 />
-                <div
-                  style="
-                    height: 10px;
-
-                    display: flex;
-                    justify-content: space-around;
-                    align-items: flex-end;
-                  "
-                >
-                  <div
-                    style="
-                    padding-top:-10px
-                      display: flex;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    116.99 / 1671.35T
-                  </div>
-                </div>
+                <div class="bottom-style">116.99 / 1671.35T</div>
               </div>
             </el-col>
 
             <el-col :span="16">
-              <div
-                class="grid-content bg-purple"
-                style="border: 2px solid #eee; border-radius: 5px"
-              >
-                <div
-                  style="
-                    padding: 0 10px;
-                    height: 30px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                  "
-                >
-                  <p style="font-size: 16px">容器</p>
+              <div style="border: 2px solid #eee; border-radius: 5px">
+                <div class="title-style2">
+                  <p>容器</p>
                   <el-button type="text">更多...</el-button>
                 </div>
 
-                <div
-                  style="
-                    padding-bottom: -100px;
-                    height: 45px;
-                    display: flex;
-                    justify-content: space-around;
-                    align-items: flex-end;
-                  "
-                >
-                  <div
-                    style="
-                      display: flex;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    <div style="margin-bottom: 10px">118</div>
+                <div class="num-style">
+                  <div>
+                    <div>118</div>
                     <div>总数</div>
                   </div>
-                  <div
-                    style="
-                      display: flex;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    <div style="margin-bottom: 10px">118</div>
+                  <div>
+                    <div>118</div>
                     <div>正常</div>
                   </div>
-                  <div
-                    style="
-                      display: flex;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    <div style="margin-bottom: 10px">0</div>
+                  <div>
+                    <div>0</div>
                     <div>异常</div>
                   </div>
                 </div>
@@ -369,113 +176,64 @@
 
           <el-row :gutter="20" style="margin: 0 10px 20px">
             <el-col :span="12">
-              <div
-                class="grid-content bg-purple"
-                style="border: 2px solid #eee; border-radius: 5px"
-              >
-                <div
-                  style="
-                    padding: 0 10px;
-                    height: 30px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                  "
-                >
-                  <p style="font-size: 16px">虚机</p>
+              <div style="border: 2px solid #eee; border-radius: 5px">
+                <div class="title-style2">
+                  <p>虚机</p>
                   <el-button type="text">更多...</el-button>
                 </div>
 
                 <RadiusPieChart
-                  :chart-data="chartData"
                   :width="'100%'"
                   :height="'150%'"
+                  :chart-data="chartData.data"
+                  :color="chartData.color"
+                  :radius="chartData.radius"
+                  :center="chartData.center"
+                  :isShowLegend="chartData.isShowLegend"
                 />
 
                 <div
-                  style="
-                    height: 50px;
-                    margin-bottom: 30px;
-                    display: flex;
-                    justify-content: space-around;
-                    align-items: flex-end;
-                  "
+                  class="num-style"
+                  style="height: 50px; margin-bottom: 30px"
                 >
-                  <div
-                    style="
-                      display: flex;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    <div style="margin-bottom: 10px">118</div>
+                  <div>
+                    <div>118</div>
                     <div>正常</div>
                   </div>
-                  <div
-                    style="
-                      display: flex;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    <div style="margin-bottom: 10px">0</div>
+                  <div>
+                    <div>0</div>
                     <div>异常</div>
                   </div>
                 </div>
               </div>
             </el-col>
             <el-col :span="12">
-              <div
-                class="grid-content bg-purple"
-                style="border: 2px solid #eee; border-radius: 5px"
-              >
+              <div style="border: 2px solid #eee; border-radius: 5px">
                 <div class="sss"><i class="el-icon-info icon"></i></div>
-                <div
-                  style="
-                    padding: 0 10px;
-                    height: 30px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                  "
-                >
-                  <p style="font-size: 16px">物理机</p>
+                <div class="title-style2">
+                  <p>物理机</p>
                   <el-button type="text">更多...</el-button>
                 </div>
-
                 <RadiusPieChart
-                  :chart-data="chartData"
                   :width="'100%'"
                   :height="'150%'"
+                  :chart-data="chartData.data"
+                  :color="chartData.color"
+                  :radius="chartData.radius"
+                  :center="chartData.center"
+                  :isShowLegend="chartData.isShowLegend"
                 />
 
                 <div
-                  style="
-                    height: 50px;
-                    margin-bottom: 30px;
-                    display: flex;
-                    justify-content: space-around;
-                    align-items: flex-end;
-                  "
+                  class="num-style"
+                  style="height: 50px; margin-bottom: 30px"
                 >
-                  <div
-                    style="
-                      display: flex;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    <div style="margin-bottom: 10px">118</div>
+                  <div>
+                    <div>118</div>
                     <div>正常</div>
                   </div>
-                  <div
-                    style="
-                      display: flex;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    <div style="margin-bottom: 10px">0</div>
+                  <div>
+                    <div>0</div>
                     <div>异常</div>
                   </div>
                 </div>
@@ -488,120 +246,49 @@
 
     <el-row :gutter="20">
       <el-col :span="12">
-        <div class="grid-content bg-purple">
+        <div class="grid-content">
           <div class="sss"><i class="el-icon-info icon"></i></div>
-          <div
-            style="
-              height: 50px;
-              padding-left: 60px;
-              background: #fff;
-              display: flex;
-              justify-content: space-between;
-            "
-          >
+          <div class="title-style">
             <p>EverDB</p>
           </div>
 
           <el-row :gutter="20" style="margin: 0 10px 20px">
             <el-col :span="8">
-              <div
-                class="grid-content bg-purple"
-                style="border: 2px solid #eee; border-radius: 5px"
-              >
-                <div
-                  style="
-                    padding: 0 10px;
-                    height: 30px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                  "
-                >
-                  <p style="font-size: 16px">存储</p>
+              <div style="border: 2px solid #eee; border-radius: 5px">
+                <div class="title-style2">
+                  <p>存储</p>
                 </div>
                 <RadiusPieChart
-                  :chart-data="chartData"
                   :width="'100%'"
                   :height="'150%'"
+                  :chart-data="chartData.data"
+                  :color="chartData.color"
+                  :radius="chartData.radius"
+                  :center="chartData.center"
+                  :isShowLegend="chartData.isShowLegend"
                 />
-                <div
-                  style="
-                    height: 10px;
-
-                    display: flex;
-                    justify-content: space-around;
-                    align-items: flex-end;
-                  "
-                >
-                  <div
-                    style="
-                    padding-top:-10px
-                      display: flex;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    116.99 / 1671.35T
-                  </div>
-                </div>
+                <div class="bottom-style">116.99 / 1671.35T</div>
               </div>
             </el-col>
 
             <el-col :span="16">
-              <div
-                class="grid-content bg-purple"
-                style="border: 2px solid #eee; border-radius: 5px"
-              >
-                <div
-                  style="
-                    padding: 0 10px;
-                    height: 30px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                  "
-                >
-                  <p style="font-size: 16px">容器</p>
+              <div style="border: 2px solid #eee; border-radius: 5px">
+                <div class="title-style2">
+                  <p>容器</p>
                   <el-button type="text">更多...</el-button>
                 </div>
 
-                <div
-                  style="
-                    padding-bottom: -100px;
-                    height: 45px;
-                    display: flex;
-                    justify-content: space-around;
-                    align-items: flex-end;
-                  "
-                >
-                  <div
-                    style="
-                      display: flex;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    <div style="margin-bottom: 10px">118</div>
+                <div class="num-style">
+                  <div>
+                    <div>118</div>
                     <div>总数</div>
                   </div>
-                  <div
-                    style="
-                      display: flex;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    <div style="margin-bottom: 10px">118</div>
+                  <div>
+                    <div>118</div>
                     <div>正常</div>
                   </div>
-                  <div
-                    style="
-                      display: flex;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    <div style="margin-bottom: 10px">0</div>
+                  <div>
+                    <div>0</div>
                     <div>异常</div>
                   </div>
                 </div>
@@ -613,113 +300,64 @@
 
           <el-row :gutter="20" style="margin: 0 10px 20px">
             <el-col :span="12">
-              <div
-                class="grid-content bg-purple"
-                style="border: 2px solid #eee; border-radius: 5px"
-              >
-                <div
-                  style="
-                    padding: 0 10px;
-                    height: 30px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                  "
-                >
-                  <p style="font-size: 16px">虚机</p>
+              <div style="border: 2px solid #eee; border-radius: 5px">
+                <div class="title-style2">
+                  <p>虚机</p>
                   <el-button type="text">更多...</el-button>
                 </div>
-
                 <RadiusPieChart
-                  :chart-data="chartData"
                   :width="'100%'"
                   :height="'150%'"
+                  :chart-data="chartData.data"
+                  :color="chartData.color"
+                  :radius="chartData.radius"
+                  :center="chartData.center"
+                  :isShowLegend="chartData.isShowLegend"
                 />
 
                 <div
-                  style="
-                    height: 50px;
-                    margin-bottom: 30px;
-                    display: flex;
-                    justify-content: space-around;
-                    align-items: flex-end;
-                  "
+                  class="num-style"
+                  style="height: 50px; margin-bottom: 30px"
                 >
-                  <div
-                    style="
-                      display: flex;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    <div style="margin-bottom: 10px">118</div>
+                  <div>
+                    <div>118</div>
                     <div>正常</div>
                   </div>
-                  <div
-                    style="
-                      display: flex;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    <div style="margin-bottom: 10px">0</div>
+                  <div>
+                    <div>0</div>
                     <div>异常</div>
                   </div>
                 </div>
               </div>
             </el-col>
             <el-col :span="12">
-              <div
-                class="grid-content bg-purple"
-                style="border: 2px solid #eee; border-radius: 5px"
-              >
+              <div style="border: 2px solid #eee; border-radius: 5px">
                 <div class="sss"><i class="el-icon-info icon"></i></div>
-                <div
-                  style="
-                    padding: 0 10px;
-                    height: 30px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                  "
-                >
-                  <p style="font-size: 16px">物理机</p>
+                <div class="title-style2">
+                  <p>物理机</p>
                   <el-button type="text">更多...</el-button>
                 </div>
 
                 <RadiusPieChart
-                  :chart-data="chartData"
                   :width="'100%'"
                   :height="'150%'"
+                  :chart-data="chartData.data"
+                  :color="chartData.color"
+                  :radius="chartData.radius"
+                  :center="chartData.center"
+                  :isShowLegend="chartData.isShowLegend"
                 />
 
                 <div
-                  style="
-                    height: 50px;
-                    margin-bottom: 30px;
-                    display: flex;
-                    justify-content: space-around;
-                    align-items: flex-end;
-                  "
+                  class="num-style"
+                  style="height: 50px; margin-bottom: 30px"
                 >
-                  <div
-                    style="
-                      display: flex;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    <div style="margin-bottom: 10px">118</div>
+                  <div>
+                    <div>118</div>
                     <div>正常</div>
                   </div>
-                  <div
-                    style="
-                      display: flex;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    <div style="margin-bottom: 10px">0</div>
+                  <div>
+                    <div>0</div>
                     <div>异常</div>
                   </div>
                 </div>
@@ -730,120 +368,49 @@
       </el-col>
 
       <el-col :span="12">
-        <div class="grid-content bg-purple">
+        <div class="grid-content">
           <div class="sss"><i class="el-icon-info icon"></i></div>
-          <div
-            style="
-              height: 50px;
-              padding-left: 60px;
-              background: #fff;
-              display: flex;
-              justify-content: space-between;
-            "
-          >
+          <div class="title-style">
             <p>EverDB</p>
           </div>
 
           <el-row :gutter="20" style="margin: 0 10px 20px">
             <el-col :span="8">
-              <div
-                class="grid-content bg-purple"
-                style="border: 2px solid #eee; border-radius: 5px"
-              >
-                <div
-                  style="
-                    padding: 0 10px;
-                    height: 30px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                  "
-                >
-                  <p style="font-size: 16px">存储</p>
+              <div style="border: 2px solid #eee; border-radius: 5px">
+                <div class="title-style2">
+                  <p>存储</p>
                 </div>
                 <RadiusPieChart
-                  :chart-data="chartData"
                   :width="'100%'"
                   :height="'150%'"
+                  :chart-data="chartData.data"
+                  :color="chartData.color"
+                  :radius="chartData.radius"
+                  :center="chartData.center"
+                  :isShowLegend="chartData.isShowLegend"
                 />
-                <div
-                  style="
-                    height: 10px;
-
-                    display: flex;
-                    justify-content: space-around;
-                    align-items: flex-end;
-                  "
-                >
-                  <div
-                    style="
-                    padding-top:-10px
-                      display: flex;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    116.99 / 1671.35T
-                  </div>
-                </div>
+                <div class="bottom-style">116.99 / 1671.35T</div>
               </div>
             </el-col>
 
             <el-col :span="16">
-              <div
-                class="grid-content bg-purple"
-                style="border: 2px solid #eee; border-radius: 5px"
-              >
-                <div
-                  style="
-                    padding: 0 10px;
-                    height: 30px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                  "
-                >
-                  <p style="font-size: 16px">容器</p>
+              <div style="border: 2px solid #eee; border-radius: 5px">
+                <div class="title-style2">
+                  <p>容器</p>
                   <el-button type="text">更多...</el-button>
                 </div>
 
-                <div
-                  style="
-                    padding-bottom: -100px;
-                    height: 45px;
-                    display: flex;
-                    justify-content: space-around;
-                    align-items: flex-end;
-                  "
-                >
-                  <div
-                    style="
-                      display: flex;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    <div style="margin-bottom: 10px">118</div>
+                <div class="num-style">
+                  <div>
+                    <div>118</div>
                     <div>总数</div>
                   </div>
-                  <div
-                    style="
-                      display: flex;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    <div style="margin-bottom: 10px">118</div>
+                  <div>
+                    <div>118</div>
                     <div>正常</div>
                   </div>
-                  <div
-                    style="
-                      display: flex;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    <div style="margin-bottom: 10px">0</div>
+                  <div>
+                    <div>0</div>
                     <div>异常</div>
                   </div>
                 </div>
@@ -855,113 +422,62 @@
 
           <el-row :gutter="20" style="margin: 0 10px 20px">
             <el-col :span="12">
-              <div
-                class="grid-content bg-purple"
-                style="border: 2px solid #eee; border-radius: 5px"
-              >
-                <div
-                  style="
-                    padding: 0 10px;
-                    height: 30px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                  "
-                >
-                  <p style="font-size: 16px">虚机</p>
+              <div style="border: 2px solid #eee; border-radius: 5px">
+                <div class="title-style2">
+                  <p>虚机</p>
                   <el-button type="text">更多...</el-button>
                 </div>
-
                 <RadiusPieChart
-                  :chart-data="chartData"
                   :width="'100%'"
                   :height="'150%'"
+                  :chart-data="chartData.data"
+                  :color="chartData.color"
+                  :radius="chartData.radius"
+                  :center="chartData.center"
+                  :isShowLegend="chartData.isShowLegend"
                 />
-
                 <div
-                  style="
-                    height: 50px;
-                    margin-bottom: 30px;
-                    display: flex;
-                    justify-content: space-around;
-                    align-items: flex-end;
-                  "
+                  class="num-style"
+                  style="height: 50px; margin-bottom: 30px"
                 >
-                  <div
-                    style="
-                      display: flex;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    <div style="margin-bottom: 10px">118</div>
+                  <div>
+                    <div>118</div>
                     <div>正常</div>
                   </div>
-                  <div
-                    style="
-                      display: flex;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    <div style="margin-bottom: 10px">0</div>
+                  <div>
+                    <div>0</div>
                     <div>异常</div>
                   </div>
                 </div>
               </div>
             </el-col>
             <el-col :span="12">
-              <div
-                class="grid-content bg-purple"
-                style="border: 2px solid #eee; border-radius: 5px"
-              >
+              <div style="border: 2px solid #eee; border-radius: 5px">
                 <div class="sss"><i class="el-icon-info icon"></i></div>
-                <div
-                  style="
-                    padding: 0 10px;
-                    height: 30px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                  "
-                >
-                  <p style="font-size: 16px">物理机</p>
+                <div class="title-style2">
+                  <p>物理机</p>
                   <el-button type="text">更多...</el-button>
                 </div>
 
                 <RadiusPieChart
-                  :chart-data="chartData"
                   :width="'100%'"
                   :height="'150%'"
+                  :chart-data="chartData.data"
+                  :color="chartData.color"
+                  :radius="chartData.radius"
+                  :center="chartData.center"
+                  :isShowLegend="chartData.isShowLegend"
                 />
-
                 <div
-                  style="
-                    height: 50px;
-                    margin-bottom: 30px;
-                    display: flex;
-                    justify-content: space-around;
-                    align-items: flex-end;
-                  "
+                  class="num-style"
+                  style="height: 50px; margin-bottom: 30px"
                 >
-                  <div
-                    style="
-                      display: flex;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    <div style="margin-bottom: 10px">118</div>
+                  <div>
+                    <div>118</div>
                     <div>正常</div>
                   </div>
-                  <div
-                    style="
-                      display: flex;
-                      align-items: center;
-                      flex-direction: column;
-                    "
-                  >
-                    <div style="margin-bottom: 10px">0</div>
+                  <div>
+                    <div>0</div>
                     <div>异常</div>
                   </div>
                 </div>
@@ -974,12 +490,11 @@
   </div>
 </template>
 <script>
-import { mapGetters } from "vuex";
-import RadiusPieChart from "./components/RadiusPieChart";
+import RadiusPieChart from "@/views/echarts/RadiusPieChart.vue";
 import BarYChart from "./components/BarYChart";
 
 export default {
-  name: "Dashboard",
+  name: "Structure1",
   components: { RadiusPieChart, BarYChart },
   computed: {},
   data() {
@@ -1033,83 +548,78 @@ export default {
         { label: "磁盘使用率", prop: "diskUsage" },
       ],
 
-      chartData: [
-        {
-          label: "正常",
-          value: 60,
-          itemStyle: { color: "#94D2F4" },
-        },
-        {
-          label: "异常",
-          value: 1,
-          itemStyle: { color: "#BD3026" },
-        },
-      ],
+      // 饼图数据
+      chartData: {
+        data: [
+          {
+            label: "正常",
+            value: 60,
+          },
+          {
+            label: "异常",
+            value: 1,
+          },
+        ],
+        color: ["#94D2F4", "#BD3026"],
+        radius: ["45%", "65%"],
+        center: ["50%", "45%"],
+        isShowLegend: false,
+      },
     };
   },
 };
 </script>
 
 <style lang="scss" scoped>
-// .dashboard {
-//   &-container {
-//     margin: 30px;
-//   }
-// }
-.el-row {
-  margin-bottom: 20px;
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
-.el-col {
-  // border-radius: 4px;
-}
-.bg-purple {
-  overflow: hidden;
-  background: #ffffff;
-}
 .grid-content {
-  // border-radius: 4px;
+  background: #ffffff;
   min-height: 100px;
+  overflow: hidden;
 }
 
-ul {
-  display: flex;
-  flex-wrap: wrap;
-  list-style: none;
-  padding: 0;
-}
-li {
+.title-style {
   display: flex;
   justify-content: space-between;
-  width: 48%;
-  border-bottom: 2px solid #e8e8e9;
-  padding-left: 10px;
-  padding-bottom: 10px;
-  margin-bottom: 20px;
-  margin-right: 15px; /* 添加右边距 */
-}
-li:before {
-  content: none; /* 去掉原点 */
-}
-li:nth-child(2n) {
-  margin-right: 0;
+  height: 50px;
+  padding-left: 60px;
+  background: #fff;
 }
 
-.el-table--border,
-.el-table--group {
-  border: 0px solid #ebeef5;
+.title-style2 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 30px;
+  padding: 0 10px;
+  p {
+    font-size: 16px;
+  }
 }
-// .elTable {
-//   border: 1px solid #e8e8e9;
-//   border-top-width: 0px;
-// }
 
-.item {
-  margin-top: 10px;
-  margin-right: 40px;
+.bottom-style {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  height: 10px;
 }
+
+.num-style {
+  padding-bottom: -100px;
+  height: 45px;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  > div {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    div:first-of-type {
+      margin-bottom: 10px;
+    }
+  }
+}
+
+/* 警告红点样式 */
 .sss {
   width: 16px;
   height: 16px;
@@ -1121,10 +631,19 @@ li:nth-child(2n) {
   border-radius: 50%;
   z-index: 999;
   position: absolute;
+  .icon {
+    font-size: large;
+    margin-left: -1px;
+    margin-top: -1px;
+  }
 }
-.icon {
-  font-size: large;
-  margin-left: -1px;
-  margin-top: -1px;
+
+.el-table--border,
+.el-table--group {
+  border: 0px solid #ebeef5;
 }
+// .elTable {
+//   border: 1px solid #e8e8e9;
+//   border-top-width: 0px;
+// }
 </style>
