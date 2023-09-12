@@ -21,8 +21,6 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-
 export default {
   name: "ProgressCard",
   components: {},
@@ -76,9 +74,9 @@ export default {
       dataList: [],
     };
   },
-  computed: {
-    ...mapGetters(["name", "avatar", "roles"]),
-  },
+  // computed: {
+  //   ...mapGetters(["name", "avatar", "roles"]),
+  // },
   watch: {
     chartData: {
       handler(newVal, oldVal) {

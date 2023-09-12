@@ -72,7 +72,7 @@ export default {
         title: {},
         // 图例组件，展示不同系列（即数据集）的名称
         legend: {
-          bottom: "5%",
+          bottom: "3%",
         },
         // 提示框组件，悬停时显示数据详细信息
         tooltip: {
@@ -81,11 +81,11 @@ export default {
         },
         // 直角坐标系内绘图网格
         grid: {
-          left: "3%",
-          // right: '3%',
-          bottom: "10%",
+          // left: 15,
+          // right: 10,
+          // bottom: "15%",
           // top: "5%",
-          containLabel: true, // 保持直角坐标系内绘图网格
+          // containLabel: true, // 保持直角坐标系内绘图网格
         },
         // 雷达图坐标系组件，指定了雷达图上各个轴线的名称（indicator）和最大值（max）
         radar: {
@@ -94,30 +94,12 @@ export default {
             { name: "接管速度", max: 6500 },
             { name: "处置速度", max: 30000 },
             { name: "工作量", max: 38000 },
-            { name: "平均效率", max: 52000 },
+            { name: "平均效率", max: 5200 },
             { name: "评分", max: 25000 },
           ],
         },
         // 系列列表
-        series: [
-          {
-            type: "radar",
-            data: [
-              {
-                value: [4200, 3000, 20000, 35000, 9000],
-                name: "一线运维",
-              },
-              {
-                value: [5000, 14000, 28000, 26000, 20000],
-                name: "二线运维",
-              },
-              {
-                value: [6000, 16000, 14000, 26000, 19000],
-                name: "应用运维",
-              },
-            ],
-          },
-        ],
+        series: this.chartData,
         // 图标颜色设置
         // color: ["#DEE8FC", "#E3F2F4"],
       };

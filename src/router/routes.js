@@ -46,7 +46,7 @@ export default [
       {
         path: 'business',
         name: 'Business',
-        component: () => import('@/views/operImprove/business/index'), 
+        component: () => import('@/views/operImprove/business/index'),
         redirect: '/operImprove/business/overview',
         meta: { title: '业务运维' },
         children: [
@@ -179,6 +179,29 @@ export default [
         name: 'Manager2',
         component: () => import('@/views/handImprove/manager2/index'),
         meta: { title: '融合运维管理2' }
+      }
+    ]
+  },
+
+  // 服务拓扑
+  {
+    path: '/serviceTopology',
+    name: 'Topology',
+    component: Layout,
+    redirect: '/serviceTopology/topology1',
+    meta: { title: '服务拓扑', icon: 'el-icon-connection' },
+    children: [
+      {
+        path: 'topology1',
+        name: 'Topology1',
+        component: () => import('@/views/serviceTopology/topology1/index'),
+        meta: { title: '拓扑图1' }
+      },
+      {
+        path: 'topology2',
+        name: 'Topology2',
+        component: () => import('@/views/serviceTopology/topology2/index'),
+        meta: { title: '拓扑图2' }
       }
     ]
   },

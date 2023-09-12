@@ -1,5 +1,4 @@
 <template>
-  <!-- 圆角饼图组件 -->
   <div :class="className" :style="{ height: height, width: width }" />
 </template>
 
@@ -64,6 +63,10 @@ export default {
         };
       },
     },
+    title: {
+      type: String,
+      default: "",
+    },
   },
   data() {
     return {
@@ -127,6 +130,9 @@ export default {
       });
 
       this.chart.setOption({
+        title: {
+          text: this.title,
+        },
         tooltip: {
           trigger: "axis",
           confine: true,

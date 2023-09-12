@@ -2,17 +2,18 @@
   <el-table
     ref="table"
     empty-text="暂无数据"
-    style="width: 100%"
     border
     stripe
     fit
     :header-cell-style="{ backgroundColor: '#E8E8E9' }"
-    :data="tableList"
+    :style="tableStyle"
+    :data="tableData"
     :height="inTableHeight"
+    :max-height="maxHeight"
     @selection-change="selectionChange"
     @row-click="rowClick"
   >
-    <!-- 选择框 -->
+    <!-- 选择框列 -->
     <el-table-column
       v-if="isShowSelect"
       type="selection"
@@ -21,10 +22,10 @@
       align="center"
     />
 
-    <!-- 选择框 -->
+    <!-- 序号列 -->
     <el-table-column
-      v-if="isShowSelect"
-      type="selection"
+      v-if="isShowIndex"
+      type="index"
       fixed="left"
       width="55"
       align="center"
@@ -34,12 +35,12 @@
       <!-- 特殊处理列 -->
       <el-table-column
         v-if="item.render"
-        :key="index"
+        :key="item.index"
         :prop="item.index ? item.index : null"
         :label="item.label ? item.label : null"
         :width="item.width ? item.width : null"
         :sortable="item.sortable ? item.sortable : false"
-        :align="item.align ? item.align : 'center'"
+        :align="item.align ? item.align : 'left'"
         :fixed="item.fixed ? item.fixed : null"
         :show-overflow-tooltip="item.tooltip"
         min-width="50"
@@ -72,16 +73,15 @@
 
     <!-- 操作列 -->
     <!-- <el-table-column
-        v-if="item.label == '操作'"
-        label="操作"
-        width="100"
-        fixed="right"
-      >
-        <template slot-scope="scope">
-          <el-button size="small" type="text"> 查看 </el-button>
-          <el-button size="small" type="text"> 订阅 </el-button>
-        </template>
-      </el-table-column> -->
+      label="操作"
+      width="100"
+      fixed="right"
+    >
+      <template slot-scope="scope">
+        <el-button size="small" type="text"> 查看 </el-button>
+        <el-button size="small" type="text"> 订阅 </el-button>
+      </template>
+    </el-table-column> -->
   </el-table>
 </template>
 
@@ -111,61 +111,87 @@ var exSlot = {
 export default {
   components: { exSlot },
   props: {
-    tableList: {
+    tableData: {
+      required: true,
       type: Array,
       default: () => [],
     },
 
     columns: {
+      required: true,
       type: Array,
       default: () => [],
     },
 
-    // 是否显示选择框，默认不显示
+    // 表格高度
+    height: {
+      type: [Number, String, Function],
+      default: () => null,
+    },
+
+    "max-height": {
+      type: [Number, String],
+      default: () => null,
+    },
+
+    // 表格自定义样式，默认宽度100%
+    tableStyle: {
+      type: Object,
+      default: () => ({ width: "100%" }),
+    },
+
+    // 是否显示选择框列，默认不显示
     isShowSelect: {
       type: Boolean,
       default: () => false,
     },
 
-    height: {
-      type: [Number, String, Function],
-      default: () => null,
+    // 是否显示序号列，默认不显示
+    isShowIndex: {
+      type: Boolean,
+      default: () => false,
     },
   },
+
   data() {
     return {
       inTableHeight: null,
     };
   },
-  created() {
-    //该阶段可以接收父组件的传递参数
-    this.inTableHeight = this.height;
-  },
-  mounted() {
-    this.$nextTick(() => {
-      //表格高度自适应浏览器大小
-      this.changeTableHight();
-      if (!this.height) {
-        window.onresize = () => {
-          this.changeTableHight();
-        };
-      }
-    });
-  },
-  destroyed() {
-    //高度自适应事件注销
-    window.onresize = null;
-  },
-  watch: {
-    /**
-     * 数据变化后 高度自适应
-     */
-    tableList() {
-      this.$nextTick(() => {
-        this.changeTableHight();
-      });
-    },
-  },
+
+  // created() {
+  //   //该阶段可以接收父组件的传递参数
+  //   this.inTableHeight = this.height;
+  // },
+
+  // mounted() {
+  //   this.$nextTick(() => {
+  //     //表格高度自适应浏览器大小
+  //     this.changeTableHight();
+  //     if (!this.height) {
+  //       window.onresize = () => {
+  //         this.changeTableHight();
+  //       };
+  //     }
+  //   });
+  // },
+
+  // destroyed() {
+  //   //高度自适应事件注销
+  //   window.onresize = null;
+  // },
+
+  // watch: {
+  //   /**
+  //    * 数据变化后 高度自适应
+  //    */
+  //   tableData() {
+  //     this.$nextTick(() => {
+  //       this.changeTableHight();
+  //     });
+  //   },
+  // },
+
   methods: {
     /**
      * 选择框选择后更改,事件分发
@@ -218,7 +244,7 @@ highlight-current-row： 鼠标悬停在行上时高亮当前行
 :header-cell-style="{ backgroundColor: '#E8E8E9' }"   表头样式
 :cell-style="{ backgroundColor: '#E8E8E9' }"          单元格样式
 
-:data="tableList"       数据源
+:data="tableData"       数据源
 :height="inTableHeight" 动态设置表格的高度
 Table 的高度，默认为自动高度。
 如果 height 为 number 类型，单位 px；

@@ -7,7 +7,7 @@
     >
       <el-form-item label="数据采样间隔选择">
         <el-time-select
-          v-model="value"
+          v-model="formInline.value1"
           :picker-options="{
             start: '08:30',
             step: '00:15',
@@ -21,7 +21,11 @@
         <span>2023年05月09日 09:45</span>
       </el-form-item>
       <el-form-item label="数据更新频率">
-        <el-select v-model="value" placeholder="请选择" style="width: 300px">
+        <el-select
+          v-model="formInline.value2"
+          placeholder="请选择"
+          style="width: 300px"
+        >
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -53,9 +57,13 @@
             </li>
           </ul>
 
-          <el-table
+          <div style="padding: 15px">
+            <Table :table-data="tableData" :columns="columns" :height="500" />
+          </div>
+
+          <!-- <el-table
             class="elTable"
-            :data="tableData2"
+            :data="tableData"
             border
             style="width: 100%; padding: 15px 15px 100px"
             :header-cell-style="{
@@ -73,15 +81,16 @@
               :formatter="item.formatter"
             >
             </el-table-column>
-            <!-- <el-table-column label="操作" width="150">
+            <el-table-column label="操作" width="150">
               <template #default="scope">
                 <el-button size="small" type="text"> 查看 </el-button>
                 <el-button size="small" type="text"> 订阅 </el-button>
               </template>
-            </el-table-column> -->
-          </el-table>
+            </el-table-column>
+          </el-table> -->
         </div>
       </el-col>
+
       <el-col :span="12">
         <div class="grid-content">
           <div class="title-style">
@@ -101,40 +110,16 @@
             </li>
           </ul>
 
-          <el-table
-            class="elTable"
-            :data="tableData2"
-            border
-            style="width: 100%; padding: 15px 15px 100px"
-            :header-cell-style="{
-              backgroundColor: '#E8E8E9',
-              borderColor: '#E8E8E9',
-            }"
-            :cell-style="{ border: '1px solid #E8E8E9' }"
-          >
-            <el-table-column
-              v-for="item in columns"
-              :key="item.prop"
-              :prop="item.prop"
-              :label="item.label"
-              :width="item.width"
-              :formatter="item.formatter"
-            >
-            </el-table-column>
-            <!-- <el-table-column label="操作" width="150">
-              <template #default="scope">
-                <el-button size="small" type="text"> 查看 </el-button>
-                <el-button size="small" type="text"> 订阅 </el-button>
-              </template>
-            </el-table-column> -->
-          </el-table>
-        </div></el-col
-      >
+          <div style="padding: 15px">
+            <Table :table-data="tableData" :columns="columns" :height="500" />
+          </div>
+        </div>
+      </el-col>
     </el-row>
 
     <el-row :gutter="20">
       <el-col :span="12">
-        <div class="grid-content bg-purple">
+        <div class="grid-content">
           <div class="title-style">
             <p>EverDB</p>
             <el-button
@@ -152,36 +137,14 @@
             </li>
           </ul>
 
-          <el-table
-            class="elTable"
-            :data="tableData2"
-            border
-            style="width: 100%; padding: 15px 15px 100px"
-            :header-cell-style="{
-              backgroundColor: '#E8E8E9',
-            }"
-            :cell-style="{ border: '1px solid #E8E8E9' }"
-          >
-            <el-table-column
-              v-for="item in columns"
-              :key="item.prop"
-              :prop="item.prop"
-              :label="item.label"
-              :width="item.width"
-              :formatter="item.formatter"
-            >
-            </el-table-column>
-            <!-- <el-table-column label="操作" width="150">
-              <template #default="scope">
-                <el-button size="small" type="text"> 查看 </el-button>
-                <el-button size="small" type="text"> 订阅 </el-button>
-              </template>
-            </el-table-column> -->
-          </el-table>
-        </div></el-col
-      >
+          <div style="padding: 15px">
+            <Table :table-data="tableData" :columns="columns" :height="500" />
+          </div>
+        </div>
+      </el-col>
+
       <el-col :span="12">
-        <div class="grid-content bg-purple">
+        <div class="grid-content">
           <div class="title-style">
             <p>EverDB</p>
             <el-button
@@ -199,52 +162,30 @@
             </li>
           </ul>
 
-          <el-table
-            class="elTable"
-            :data="tableData2"
-            border
-            style="width: 100%; padding: 15px 15px 100px"
-            :header-cell-style="{
-              backgroundColor: '#E8E8E9',
-              borderColor: '#E8E8E9',
-            }"
-            :cell-style="{ border: '1px solid #E8E8E9' }"
-          >
-            <el-table-column
-              v-for="item in columns"
-              :key="item.prop"
-              :prop="item.prop"
-              :label="item.label"
-              :width="item.width"
-              :formatter="item.formatter"
-            >
-            </el-table-column>
-          </el-table>
+          <div style="padding: 15px">
+            <Table :table-data="tableData" :columns="columns" :height="500" />
+          </div>
         </div>
       </el-col>
     </el-row>
   </div>
 </template>
 <script>
+import Table from "@/views/components/Table.vue";
+
 export default {
-  name: "Dashboard",
-  computed: {},
+  name: "ResOverview",
+  components: { Table },
   data() {
     return {
       formInline: {
-        user: "",
-        region: "",
+        value1: "",
+        value2: "",
       },
 
-      tableData: [
-        { radio: "3/3", title: "数据结点数量" },
-        { radio: "3/3", title: "主节点数" },
-        { radio: "3/3", title: "总连接数" },
-        { radio: "3/3", title: "总活跃链接数" },
-        { radio: "3/3", title: "阻塞会话数" },
-      ],
+      options: [],
 
-      tableData2: [
+      tableData: [
         {
           node: "16.107.253.122",
           status: "正常",
@@ -269,15 +210,89 @@ export default {
           memoryUsage: "22",
           cpuUsage: "51",
         },
+        {
+          node: "16.107.253.122",
+          status: "正常",
+          qps: "1500",
+          diskUsage: "21",
+          memoryUsage: "22",
+          cpuUsage: "51",
+        },
+        {
+          node: "16.107.253.122",
+          status: "正常",
+          qps: "1500",
+          diskUsage: "21",
+          memoryUsage: "22",
+          cpuUsage: "51",
+        },
+        // {
+        //   node: "16.107.253.122",
+        //   status: "正常",
+        //   qps: "1500",
+        //   diskUsage: "21",
+        //   memoryUsage: "22",
+        //   cpuUsage: "51",
+        // },
+        // {
+        //   node: "16.107.253.122",
+        //   status: "正常",
+        //   qps: "1500",
+        //   diskUsage: "21",
+        //   memoryUsage: "22",
+        //   cpuUsage: "51",
+        // },
+        // {
+        //   node: "16.107.253.122",
+        //   status: "正常",
+        //   qps: "1500",
+        //   diskUsage: "21",
+        //   memoryUsage: "22",
+        //   cpuUsage: "51",
+        // },
+        // {
+        //   node: "16.107.253.122",
+        //   status: "正常",
+        //   qps: "1500",
+        //   diskUsage: "21",
+        //   memoryUsage: "22",
+        //   cpuUsage: "51",
+        // },
+        // {
+        //   node: "16.107.253.122",
+        //   status: "正常",
+        //   qps: "1500",
+        //   diskUsage: "21",
+        //   memoryUsage: "22",
+        //   cpuUsage: "51",
+        // },
       ],
 
       columns: [
-        { label: "节点", prop: "node" },
-        { label: "状态", prop: "status" },
-        { label: "QPS", prop: "qps" },
-        { label: "CPU使用率", prop: "cpuUsage" },
-        { label: "内存使用率", prop: "memoryUsage" },
-        { label: "磁盘使用率", prop: "diskUsage" },
+        { label: "节点", index: "node" },
+        {
+          label: "状态",
+          index: "status",
+          render: (h, data) => {
+            return (
+              <div>
+                {data.row.status == "正常" ? (
+                  <span style="color:#67C23A">
+                    <i class="el-icon-success" />
+                  </span>
+                ) : (
+                  <span style="color:#F56C6C">
+                    <i class="el-icon-error" />
+                  </span>
+                )}
+              </div>
+            );
+          },
+        },
+        { label: "QPS", index: "qps" },
+        { label: "CPU使用率", index: "cpuUsage" },
+        { label: "内存使用率", index: "memoryUsage" },
+        { label: "磁盘使用率", index: "diskUsage" },
       ],
 
       ulList: {

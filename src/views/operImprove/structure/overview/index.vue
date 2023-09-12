@@ -14,7 +14,7 @@
       <el-col :span="10">
         <div class="grid-content">
           <div class="title-style"><strong>资源配额</strong></div>
-          <progress-card :chart-data="chartData2" />
+          <ProgressCard :chart-data="chartData2" />
         </div>
       </el-col>
 
@@ -75,13 +75,13 @@
             :width="'100%'"
             :height="'300%'"
             :chart-data="chartData3"
-            :title="`应用`"
+            :title="`计算组件`"
           />
         </div>
       </el-col>
     </el-row>
 
-    <el-row :gutter="20">
+    <el-row :gutter="20" style="margin-bottom: 0px">
       <el-col :span="24">
         <div class="grid-content">
           <el-row :gutter="20">
@@ -135,22 +135,9 @@
 
           <el-row :gutter="20">
             <el-col :span="24">
-              <el-table
-                :data="tableData2"
-                border
-                style="padding: 0 30px 30px"
-                :header-cell-style="{ backgroundColor: '#E8E8E9' }"
-                stripe
-              >
-                <el-table-column
-                  v-for="item in columns"
-                  :key="item.prop"
-                  :prop="item.prop"
-                  :label="item.label"
-                  :width="item.width"
-                >
-                </el-table-column>
-              </el-table>
+              <div style="padding: 0 30px 30px">
+                <Table :table-data="tableData2" :columns="columns2" />
+              </div>
             </el-col>
           </el-row>
         </div>
@@ -213,32 +200,12 @@
             </el-select>
           </div>
 
-          <div style="padding: 30px 20px 0; overflow-y: auto">
-            <el-table
-              :data="tableData"
-              border
-              stripe
-              :header-cell-style="{
-                backgroundColor: '#E8E8E9',
-                height: '20px',
-                textAlign: 'center',
-              }"
-              :cell-style="{ 'text-align': 'center' }"
-              size="small"
-              max-height="250"
-            >
-              <el-table-column
-                v-for="item in [
-                  { label: '容器组名称', prop: 'name' },
-                  { label: '内存(Mi)', prop: 'memory', width: '150px' },
-                ]"
-                :key="item.prop"
-                :prop="item.prop"
-                :label="item.label"
-                :width="item.width"
-              >
-              </el-table-column>
-            </el-table>
+          <div style="padding: 30px 20px 0">
+            <Table
+              :table-data="tableData"
+              :columns="columns"
+              :maxHeight="250"
+            />
           </div>
         </div>
       </el-col>
@@ -248,6 +215,9 @@
 <script>
 import LineChart from "@/views/echarts/LineChart.vue";
 import RadiusPieChart from "@/views/echarts/RadiusPieChart.vue";
+
+import Table from "@/views/components/Table.vue";
+
 import BarYChart from "./components/BarYChart";
 import ProgressCard from "./components/ProgressCard";
 
@@ -258,6 +228,7 @@ export default {
     BarYChart,
     LineChart,
     ProgressCard,
+    Table,
   },
   data() {
     return {
@@ -305,7 +276,7 @@ export default {
           "#EFEFEF",
         ],
         radius: ["45%", "50%"],
-        center: ["35%", "55%"],
+        center: ["35%", "50%"],
         // 饼图图形上的文本标签
         label: {
           show: true,
@@ -328,7 +299,7 @@ export default {
         },
         {
           name: "内存",
-          percent: (5 / 300) * 100,
+          percent: (5 / 200) * 100,
           description: "5/300T",
           ysy: "5Gi",
           zpe: "300Gi",
@@ -342,14 +313,14 @@ export default {
         },
         {
           name: "Pods数",
-          percent: "@integer(0 ,100)",
+          percent: (120 / 2000) * 100,
           description: "201/不限制",
           ysy: "1个",
           zpe: "不限制(512)个",
         },
         {
           name: "PVC数",
-          percent: "@integer(0 ,100)",
+          percent: (120 / 2000) * 100,
           description: "0/不限制",
           ysy: "0",
           zpe: "不限制",
@@ -385,7 +356,7 @@ export default {
         grid: {
           left: "2%",
           right: "26%",
-          top: "10%",
+          top: "15%",
           containLabel: true,
         },
         legend: {
@@ -453,15 +424,13 @@ export default {
         },
       },
 
-      // 容器组表头
+      // 资源使用量表头
       columns: [
-        { label: "名称", prop: "name" },
-        { label: "状态", prop: "status" },
-        { label: "原因", prop: "reason" },
-        { label: "触发时间", prop: "time" },
+        { label: "容器组名称", index: "name", align: "center" },
+        { label: "内存", index: "memory", align: "center" },
       ],
 
-      // 容器组表格
+      // 资源使用量表格
       tableData: [
         { name: "ASDA_DSAFSDSV_2321413", memory: "367" },
         { name: "ASDA_DSAFSDSV_2321413", memory: "367" },
@@ -473,7 +442,33 @@ export default {
         { name: "ASDA_DSAFSDSV_2321413", memory: "367" },
       ],
 
-      // 资源使用率表格
+      // 容器组表头
+      columns2: [
+        { label: "名称", index: "name" },
+        {
+          label: "状态",
+          index: "status",
+          render: (h, data) => {
+            return (
+              <div>
+                {data.row.status == "正常" ? (
+                  <span style="color:#67C23A">
+                    <i class="el-icon-success" />
+                  </span>
+                ) : (
+                  <span style="color:#F56C6C">
+                    <i class="el-icon-error" />
+                  </span>
+                )}
+              </div>
+            );
+          },
+        },
+        { label: "原因", index: "reason" },
+        { label: "触发时间", index: "time" },
+      ],
+
+      // 容器组表格
       tableData2: [
         {
           name: "FD_DSAFDSVDSV_32543667",
@@ -540,7 +535,10 @@ $text-color: #9e9e9e;
 }
 
 /* 表格样式 */
-// .el-table--border {
-//   border: 0px solid #ebeef5;
-// }
+.el-table--border {
+  border: 0px solid #ebeef5;
+  &::after {
+    width: 0px;
+  }
+}
 </style>

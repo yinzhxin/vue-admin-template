@@ -41,11 +41,9 @@
           <div class="container">
             <div
               style="height: 170px; background: #fff; border: 2px solid #c8c8c8"
-            >
-            
-            
-            </div>
-            <div ref="canvasContainer"></div>
+            ></div>
+            <!-- 创建容器 -->
+            <div id="container"></div>
           </div>
         </div>
       </el-col>
@@ -60,42 +58,38 @@ export default {
   },
   methods: {
     initGraph() {
-      const container = this.$refs.canvasContainer;
-      const width = container.offsetWidth;
-      const height = container.offsetHeight;
+      // 准备数据
+      const data = {
+        // 点集
+        nodes: [
+          {
+            id: "node1", // String，该节点存在则必须，节点的唯一标识
+            x: 100, // Number，可选，节点位置的 x 值
+            y: 200, // Number，可选，节点位置的 y 值
+          },
+          {
+            id: "node2", // String，该节点存在则必须，节点的唯一标识
+            x: 300, // Number，可选，节点位置的 x 值
+            y: 200, // Number，可选，节点位置的 y 值
+          },
+        ],
+        // 边集
+        edges: [
+          {
+            source: "node1", // String，必须，起始点 id
+            target: "node2", // String，必须，目标点 id
+          },
+        ],
+      };
 
       const graph = new G6.Graph({
-        container,
-        width,
-        height,
-        modes: {
-          default: ["drag-canvas", "drag-node"], // 可根据需求配置交互模式
-        },
+        container: "container", // String | HTMLElement，必须，在 Step 1 中创建的容器 id 或容器本身
+        width: 800, // Number，必须，图的宽度
+        height: 500, // Number，必须，图的高度
       });
 
-      // 添加 Combo
-      const comboId = "combo"; // 设定一个唯一的 ID
-      graph.add("combo", {
-        id: comboId,
-      });
-
-      // 添加节点
-      const node1 = graph.addItem("node", { id: "node1", x: 100, y: 100 });
-      const node2 = graph.addItem("node", { id: "node2", x: 200, y: 200 });
-      const node3 = graph.addItem("node", { id: "node3", x: 300, y: 300 });
-      const node4 = graph.addItem("node", { id: "node4", x: 400, y: 400 });
-
-      // 将节点添加到 Combo
-      const combo = graph.getGroup("combo");
-      graph.addChildren([node1, node2, node3, node4], combo);
-
-      // 绘制 Combo 包围盒
-      graph.updateCombo(combo, {
-        padding: 10,
-      });
-
-      // 渲染图形
-      graph.render();
+      graph.data(data); // 读取 Step 2 中的数据源到图上
+      graph.render(); // 渲染图
     },
   },
 };

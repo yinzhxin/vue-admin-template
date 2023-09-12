@@ -117,46 +117,7 @@
     <el-row :gutter="20">
       <el-col :span="24">
         <div class="grid-content">
-          <Table 
-          :table-list="tableData" 
-          :columns="columns" 
-      
-          />
-          <!-- <el-table
-            :data="tableData"
-            border
-            style="width: 100%"
-            :header-cell-style="{ backgroundColor: '#E8E8E9' }"
-          >
-            <el-table-column
-              v-for="item in columns"
-              :key="item.index"
-              :label="item.label"
-              :width="item.width"
-            >
-              <template slot-scope="scope">
-                <div v-if="item.index == 'context'">
-                  <el-input
-                    type="textarea"
-                    v-model="scope.row.context"
-                    :rows="14"
-                    resize="vertical"
-                    :autosize="{ minRows: 2, maxRows: 4 }"
-                    size="small"
-                  />
-                </div>
-                <div v-else>
-                  {{ scope.row[item.index] }}
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column label="操作" width="100" fixed="right">
-              <template slot-scope="scope">
-                <el-button size="small" type="text"> 查看 </el-button>
-                <el-button size="small" type="text"> 订阅 </el-button>
-              </template>
-            </el-table-column>
-          </el-table> -->
+          <Table :table-data="tableData" :columns="columns" />
         </div>
       </el-col>
     </el-row>
@@ -229,9 +190,9 @@ export default {
       eventData: [
         { title: "应用变更失败", num: 0, times1: 0, times2: 0 },
         { title: "应用扩缩容", num: 10, times1: 10, times2: 10 },
-        { title: "扩缩容达到上下限", num: 0, times1: 0, times2: 0 },
-        { title: "Pod启动失败", num: 0, times1: 0, times2: 0 },
-        { title: "镜像拉取失败", num: 0, times1: 0, times2: 0 },
+        { title: "扩缩容达到上下限", num: 20, times1: 0, times2: 0 },
+        { title: "Pod启动失败", num:30, times1: 0, times2: 0 },
+        { title: "镜像拉取失败", num: 40, times1: 0, times2: 0 },
         { title: "Pod被驱逐", num: 0, times1: 0, times2: 0 },
         { title: "K8S集群资源不足", num: 0, times1: 0, times2: 0 },
         { title: "K8S节点OOM", num: 0, times1: 0, times2: 0 },

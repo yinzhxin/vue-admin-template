@@ -499,55 +499,6 @@ export default {
   computed: {},
   data() {
     return {
-      formInline: {
-        user: "",
-        region: "",
-      },
-
-      tableData: [
-        { radio: "3/3", title: "数据结点数量" },
-        { radio: "3/3", title: "主节点数" },
-        { radio: "3/3", title: "总连接数" },
-        { radio: "3/3", title: "总活跃链接数" },
-        { radio: "3/3", title: "阻塞会话数" },
-      ],
-
-      tableData2: [
-        {
-          node: "16.107.253.122",
-          status: "正常",
-          qps: "1500",
-          diskUsage: "21",
-          memoryUsage: "22",
-          cpuUsage: "51",
-        },
-        {
-          node: "16.107.253.122",
-          status: "正常",
-          qps: "1500",
-          diskUsage: "21",
-          memoryUsage: "22",
-          cpuUsage: "51",
-        },
-        {
-          node: "16.107.253.122",
-          status: "正常",
-          qps: "1500",
-          diskUsage: "21",
-          memoryUsage: "22",
-          cpuUsage: "51",
-        },
-      ],
-
-      columns: [
-        { label: "节点", prop: "node" },
-        { label: "状态", prop: "status" },
-        { label: "QPS", prop: "qps" },
-        { label: "CPU使用率", prop: "cpuUsage" },
-        { label: "内存使用率", prop: "memoryUsage" },
-        { label: "磁盘使用率", prop: "diskUsage" },
-      ],
-
       // 饼图数据
       chartData: {
         data: [
@@ -642,8 +593,5 @@ export default {
 .el-table--group {
   border: 0px solid #ebeef5;
 }
-// .elTable {
-//   border: 1px solid #e8e8e9;
-//   border-top-width: 0px;
-// }
+
 </style>

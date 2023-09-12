@@ -8,7 +8,7 @@
       <!-- 数据采样间隔选择 -->
       <el-form-item label="数据采样间隔选择">
         <el-time-select
-          v-model="value"
+          v-model="formInline.value1"
           :picker-options="{
             start: '08:30',
             step: '00:15',
@@ -24,7 +24,11 @@
       </el-form-item>
       <!-- 数据更新频率 -->
       <el-form-item label="数据更新频率">
-        <el-select v-model="value" placeholder="请选择" style="width: 300px">
+        <el-select
+          v-model="formInline.value2"
+          placeholder="请选择"
+          style="width: 300px"
+        >
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -202,9 +206,12 @@ export default {
   data() {
     return {
       formInline: {
-        user: "",
-        region: "",
+        value1: "",
+        value2: "",
       },
+
+      value: "",
+      options: [],
 
       // 列表和折线图数据
       dbList: [
@@ -255,7 +262,7 @@ export default {
           ulData: [
             { title: "连接拒绝数", num: "102" },
             { title: "慢Sql超时数量", num: "0" },
-            { title: "慢Sql超时数量", num: "0" },
+            { title: ".", num: "." },
           ],
           chartData: [
             {

@@ -55,8 +55,8 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-  ::v-deep .el-scrollbar__wrap {
-    // overflow: hidden; 
-    height: 100%;
+// 放大缩小时隐藏竖向滚动条
+::v-deep .el-scrollbar__wrap {
+  overflow-y: hidden; 
 }
 </style>

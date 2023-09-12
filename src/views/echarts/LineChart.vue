@@ -32,21 +32,13 @@ export default {
       },
     },
 
-    // 折线图的标题
+    // 标题
     title: {
       type: String,
       default: "",
     },
 
-    // 是否显示图例
-    grid: {
-      type: Array,
-      default: () => {
-        return [];
-      },
-    },
-
-    // 折线图的主题颜色
+    // 主题颜色
     color: {
       type: Array,
       default: () => {
@@ -69,12 +61,12 @@ export default {
     },
 
     // 是否显示折线图结点的数据，默认显示
-    isShowStyle: {
+    isShowNode: {
       type: Boolean,
       default: true,
     },
 
-    // 折线图图例
+    // 折线图图例，默认不显示
     legend: {
       type: Object,
       default: () => {
@@ -84,7 +76,7 @@ export default {
       },
     },
 
-    // 折线图在容器内的方位调整
+    // 折线图在容器内的方位调整，默认不调整
     grid: {
       type: Object,
       default: () => {
@@ -128,19 +120,20 @@ export default {
     initChart() {
       this.chart = echarts.init(this.$el);
 
-      const opacity = this.isAreaStyle ? 0.1 : 0;
-      const show = this.isShowStyle ? true : false;
-
       // 添加属性
-      const chartDeal = this.chartData.map((i) => {
+      const opacity = this.isAreaStyle ? 0.1 : 0;
+      const chartDeal = this.chartData.map((item) => {
         return {
-          ...i,
+          ...item,
+          // 图表类型
           type: "line",
-          areaStyle: { normal: { opacity: opacity } },
+          // 阴影显示
+          areaStyle: { normal: { opacity } },
+          // 显示节点数据
           label: {
-            show,
+            show: this.isShowNode,
             fontSize: 12,
-            formatter: "{c}", // 显示节点数据
+            formatter: "{c}",
           },
         };
       });
@@ -155,30 +148,24 @@ export default {
         },
 
         legend: this.legend,
+
         grid: this.grid,
 
         xAxis: {
-          type: "category", // x 轴类型为类目轴
+          type: "category", // x轴类型为类目轴
           boundaryGap: true, // 坐标轴两边留白
           data: this.xAxisData,
         },
 
         yAxis: {
-          type: "value", // x 轴类型为类目轴
+          type: "value", // x轴类型为类目轴
         },
 
         series: chartDeal,
 
         // 主题颜色
         color: this.color,
-
-        // 添加空隙的配置项，或者使用 barCategoryGap: '20%'
-        // barGap: "0",
       };
-
-      // if (this.color.length != 0) {
-      //   option = { ...option, color: this.color };
-      // }
 
       this.chart.setOption(option);
     },

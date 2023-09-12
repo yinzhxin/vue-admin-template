@@ -17,24 +17,12 @@
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <el-avatar :size="40" :src="circleUrl"></el-avatar>
-          <i class="el-icon-caret-bottom" />
+          <el-button type="text">Admin</el-button>
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/">
             <el-dropdown-item> 主页 </el-dropdown-item>
           </router-link>
-          <!-- <a
-            target="_blank"
-            href="https://github.com/PanJiaChen/vue-admin-template/"
-          >
-            <el-dropdown-item>Github</el-dropdown-item>
-          </a>
-          <a
-            target="_blank"
-            href="https://panjiachen.github.io/vue-element-admin-site/#/"
-          >
-            <el-dropdown-item>Docs</el-dropdown-item>
-          </a> -->
           <el-dropdown-item divided @click.native="logout">
             <span style="display: block">退出登录</span>
           </el-dropdown-item>
@@ -128,12 +116,20 @@ export default {
     }
 
     .avatar-container {
-      margin-right: 30px;
+      margin-right: 20px;
 
       .avatar-wrapper {
+        display: flex;
+        align-items: center;
         margin-top: 5px;
         position: relative;
         cursor: pointer;
+
+        .el-button--text {
+          padding-left: 8px;
+          padding-right: 0;
+          font-size: 18px;
+        }
 
         .user-avatar {
           cursor: pointer;

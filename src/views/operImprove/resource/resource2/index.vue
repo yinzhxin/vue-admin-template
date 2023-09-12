@@ -7,7 +7,7 @@
     >
       <el-form-item label="数据采样间隔选择">
         <el-time-select
-          v-model="value"
+          v-model="formInline.value1"
           :picker-options="{
             start: '08:30',
             step: '00:15',
@@ -21,7 +21,11 @@
         <span>2023年05月09日 09:45</span>
       </el-form-item>
       <el-form-item label="数据更新频率">
-        <el-select v-model="value" placeholder="请选择" style="width: 300px">
+        <el-select
+          v-model="formInline.value2"
+          placeholder="请选择"
+          style="width: 300px"
+        >
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -117,29 +121,7 @@
             </el-select>
           </div>
 
-          <el-table
-            :data="tableData2"
-            border
-            style="width: 100%"
-            :header-cell-style="{ backgroundColor: '#E8E8E9' }"
-            size="mini"
-          >
-            <el-table-column
-              v-for="item in columns"
-              :key="item.prop"
-              :prop="item.prop"
-              :label="item.label"
-              :width="item.width"
-              :formatter="item.formatter"
-            >
-            </el-table-column>
-            <!-- <el-table-column label="操作" width="150">
-              <template #default="scope">
-                <el-button size="small" type="text"> 查看 </el-button>
-                <el-button size="small" type="text"> 订阅 </el-button>
-              </template>
-            </el-table-column> -->
-          </el-table>
+          <Table :table-data="tableData2" :columns="columns" />
         </div>
       </el-col>
     </el-row>
@@ -147,17 +129,20 @@
 </template>
 <script>
 import LineChart from "@/views/echarts/LineChart.vue";
+import Table from "@/views/components/Table.vue";
 
 export default {
   name: "Resource2",
-  components: { LineChart },
+  components: { LineChart, Table },
   computed: {},
   data() {
     return {
       formInline: {
-        user: "",
-        region: "",
+        value1: "",
+        value2: "",
       },
+      options: [],
+      value: "",
 
       tableData: [
         { radio: "3/3", title: "数据结点数量" },
@@ -204,25 +189,79 @@ export default {
           memoryUsage: "40%",
           cpuUsage: "20%",
         },
+        {
+          node: "az3-DB-server0",
+          source: "正常",
+          type: "主",
+          connectionCount: 25,
+          activeConnections: 10,
+          blockedSessions: 2,
+          lockTimeouts: 0,
+          statementConflicts: 3,
+          cacheHitRate: "98.5%",
+          qps: 1200,
+          tps: 800,
+          spaceUsage: "70%",
+          logSpaceUsage: "35%",
+          diskUsage: "60%",
+          memoryUsage: "40%",
+          cpuUsage: "20%",
+        },
+        {
+          node: "az3-DB-server1",
+          source: "正常",
+          type: "主",
+          connectionCount: 25,
+          activeConnections: 10,
+          blockedSessions: 2,
+          lockTimeouts: 0,
+          statementConflicts: 3,
+          cacheHitRate: "98.5%",
+          qps: 1200,
+          tps: 800,
+          spaceUsage: "70%",
+          logSpaceUsage: "35%",
+          diskUsage: "60%",
+          memoryUsage: "40%",
+          cpuUsage: "20%",
+        },
       ],
 
       columns: [
-        { label: "节点", prop: "node" },
-        { label: "状态", prop: "source" },
-        { label: "主从", prop: "type" },
-        { label: "链接数", prop: "connectionCount" },
-        { label: "活跃连接数", prop: "activeConnections" },
-        { label: "阻塞会话数", prop: "blockedSessions" },
-        { label: "锁超时间", prop: "lockTimeouts" },
-        { label: "语句冲突次数", prop: "statementConflicts" },
-        { label: "缓存命中率", prop: "cacheHitRate" },
-        { label: "QPS", prop: "qps" },
-        { label: "TPS", prop: "tps" },
-        { label: "空间使用率", prop: "spaceUsage" },
-        { label: "日志空间使用率", prop: "logSpaceUsage" },
-        { label: "磁盘使用率", prop: "diskUsage" },
-        { label: "内存使用率", prop: "memoryUsage" },
-        { label: "CPU使用率", prop: "cpuUsage" },
+        { label: "节点", index: "node" },
+        {
+          label: "状态",
+          index: "source",
+          render: (h, data) => {
+            return (
+              <div>
+                {data.row.source == "正常" ? (
+                  <span style="color:#67C23A">
+                    <i class="el-icon-success" />
+                  </span>
+                ) : (
+                  <span style="color:#F56C6C">
+                    <i class="el-icon-error" />
+                  </span>
+                )}
+              </div>
+            );
+          },
+        },
+        { label: "主从", index: "type" },
+        { label: "链接数", index: "connectionCount" },
+        { label: "活跃连接数", index: "activeConnections" },
+        { label: "阻塞会话数", index: "blockedSessions" },
+        { label: "锁超时间", index: "lockTimeouts" },
+        { label: "语句冲突次数", index: "statementConflicts", width: "120" },
+        { label: "缓存命中率", index: "cacheHitRate" },
+        { label: "QPS", index: "qps" },
+        { label: "TPS", index: "tps" },
+        { label: "空间使用率", index: "spaceUsage" },
+        { label: "日志空间使用率", index: "logSpaceUsage", width: "120" },
+        { label: "磁盘使用率", index: "diskUsage" },
+        { label: "内存使用率", index: "memoryUsage" },
+        { label: "CPU使用率", index: "cpuUsage" },
       ],
 
       chartData1: {
