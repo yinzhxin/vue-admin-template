@@ -50,7 +50,7 @@ export default {
               // x: 0,
               // y: 0,
               // fill: "blue",
-              img: "http://localhost:9529/G6_images/mysql.svg",
+              img: "http://localhost:9529/topo_images/mysql.svg",
             },
             // 在 G6 3.3 及之后的版本中，必须指定 name，可以是任意字符串，但需要在同一个自定义元素类型中保持唯一性
             name: "image-shape",
@@ -103,36 +103,6 @@ export default {
       `
       );
 
-      // const data = {
-      //   nodes: [
-      //     {
-      //       x: 150,
-      //       y: 150,
-      //       description: "ant_type_name_...",
-      //       label: "Type / ReferType",
-      //       color: "#2196f3",
-      //       meta: {
-      //         creatorName: "a_creator",
-      //       },
-      //       id: "node1",
-      //       type: "rect-jsx",
-      //     },
-      //     {
-      //       x: 350,
-      //       y: 150,
-      //       description: "node2_name...",
-      //       label: "JSX Node",
-      //       color: "#2196f3",
-      //       meta: {
-      //         creatorName: "a_creator",
-      //       },
-      //       id: "node2",
-      //       type: "rect-jsx",
-      //     },
-      //   ],
-      //   edges: [{ source: "node1", target: "node2" }],
-      // };
-
       // 数据对象
       const data = {
         nodes: [
@@ -140,60 +110,62 @@ export default {
             id: "1", // 节点的唯一标志符
             comboId: "a", // 节点所属于的组合的标志符
             label: "shop_gateway", // 标签文字
-            img: "http://localhost:9529/G6_images/cube2.svg",
+            img: "http://localhost:9529/topo_images/cube2.svg",
             color: "#F7F3EF",
+            x: 326,
+            y: 61,
           },
           {
             id: "2",
             comboId: "a",
             label: "shop_auth",
-            img: "http://localhost:9529/G6_images/cube2.svg",
+            img: "http://localhost:9529/topo_images/cube2.svg",
             color: "#F7F3EF",
           },
           {
             id: "3",
             comboId: "a",
             label: "shop_user",
-            img: "http://localhost:9529/G6_images/cube2.svg",
+            img: "http://localhost:9529/topo_images/cube2.svg",
             color: "#F7F3EF",
           },
           {
             id: "4",
             comboId: "a",
             label: "shop_audit",
-            img: "http://localhost:9529/G6_images/cube.svg",
+            img: "http://localhost:9529/topo_images/cube.svg",
             color: "#E5F3F3",
           },
           {
             id: "5",
             comboId: "a",
             label: "shop_kafka",
-            img: "http://localhost:9529/G6_images/cube.svg",
+            img: "http://localhost:9529/topo_images/cube.svg",
             color: "#E5F3F3",
           },
           {
             id: "6",
             comboId: "a",
             label: "shop_order",
-            img: "http://localhost:9529/G6_images/cube.svg",
+            img: "http://localhost:9529/topo_images/cube.svg",
             color: "#E5F3F3",
           },
           {
             id: "7",
             label: "192.168.31.107:6379",
-            img: "http://localhost:9529/G6_images/data.svg",
+            img: "http://localhost:9529/topo_images/data.svg",
             color: "#E5F3F3",
           },
           {
             id: "8",
             label: "192.168.110.101:9092",
-            img: "http://localhost:9529/G6_images/kafka.svg",
+            img: "http://localhost:9529/topo_images/kafka.svg",
             color: "#E5F3F3",
           },
           {
             id: "9",
             label: "192.168.110.115:3306",
-            img: "http://localhost:9529/G6_images/mysql.svg",
+            img: "http://localhost:9529/topo_images/mysql.svg",
             color: "#F2EDF0",
           },
         ],
@@ -223,7 +195,7 @@ export default {
           //     stroke: "#C3CED8", // 边的颜色，默认为空字符串表示使用默认颜色
           //     arrow: true, // 是否显示箭头
           //     endArrow: {
-          //       path: "M 10,-5 L 0,0 L 10,5 Z", // 箭头的路径描述
+          //       path: G6.Arrow.vee(), // 箭头的路径描述
           //       d: 2, // 箭头的大小，默认为空，需填入具体数值
           //     },
           //   },
@@ -249,7 +221,7 @@ export default {
               stroke: "#C3CED8", // 边的颜色，默认为空字符串表示使用默认颜色
               arrow: true, // 是否显示箭头
               endArrow: {
-                path: "M 10,-5 L 0,0 L 10,5 Z", // 箭头的路径描述
+                path: G6.Arrow.vee(), // 箭头的路径描述
                 d: 2, // 箭头的大小，默认为空，需填入具体数值
               },
             },
@@ -275,7 +247,7 @@ export default {
               stroke: "#C3CED8", // 边的颜色，默认为空字符串表示使用默认颜色
               arrow: true, // 是否显示箭头
               endArrow: {
-                path: "M 10,-5 L 0,0 L 10,5 Z", // 箭头的路径描述
+                path: G6.Arrow.vee(), // 箭头的路径描述
                 d: 2, // 箭头的大小，默认为空，需填入具体数值
               },
             },
@@ -301,7 +273,7 @@ export default {
               stroke: "#C3CED8", // 边的颜色，默认为空字符串表示使用默认颜色
               arrow: true, // 是否显示箭头
               endArrow: {
-                path: "M 10,-5 L 0,0 L 10,5 Z", // 箭头的路径描述
+                path: G6.Arrow.vee(), // 箭头的路径描述
                 d: 2, // 箭头的大小，默认为空，需填入具体数值
               },
             },
@@ -327,7 +299,7 @@ export default {
               stroke: "#C3CED8", // 边的颜色，默认为空字符串表示使用默认颜色
               arrow: true, // 是否显示箭头
               endArrow: {
-                path: "M 10,-5 L 0,0 L 10,5 Z", // 箭头的路径描述
+                path: G6.Arrow.vee(), // 箭头的路径描述
                 d: 2, // 箭头的大小，默认为空，需填入具体数值
               },
             },
@@ -353,7 +325,7 @@ export default {
               stroke: "#C3CED8", // 边的颜色，默认为空字符串表示使用默认颜色
               arrow: true, // 是否显示箭头
               endArrow: {
-                path: "M 10,-5 L 0,0 L 10,5 Z", // 箭头的路径描述
+                path: G6.Arrow.vee(), // 箭头的路径描述
                 d: 2, // 箭头的大小，默认为空，需填入具体数值
               },
             },
@@ -379,7 +351,7 @@ export default {
               stroke: "#C3CED8", // 边的颜色，默认为空字符串表示使用默认颜色
               arrow: true, // 是否显示箭头
               endArrow: {
-                path: "M 10,-5 L 0,0 L 10,5 Z", // 箭头的路径描述
+                path: G6.Arrow.vee(), // 箭头的路径描述
                 d: 2, // 箭头的大小，默认为空，需填入具体数值
               },
             },
@@ -405,7 +377,7 @@ export default {
               stroke: "#C3CED8", // 边的颜色，默认为空字符串表示使用默认颜色
               arrow: true, // 是否显示箭头
               endArrow: {
-                path: "M 10,-5 L 0,0 L 10,5 Z", // 箭头的路径描述
+                path: G6.Arrow.vee(), // 箭头的路径描述
                 d: 2, // 箭头的大小，默认为空，需填入具体数值
               },
             },
@@ -431,7 +403,7 @@ export default {
               stroke: "#C3CED8", // 边的颜色，默认为空字符串表示使用默认颜色
               arrow: true, // 是否显示箭头
               endArrow: {
-                path: "M 10,-5 L 0,0 L 10,5 Z", // 箭头的路径描述
+                path: G6.Arrow.vee(), // 箭头的路径描述
                 d: 2, // 箭头的大小，默认为空，需填入具体数值
               },
             },
@@ -457,7 +429,7 @@ export default {
               stroke: "#C3CED8", // 边的颜色，默认为空字符串表示使用默认颜色
               arrow: true, // 是否显示箭头
               endArrow: {
-                path: "M 10,-5 L 0,0 L 10,5 Z", // 箭头的路径描述
+                path: G6.Arrow.vee(), // 箭头的路径描述
                 d: 2, // 箭头的大小，默认为空，需填入具体数值
               },
             },
@@ -483,7 +455,7 @@ export default {
               stroke: "#C3CED8", // 边的颜色，默认为空字符串表示使用默认颜色
               arrow: true, // 是否显示箭头
               endArrow: {
-                path: "M 10,-5 L 0,0 L 10,5 Z", // 箭头的路径描述
+                path: G6.Arrow.vee(), // 箭头的路径描述
                 d: 2, // 箭头的大小，默认为空，需填入具体数值
               },
             },
@@ -509,10 +481,11 @@ export default {
               stroke: "#C3CED8", // 边的颜色，默认为空字符串表示使用默认颜色
               arrow: true, // 是否显示箭头
               endArrow: {
-                path: "M 10,-5 L 0,0 L 10,5 Z", // 箭头的路径描述
+                path: G6.Arrow.vee(), // 箭头的路径描述
                 d: 2, // 箭头的大小，默认为空，需填入具体数值
               },
             },
+            curveOffset: -100, // 设置曲线偏移量为负值
           },
         ],
         // 分组
@@ -578,13 +551,13 @@ export default {
         minZoom: 0.00000001,
         // 布局算法配置对象
         layout: {
-          // comboForce”力导向布局算法，用于对包含组合的图进行布局
-          type: "comboForce",
+          type: "comboForce", // comboForce”力导向布局算法，用于对包含组合的图进行布局
+          preventOverlap: true, // 防止节点重叠
           // 指定节点之间的最小空间距离为 8
           // nodeSpacing: (d) => 20,
           // center: [500, 500], // 可选，默认为图的中心
-          linkDistance: 200, // 可选，边长
-          nodeStrength: 900, // 可选
+          linkDistance: 600, // 可选，边长
+          nodeStrength: 2000, // 可选
           edgeStrength: 0.1, // 可选
           onTick: () => {
             // 可选
@@ -631,7 +604,43 @@ export default {
       // 将数据对象传入图形实例并且渲染图表
       graph.data(data);
 
+      // // 自定义节点位置
+      // graph.node((node) => {
+      //   return {
+      //     ...node,
+      //     x: 100, // 自定义 x 坐标
+      //     y: 200, // 自定义 y 坐标
+      //   };
+      // });
+
       graph.render();
+
+      // 监听节点拖拽事件
+      graph.on("node:dragstart", (evt) => {
+        const { item } = evt;
+        // 获取拖拽节点的初始位置
+        const model = item.getModel();
+        console.log("节点初始位置：", model.x, model.y);
+      });
+
+      graph.on("node:drag", (evt) => {
+        const { item, dx, dy } = evt;
+        // 更新节点位置
+        const model = item.getModel();
+        graph.updateItem(item, {
+          x: model.x + dx,
+          y: model.y + dy,
+        });
+        // 获取更新后的节点位置
+        console.log("节点当前位置：", model.x + dx, model.y + dy);
+      });
+
+      graph.on("node:dragend", (evt) => {
+        const { item } = evt;
+        // 获取最终节点位置
+        const model = item.getModel();
+        console.log("节点最终位置：", model.x, model.y);
+      });
     },
   },
 };
