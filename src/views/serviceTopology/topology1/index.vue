@@ -30,7 +30,7 @@ export default {
 
   methods: {
     initGraph() {
-      // 自定义节点  stroke: ${cfg.color},
+      // 自定义节点
       let res = G6.registerNode("img-jsx", {
         jsx: (cfg, group) => {
           return `
@@ -111,6 +111,7 @@ export default {
         getAnchorPoints(cfg) {},
       });
       // console.log(res);
+
       // 数据对象，节点、边、分组数组
       const data = {
         nodes: [
@@ -123,8 +124,6 @@ export default {
               window.location.port +
               "/topo_images/cube2.svg",
             color: "#F7F3EF",
-            x: 326,
-            y: 61,
           },
           {
             id: "2",
@@ -550,7 +549,6 @@ export default {
           },
 
           //! 10--> 11
-
           {
             source: "10",
             target: "11",
@@ -606,26 +604,23 @@ export default {
         ],
         combos: [
           {
-            // 唯一的标志符，用来标识不同分组
-            id: "a",
-            // 分组的标签，显示在图标上
-            label: "animeter101/eoitek-shopping (5)",
+            id: "a", // 唯一的标志符，标识不同分组
+            label: "animeter101/eoitek-shopping (5)", // 分组的标签
             labelCfg: {
               style: {
-                fontSize: 60,
+                fontSize: 60, // 标签文字大小
               },
             },
-            // 分组的宽度为200，高度为100
-            size: [700, 700],
+            size: [700, 700], // 宽 / 高
             // 分组样式
             style: {
-              lineDash: [50, 4], // 边框虚线样式，数组中的两个值分别表示虚线的线段长度和间隔长度
-              lineWidth: 12 ,// 边框线宽
+              lineDash: [50, 4], // 边框虚线样式，虚线的线段长度 / 间隔长度
+              lineWidth: 12, // 边框线宽
               stroke: "#DEDEED", // 边框颜色
             },
-            // 父级分组的标识符 分组之间的层级关系 a的父级分组是b
-            // parentId: "b",
-            collapsed: false,
+
+            // parentId: "b",// 父级分组的标识符 分组之间的层级关系 a的父级分组是b
+            collapsed: false, // 默认不折叠
           },
           {
             id: "b",
@@ -635,13 +630,11 @@ export default {
                 fontSize: 60,
               },
             },
-            // 分组的宽度为200，高度为100
             size: [300, 300],
-            // 分组样式
             style: {
-              lineDash: [50, 4], // 边框虚线样式，数组中的两个值分别表示虚线的线段长度和间隔长度
-              lineWidth: 12, // 边框线宽
-              stroke: "#8A8AE0", // 边框颜色
+              lineDash: [50, 4], // 线段长度和间隔长度
+              lineWidth: 12,
+              stroke: "#8A8AE0",
             },
             collapsed: true,
           },
@@ -747,24 +740,21 @@ export default {
         minZoom: 0.00000001,
         // 布局算法配置对象
         layout: {
-          type: "comboForce", // comboForce”力导向布局算法，用于对包含组合的图进行布局
+          type: "comboForce", // comboForce力导向布局算法，用于对包含组合的图进行布局
           preventOverlap: true, // 防止节点重叠
-          // 指定节点之间的最小空间距离为 8
-          // nodeSpacing: (d) => 20,
+          // nodeSpacing: (d) => 20, // 指定节点之间的最小空间距离为 8
           // center: [500, 500], // 可选，默认为图的中心
-          linkDistance: 600, // 可选，边长
+          linkDistance: 400, // 可选，边长
           nodeStrength: 500, // 可选
-          edgeStrength: 0.1, // 可选
+          edgeStrength: 0.05, // 可选
           onTick: () => {
-            // 可选
-            console.log("ticking");
+            // console.log("ticking可选");
           },
           onLayoutEnd: () => {
-            // 可选
-            console.log("combo force layout done");
+            // console.log("combo force layout done 可选");
           },
         },
-        // 默认节点的样式，包括尺寸、填充色、描边线宽
+        // 默认节点的样式: 尺寸、填充色、描边线宽
         defaultNode: {
           className: "node", // 添加类名为 "node"
           type: "img-jsx",
