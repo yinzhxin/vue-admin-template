@@ -4,9 +4,8 @@
       <el-col :span="24">
         <div class="topo">
           <div class="topo-container">
-            <!-- <div
-              style="height: 170px; background: #fff; border: 2px solid #c8c8c8"
-            ></div> -->
+            <!-- 上半部分 -->
+            <!-- <div class="topo-top"></div> -->
 
             <!-- 创建容器 -->
             <div id="container" style="background: #f6f9fc"></div>
@@ -18,99 +17,111 @@
 </template>
 
 <script>
+import * as echarts from "echarts";
 import G6 from "@antv/g6";
 
 export default {
+  name: "Topology1",
+
   mounted() {
     this.initGraph();
+    // console.log(window.location);
   },
+
   methods: {
     initGraph() {
-      // 自定义节点
-      G6.registerNode("customNode", {
-        draw(cfg, group) {
-          console.log(cfg, group);
-          // 获取节点对应的文件夹路径
-          const folderPath = cfg.folderPath;
-
-          // 创建图像形状并设置样式
-          // const image = group.addShape("image", {
-          //   attrs: {
-          //     x: cfg.x - cfg.size / 2, // 根据节点位置和大小确定图像位置
-          //     y: cfg.y - cfg.size / 2,
-          //     width: cfg.size,
-          //     height: cfg.size,
-          //     img: folderPath, // 使用文件夹路径作为图像资源
-          //     // 其他样式属性...
-          //   },
-          // });
-
-          const image2 = group.addShape("image", {
-            attrs: {
-              // x: 0,
-              // y: 0,
-              // fill: "blue",
-              img: "http://localhost:9529/topo_images/mysql.svg",
-            },
-            // 在 G6 3.3 及之后的版本中，必须指定 name，可以是任意字符串，但需要在同一个自定义元素类型中保持唯一性
-            name: "image-shape",
-          });
-
-          return image2;
-        },
-      });
-
-      // <group style="display: flex; flex-direction: column; align-items: center;">
-      G6.registerNode(
-        "rect-jsx",
-        (cfg) => `
-        <group style={{display: flex, flex-direction: column, align-items: center}}>
-          <circle 
+      // 自定义节点  stroke: ${cfg.color},
+      let res = G6.registerNode("img-jsx", {
+        jsx: (cfg, group) => {
+          return `
+        <group style={{display: flex, flex-direction: column, align-items: center}} id="group">
+          <circle
             style={{
               stroke: ${cfg.color},
-              r: 80,
+              r: 100,
               fill: '${cfg.color}',
               marginLeft: 75,
               cursor: 'pointer'
-            }} 
-            name="circle" 
+            }}
+            name="circle"
             draggable="true"
             >
-              <image 
-                style={{ 
-                  img: ${cfg.img}, 
-                  width: 100, 
-                  height: 100,  
-                  marginLeft: 25,  
-                  marginTop: -50,
-                  cursor: 'pointer' 
-                }} 
+              <image
+                style={{
+                  img: ${cfg.img},
+                  width: 120,
+                  height: 120,
+                  marginLeft: 17,
+                  marginTop: -56,
+                  cursor: 'pointer'
+                }}
                 draggable="true"
               />
           </circle>
 
-          <text style={{ 
-            marginTop: -40, 
-            marginLeft: -60, 
-            fill: '#333', 
-            fontSize: 25,
+          <text style={{
+            marginTop: -40,
+            marginLeft: -220,
+            fill: '#333',
+            fontSize: 45,
             }}
             draggable="true"
           >
           ${cfg.label}
           </text>
-      </group>
-      `
-      );
 
-      // 数据对象
+      </group>
+      `;
+        },
+        /**
+         * 绘制后的附加操作，默认没有任何操作
+         * @param  {Object} cfg combo 的配置项
+         * @param  {G.Group} group 图形分组，combo 中的图形对象的容器
+         */
+        afterDraw(cfg, group) {},
+        /**
+         * 更新 combo ，combo 文本
+         * @override
+         * @param  {Object} cfg combo 的配置项
+         * @param  {Combo} combo combo item
+         */
+        update(cfg, combo) {},
+        /**
+         * 更新 combo 后的操作，一般同 afterDraw 配合使用
+         * @override
+         * @param  {Object} cfg combo 的配置项
+         * @param  {Combo} combo combo item
+         */
+        afterUpdate(cfg, combo) {},
+        /**
+         * 设置 combo 的状态，主要是交互状态，业务状态请在 draw 方法中实现
+         * 单图形的 combo 仅考虑 selected、active 状态，有其他状态需求的用户自己复写这个方法
+         * @param  {String} name 状态名称
+         * @param  {Object} value 状态值
+         * @param  {Combo} combo combo item
+         */
+        setState(name, value, combo) {
+          console.log(name, value, combo);
+        },
+        /**
+         * 获取锚点（相关边的连入点）
+         * @param  {Object} cfg combo 的配置项
+         * @return {Array|null} 锚点（相关边的连入点）的数组,如果为 null，则没有锚点
+         */
+        getAnchorPoints(cfg) {},
+      });
+      // console.log(res);
+      // 数据对象，节点、边、分组数组
       const data = {
         nodes: [
           {
             id: "1", // 节点的唯一标志符
             comboId: "a", // 节点所属于的组合的标志符
             label: "shop_gateway", // 标签文字
-            img: "http://localhost:9529/topo_images/cube2.svg",
+            img:
+              "http://localhost:" +
+              window.location.port +
+              "/topo_images/cube2.svg",
             color: "#F7F3EF",
             x: 326,
             y: 61,
@@ -119,88 +130,111 @@ export default {
             id: "2",
             comboId: "a",
             label: "shop_auth",
-            img: "http://localhost:9529/topo_images/cube2.svg",
+            img:
+              "http://localhost:" +
+              window.location.port +
+              "/topo_images/cube2.svg",
             color: "#F7F3EF",
           },
           {
             id: "3",
             comboId: "a",
             label: "shop_user",
-            img: "http://localhost:9529/topo_images/cube2.svg",
+            img:
+              "http://localhost:" +
+              window.location.port +
+              "/topo_images/cube2.svg",
             color: "#F7F3EF",
           },
           {
             id: "4",
             comboId: "a",
             label: "shop_audit",
-            img: "http://localhost:9529/topo_images/cube.svg",
+            img:
+              "http://localhost:" +
+              window.location.port +
+              "/topo_images/cube.svg",
             color: "#E5F3F3",
           },
           {
             id: "5",
             comboId: "a",
             label: "shop_kafka",
-            img: "http://localhost:9529/topo_images/cube.svg",
+            img:
+              "http://localhost:" +
+              window.location.port +
+              "/topo_images/cube.svg",
             color: "#E5F3F3",
           },
           {
             id: "6",
             comboId: "a",
             label: "shop_order",
-            img: "http://localhost:9529/topo_images/cube.svg",
+            img:
+              "http://localhost:" +
+              window.location.port +
+              "/topo_images/cube.svg",
             color: "#E5F3F3",
           },
           {
             id: "7",
             label: "192.168.31.107:6379",
-            img: "http://localhost:9529/topo_images/data.svg",
+            img:
+              "http://localhost:" +
+              window.location.port +
+              "/topo_images/data.svg",
             color: "#E5F3F3",
           },
           {
             id: "8",
             label: "192.168.110.101:9092",
-            img: "http://localhost:9529/topo_images/kafka.svg",
+            img:
+              "http://localhost:" +
+              window.location.port +
+              "/topo_images/kafka.svg",
             color: "#E5F3F3",
           },
           {
             id: "9",
             label: "192.168.110.115:3306",
-            img: "http://localhost:9529/topo_images/mysql.svg",
+            img:
+              "http://localhost:" +
+              window.location.port +
+              "/topo_images/mysql.svg",
             color: "#F2EDF0",
           },
+          {
+            id: "10",
+            comboId: "b",
+            label: "bank1",
+            img:
+              "http://localhost:" +
+              window.location.port +
+              "/topo_images/cube.svg",
+            color: "#E5F3F3",
+          },
+          {
+            id: "11",
+            comboId: "b",
+            label: "bank1",
+            img:
+              "http://localhost:" +
+              window.location.port +
+              "/topo_images/cube.svg",
+            color: "#E5F3F3",
+          },
+          {
+            id: "12",
+            comboId: "b",
+            label: "bank1",
+            img:
+              "http://localhost:" +
+              window.location.port +
+              "/topo_images/cube.svg",
+            color: "#E5F3F3",
+          },
         ],
-        // 边
         edges: [
-          //! a-b
-          // {
-          //   // 边的起始节点
-          //   source: "a",
-          //   // 边的终止节点
-          //   target: "b",
-          //   // 边的标签，用于描述边的关系
-          //   label: "shopping ——> bank",
-          //   // 边的大小
-          //   size: 3,
-          //   // 标签的配置信息对象
-          //   labelCfg: {
-          //     autoRotate: true, // 标签是否自动旋转
-          //     style: {
-          //       stroke: "#fff", // 标签文字的边框颜色
-          //       lineWidth: 5, // 标签文字的边框线宽
-          //       fontSize: 20, // 标签文字的字号大小
-          //     },
-          //   },
-          //   // 边的样式配置信息对象
-          //   style: {
-          //     stroke: "#C3CED8", // 边的颜色，默认为空字符串表示使用默认颜色
-          //     arrow: true, // 是否显示箭头
-          //     endArrow: {
-          //       path: G6.Arrow.vee(), // 箭头的路径描述
-          //       d: 2, // 箭头的大小，默认为空，需填入具体数值
-          //     },
-          //   },
-          // },
-
           //! 1 --> 2
           {
             source: "1",
@@ -336,7 +370,7 @@ export default {
             source: "6",
             target: "7",
             // 边的大小
-            size: 6,
+            size: 10,
             // 标签的配置信息对象
             labelCfg: {
               autoRotate: true, // 标签是否自动旋转
@@ -487,8 +521,89 @@ export default {
             },
             curveOffset: -100, // 设置曲线偏移量为负值
           },
+
+          //! 6 --> 10
+          {
+            source: "6",
+            target: "10",
+            // 边的大小
+            size: 6,
+            // 标签的配置信息对象
+            labelCfg: {
+              autoRotate: true, // 标签是否自动旋转
+              style: {
+                stroke: "#fff", // 标签文字的边框颜色
+                lineWidth: 5, // 标签文字的边框线宽
+                fontSize: 20, // 标签文字的字号大小
+              },
+            },
+            // 边的样式配置信息对象
+            style: {
+              stroke: "#C3CED8", // 边的颜色，默认为空字符串表示使用默认颜色
+              arrow: true, // 是否显示箭头
+              endArrow: {
+                path: G6.Arrow.vee(), // 箭头的路径描述
+                d: 2, // 箭头的大小，默认为空，需填入具体数值
+              },
+            },
+            curveOffset: -100, // 设置曲线偏移量为负值
+          },
+
+          //! 10--> 11
+
+          {
+            source: "10",
+            target: "11",
+            // 边的大小
+            size: 6,
+            // 标签的配置信息对象
+            labelCfg: {
+              autoRotate: true, // 标签是否自动旋转
+              style: {
+                stroke: "#fff", // 标签文字的边框颜色
+                lineWidth: 5, // 标签文字的边框线宽
+                fontSize: 20, // 标签文字的字号大小
+              },
+            },
+            // 边的样式配置信息对象
+            style: {
+              stroke: "#C3CED8", // 边的颜色，默认为空字符串表示使用默认颜色
+              arrow: true, // 是否显示箭头
+              endArrow: {
+                path: G6.Arrow.vee(), // 箭头的路径描述
+                d: 2, // 箭头的大小，默认为空，需填入具体数值
+              },
+            },
+            curveOffset: -100, // 设置曲线偏移量为负值
+          },
+
+          //! 11 --> 12
+          {
+            source: "11",
+            target: "12",
+            // 边的大小
+            size: 6,
+            // 标签的配置信息对象
+            labelCfg: {
+              autoRotate: true, // 标签是否自动旋转
+              style: {
+                stroke: "#fff", // 标签文字的边框颜色
+                lineWidth: 5, // 标签文字的边框线宽
+                fontSize: 20, // 标签文字的字号大小
+              },
+            },
+            // 边的样式配置信息对象
+            style: {
+              stroke: "#C3CED8", // 边的颜色，默认为空字符串表示使用默认颜色
+              arrow: true, // 是否显示箭头
+              endArrow: {
+                path: G6.Arrow.vee(), // 箭头的路径描述
+                d: 2, // 箭头的大小，默认为空，需填入具体数值
+              },
+            },
+            curveOffset: -100, // 设置曲线偏移量为负值
+          },
         ],
-        // 分组
         combos: [
           {
             // 唯一的标志符，用来标识不同分组
@@ -497,39 +612,120 @@ export default {
             label: "animeter101/eoitek-shopping (5)",
             labelCfg: {
               style: {
-                fontSize: 30,
+                fontSize: 60,
               },
             },
             // 分组的宽度为200，高度为100
             size: [700, 700],
             // 分组样式
             style: {
-              lineDash: [10, 4], // 边框虚线样式，数组中的两个值分别表示虚线的线段长度和间隔长度
-              lineWidth: 4, // 边框线宽
+              lineDash: [50, 4], // 边框虚线样式，数组中的两个值分别表示虚线的线段长度和间隔长度
+              lineWidth: 12 ,// 边框线宽
               stroke: "#DEDEED", // 边框颜色
             },
             // 父级分组的标识符 分组之间的层级关系 a的父级分组是b
             // parentId: "b",
+            collapsed: false,
           },
           {
             id: "b",
             label: "animeter101/eoitek-bank (0)",
             labelCfg: {
               style: {
-                fontSize: 30,
+                fontSize: 60,
               },
             },
             // 分组的宽度为200，高度为100
-            size: [200, 200],
+            size: [300, 300],
             // 分组样式
             style: {
-              lineDash: [10, 4], // 边框虚线样式，数组中的两个值分别表示虚线的线段长度和间隔长度
-              lineWidth: 4, // 边框线宽
+              lineDash: [50, 4], // 边框虚线样式，数组中的两个值分别表示虚线的线段长度和间隔长度
+              lineWidth: 12, // 边框线宽
               stroke: "#8A8AE0", // 边框颜色
             },
+            collapsed: true,
           },
         ],
       };
+
+      // 提示框组件
+      const tooltip = new G6.Tooltip({
+        // 配置 Tooltip 相对于鼠标位置的偏移量，用于设置提示框的位置偏移，默认值是 (10, 10)
+        offsetX: 10,
+        offsetY: 10,
+        // 允许出现 tooltip 的 item 类型
+        itemTypes: ["node"],
+        // 自定义 tooltip 内容
+        getContent: (e) => {
+          const node_type = e.item.getType();
+          const node = e.item.getModel();
+          // console.log(e);
+          let comboTitle = "未分组";
+          if (node.comboId == "a") {
+            comboTitle = "animeter101/eoitek-shopping (5) / 未分组";
+          } else if (node.comboId == "b") {
+            comboTitle = "animeter101/eoitek-bank (0) / 未分组";
+          }
+          // console.log(node);
+          // 创建一个容器元素 outDiv，并设置其样式和内容
+          const outDiv = document.createElement("div");
+          // 设置容器宽度为内容适应宽度
+          outDiv.style.width = "fit-content";
+          outDiv.style.padding = "0";
+          // 使用 HTML 字符串构建 Tooltip 的内容
+          outDiv.innerHTML = `
+                <strong>${node.label}-${node.id}</strong> <br />
+                <span>${comboTitle}</span><br /><br />
+                <div> 请求数：219 </div>
+                <div> 错误率：219 </div>
+                <div> 平均响应时间：219
+                    <div id="chart-${node.id}" style="width: 200px; height: 100px;"></div>
+                </div>
+
+                <div>
+                    告警数：
+                    紧急:<span style="color:red">1</span><span /><span />
+                    严重:<span style="color:orange">0</span>
+                </div>
+                `;
+
+          // 获取包含折线图的元素，用于绘制折线图
+          const chartContainer = outDiv.querySelector(`#chart-${node.id}`);
+
+          // 基于准备好的 DOM，初始化 echarts 实例
+          const chart = echarts.init(chartContainer);
+
+          // 定义折线图数据
+          const data = {
+            categories: ["1", "2", "3", "4", "5", "6"],
+            series: [
+              {
+                name: "数据集",
+                type: "line",
+                data: [12, 19, 3, 5, 2, 3],
+              },
+            ],
+          };
+
+          // 配置折线图选项
+          const options = {
+            xAxis: {
+              type: "category",
+              data: data.categories,
+            },
+            yAxis: {
+              type: "value",
+            },
+            series: data.series,
+          };
+
+          // 使用刚指定的配置项和数据显示图表
+          chart.setOption(options);
+
+          // 返回 outDiv，作为 Tooltip 实例的内容
+          return outDiv;
+        },
+      });
 
       // 获取容器图形
       const container = document.getElementById("container");
@@ -557,7 +753,7 @@ export default {
           // nodeSpacing: (d) => 20,
           // center: [500, 500], // 可选，默认为图的中心
           linkDistance: 600, // 可选，边长
-          nodeStrength: 2000, // 可选
+          nodeStrength: 500, // 可选
           edgeStrength: 0.1, // 可选
           onTick: () => {
             // 可选
@@ -570,17 +766,20 @@ export default {
         },
         // 默认节点的样式，包括尺寸、填充色、描边线宽
         defaultNode: {
-          // type: "customNode",
-          type: "rect-jsx",
-          //   show: true,
-          //   type: "circle",
-          // },
-          size: 60,
+          className: "node", // 添加类名为 "node"
+          type: "img-jsx",
+          size: 100,
           color: "#5B8FF9",
-          // style: {
-          //   lineWidth: 2,
-          //   fill: "#C6E5FF",
-          // },
+          style: {
+            lineWidth: 2,
+            fill: "#C6E5FF",
+          },
+          nodeStateStyles: {
+            hover: {
+              // keyShape 的状态样式
+              fill: "#d3adf7",
+            },
+          },
           labelCfg: {
             position: "bottom", // 将标签文字放置在节点中心
             style: {
@@ -594,27 +793,105 @@ export default {
           size: 2,
           color: "orange",
           shape: "arrow", // 直线箭头
+          edgeSpacing: 50, // 边和边之间的间距
+        },
+        defaultCombo: {
+          style: {
+            comboSpacing: 40, // Combo 和 Combo 之间的间距
+          },
         },
         // 指定图的行为模式，默认模式: 拖拽组合、拖拽节点、拖拽画布、缩放画布
         modes: {
-          default: ["drag-combo", "drag-node", "drag-canvas", "zoom-canvas"],
+          default: [
+            "drag-combo",
+            "drag-node",
+            "drag-canvas",
+            "zoom-canvas",
+            {
+              type: "collapse-expand-combo",
+              trigger: "click",
+              relayout: false, // 收缩展开后，不重新布局
+            },
+          ],
         },
+        plugins: [tooltip],
       });
 
       // 将数据对象传入图形实例并且渲染图表
       graph.data(data);
 
-      // // 自定义节点位置
-      // graph.node((node) => {
-      //   return {
-      //     ...node,
-      //     x: 100, // 自定义 x 坐标
-      //     y: 200, // 自定义 y 坐标
-      //   };
-      // });
-
       graph.render();
 
+      graph.on("node:mouseenter", (evt) => {
+        console.log("enter");
+        graph.setItemState(evt.item, "hover", true);
+      });
+
+      graph.on("node:mouseleave", (evt) => {
+        console.log("leave");
+        graph.setItemState(evt.item, "hover", false);
+      });
+
+      // 添加节点的鼠标滑过效果
+      const nodes = graph.getNodes();
+
+      nodes.forEach((node) => {
+        const shape = node.getKeyShape();
+        console.log(shape);
+        shape.on("mouseenter", () => {
+          const group = shape.getParent();
+          const shadow = group.find(
+            (element) => element.get("className") === "node-shadow"
+          );
+
+          if (shadow) {
+            shadow.attr("shadowBlur", 10);
+            shadow.attr("shadowColor", "#ddd");
+          }
+        });
+
+        shape.on("mouseleave", () => {
+          const group = shape.getParent();
+          const shadow = group.find(
+            (element) => element.get("className") === "node-shadow"
+          );
+          if (shadow) {
+            shadow.attr("shadowBlur", 0);
+            shadow.attr("shadowColor", "");
+          }
+        });
+      });
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+.topo {
+  background-color: #fff;
+  // padding: 20px;
+  .topo-container {
+    padding: 10px;
+    height: 800px;
+    background-image: linear-gradient(#f4f4f4 1px, transparent 0),
+      linear-gradient(90deg, #f4f4f4 1px, transparent 0);
+    background-size: 10px 10px;
+    .topo-top {
+      height: 170px;
+      background-color: #fff;
+      border: 2px solid #c8c8c8;
+    }
+  }
+}
+
+.node:hover {
+  /* 设置:hover时的样式 */
+  background-color: lightblue;
+}
+</style>
+
+<style lang="">
+/* 
       // 监听节点拖拽事件
       graph.on("node:dragstart", (evt) => {
         const { item } = evt;
@@ -640,23 +917,73 @@ export default {
         // 获取最终节点位置
         const model = item.getModel();
         console.log("节点最终位置：", model.x, model.y);
-      });
-    },
-  },
-};
-</script>
+      }); */
 
-<style lang="scss" scoped>
-.topo {
-  // margin-top: 20px;
-  background-color: #fff;
-  // padding: 20px;
-  .topo-container {
-    padding: 10px;
-    height: 800px;
-    background-image: linear-gradient(#f4f4f4 1px, transparent 0),
-      linear-gradient(90deg, #f4f4f4 1px, transparent 0);
-    background-size: 6px 6px;
-  }
-}
+/* 自定义节点 */
+/* 
+
+            // 自定义节点
+      G6.registerNode("customNode", {
+        draw(cfg, group) {
+          console.log(cfg, group);
+          // 获取节点对应的文件夹路径
+          const folderPath = cfg.folderPath;
+
+          // 创建图像形状并设置样式
+          // const image = group.addShape("image", {
+          //   attrs: {
+          //     x: cfg.x - cfg.size / 2, // 根据节点位置和大小确定图像位置
+          //     y: cfg.y - cfg.size / 2,
+          //     width: cfg.size,
+          //     height: cfg.size,
+          //     img: folderPath, // 使用文件夹路径作为图像资源
+          //     // 其他样式属性...
+          //   },
+          // });
+
+          const image2 = group.addShape("image", {
+            attrs: {
+              // x: 0,
+              // y: 0,
+              // fill: "blue",
+              img: "http://localhost:"+window.location.port+"/topo_images/mysql.svg",
+            },
+            // 在 G6 3.3 及之后的版本中，必须指定 name，可以是任意字符串，但需要在同一个自定义元素类型中保持唯一性
+            name: "image-shape",
+          });
+
+          return image2;
+        }, */
+/* }); */
+
+/* 
+          //! a-b
+          {
+            // 边的起始节点
+            source: "a",
+            // 边的终止节点
+            target: "b",
+            // 边的标签，用于描述边的关系
+            label: "shopping ——> bank",
+            // 边的大小
+            size: 3,
+            // 标签的配置信息对象
+            labelCfg: {
+              autoRotate: true, // 标签是否自动旋转
+              style: {
+                stroke: "#fff", // 标签文字的边框颜色
+                lineWidth: 5, // 标签文字的边框线宽
+                fontSize: 20, // 标签文字的字号大小
+              },
+            },
+            // 边的样式配置信息对象
+            style: {
+              stroke: "#C3CED8", // 边的颜色，默认为空字符串表示使用默认颜色
+              arrow: true, // 是否显示箭头
+              endArrow: {
+                path: G6.Arrow.vee(), // 箭头的路径描述
+                d: 2, // 箭头的大小，默认为空，需填入具体数值
+              },
+            },
+          }, */
 </style>
