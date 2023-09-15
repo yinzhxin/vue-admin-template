@@ -1,16 +1,27 @@
 <template>
   <div class="navbar">
-    <hamburger
-      :is-active="sidebar.opened"
-      class="hamburger-container"
-      @toggleClick="toggleSideBar"
-    />
+    <div>
+      <hamburger
+        :is-active="sidebar.opened"
+        class="hamburger-container"
+        @toggleClick="toggleSideBar"
+      />
 
-    <breadcrumb class="breadcrumb-container" />
+      <breadcrumb class="breadcrumb-container" />
+    </div>
+
+    <div class="select">
+      <el-select
+        size="mini"
+        v-model="value1"
+        style="margin-left: 10px"
+      ></el-select>
+      <el-select size="mini" v-model="value1"></el-select>
+    </div>
 
     <div class="right-menu">
       <el-badge class="notice">
-        <i class="el-icon-search"></i>
+        <!-- <i class="el-icon-search"></i> -->
         <i class="el-icon-bell"></i>
       </el-badge>
 
@@ -46,6 +57,9 @@ export default {
     return {
       circleUrl:
         "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
+
+      value1: "",
+      value2: "",
     };
   },
   computed: {
@@ -67,7 +81,9 @@ export default {
 .navbar {
   height: 50px;
   overflow: hidden;
-  position: relative;
+  // position: relative;
+  display: flex;
+  justify-content: space-between;
   background: #fff;
   box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
 
@@ -116,12 +132,12 @@ export default {
     }
 
     .avatar-container {
-      margin-right: 20px;
+      margin-right: 10px;
 
       .avatar-wrapper {
         display: flex;
         align-items: center;
-        margin-top: 5px;
+        margin-top: 3px;
         position: relative;
         cursor: pointer;
 
@@ -151,13 +167,20 @@ export default {
     .notice {
       font-weight: 600;
       font-size: 25px;
-      top: -12px;
-      left: -12px;
+      top: -15px;
+      // left: -12px;
       cursor: pointer;
       & > *:first-child {
         margin-right: 10px;
       }
     }
+  }
+}
+
+::v-deep .select {
+  margin-top: 12px;
+  &:first-child {
+    margin-left: 10px;
   }
 }
 </style>

@@ -75,7 +75,7 @@ export default [
       {
         path: 'application',
         name: 'Application',
-        component: () => import('@/views/operImprove/application/index'), // Parent router-view
+        component: () => import('@/views/operImprove/application/index'),
         redirect: '/operImprove/application/overview',
         meta: { title: '应用运维' },
         children: [
@@ -184,24 +184,47 @@ export default [
   },
 
   // 服务拓扑
+  // {
+  //   path: '/serviceTopology',
+  //   name: 'Topology',
+  //   component: Layout,
+  //   redirect: '/serviceTopology/topology1',
+  //   meta: { title: '服务拓扑', icon: 'el-icon-connection' },
+  //   children: [
+  //     {
+  //       path: 'topology1',
+  //       name: 'Topology1',
+  //       component: () => import('@/views/serviceTopology/topology1/index'),
+  //       meta: { title: '拓扑图1' }
+  //     },
+  //     {
+  //       path: 'topology2',
+  //       name: 'Topology2',
+  //       component: () => import('@/views/serviceTopology/topology2/index'),
+  //       meta: { title: '拓扑图2' }
+  //     }
+  //   ]
+  // },
+
+  // 应用性能管理
   {
-    path: '/serviceTopology',
-    name: 'Topology',
+    path: '/performance',
+    name: 'performance',
     component: Layout,
-    redirect: '/serviceTopology/topology1',
-    meta: { title: '服务拓扑', icon: 'el-icon-connection' },
+    redirect: '/performance/serviceTopo',
+    meta: { title: '应用性能管理', icon: 'el-icon-connection' },
     children: [
       {
-        path: 'topology1',
-        name: 'Topology1',
-        component: () => import('@/views/serviceTopology/topology1/index'),
-        meta: { title: '拓扑图1' }
+        path: 'serviceTopo',
+        name: 'ServiceTopo',
+        component: () => import('@/views/performance/serviceTopo/index'),
+        meta: { title: '服务拓扑' }
       },
       {
-        path: 'topology2',
-        name: 'Topology2',
-        component: () => import('@/views/serviceTopology/topology2/index'),
-        meta: { title: '拓扑图2' }
+        path: 'linkTracing',
+        name: 'LinkTracing',
+        component: () => import('@/views/performance/linkTracing/index'),
+        meta: { title: '链路追踪' }
       }
     ]
   },

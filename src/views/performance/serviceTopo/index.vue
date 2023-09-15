@@ -1,12 +1,38 @@
 <template>
   <div class="dashboard-container">
+    <el-row :gutter="20" style="margin-bottom: 0px">
+      <el-col :span="24">
+        <div class="grid-content">
+          <el-form :inline="true" :model="formInline" ref="form">
+            <el-form-item label="">
+              <el-select v-model="formInline.region" placeholder="所属应用">
+                <el-option label="区域一" value="shanghai"></el-option>
+                <el-option label="区域二" value="beijing"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="">
+              <el-select v-model="formInline.region" placeholder="">
+                <el-option label="区域一" value="shanghai"></el-option>
+                <el-option label="区域二" value="beijing"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="onSubmit('form')">
+                搜索
+              </el-button>
+              <el-button class="clearBtn" @click="onSubmit">清空</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+      </el-col>
+    </el-row>
+
     <el-row :gutter="20">
       <el-col :span="24">
         <div class="topo">
           <div class="topo-container">
             <!-- 上半部分 -->
             <!-- <div class="topo-top"></div> -->
-
             <!-- 创建容器 -->
             <div id="container" style="background: #f6f9fc"></div>
           </div>
@@ -37,11 +63,15 @@ import * as echarts from "echarts";
 import G6 from "@antv/g6";
 
 export default {
-  name: "Topology1",
+  name: "ServiceTopo",
 
   data() {
     return {
       dialogVisible: false,
+      formInline: {
+        user: "",
+        region: "",
+      },
     };
   },
 
@@ -62,6 +92,16 @@ export default {
     open() {
       // this.initGraph2()
       this.dialogVisible = true;
+    },
+
+    onSubmit(ruleForm) {
+      this.$refs[ruleForm].validate((valid) => {
+        if (valid) {
+          return true;
+        } else {
+          return false;
+        }
+      });
     },
 
     initGraph() {
@@ -843,7 +883,7 @@ export default {
       // 获取容器图形
       const container = document.getElementById("container");
       const width = container.scrollWidth;
-      const height = container.scrollHeight || 780;
+      const height = container.scrollHeight || 675;
 
       // 创建图形实例
       const graph = new G6.Graph({
@@ -1004,7 +1044,6 @@ export default {
       //   });
       // });
     },
-
   },
 };
 </script>
@@ -1012,10 +1051,9 @@ export default {
 <style lang="scss" scoped>
 .topo {
   background-color: #fff;
-  // padding: 20px;
   .topo-container {
     padding: 10px;
-    height: 800px;
+    height: 700px;
     background-image: linear-gradient(#f4f4f4 1px, transparent 0),
       linear-gradient(90deg, #f4f4f4 1px, transparent 0);
     background-size: 10px 10px;
@@ -1027,10 +1065,17 @@ export default {
   }
 }
 
-.node:hover {
-  /* 设置:hover时的样式 */
-  background-color: lightblue;
+// 清除按钮点击后变色
+.clearBtn:mouseout {
+  /* 在鼠标移出时的样式 */
+  /* 例如，恢复默认背景颜色为白色 */
+  background-color: white;
 }
+// .clearBtn {
+//   // color: #409eff;
+//   // background: #ecf5ff;
+//   border-color: #b3d8ff;
+// }
 </style>
 
 <style lang="">
