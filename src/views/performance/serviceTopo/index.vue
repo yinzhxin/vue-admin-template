@@ -1,32 +1,44 @@
 <template>
   <div class="dashboard-container">
+    <!-- 表单 -->
     <el-row :gutter="20" style="margin-bottom: 0px">
       <el-col :span="24">
-        <div class="grid-content">
-          <el-form :inline="true" :model="formInline" ref="form">
-            <el-form-item label="">
-              <el-select v-model="formInline.region" placeholder="所属应用">
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="">
-              <el-select v-model="formInline.region" placeholder="">
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="onSubmit('form')">
-                搜索
-              </el-button>
-              <el-button class="clearBtn" @click="onSubmit">清空</el-button>
-            </el-form-item>
-          </el-form>
-        </div>
+        <el-form :inline="true" :model="form" ref="form">
+          <!-- 拓扑图/列表 -->
+          <el-form-item label="" style="margin-right: 10px">
+            <el-radio-group v-model="form.radio">
+              <el-radio-button label="list">列表</el-radio-button>
+              <el-radio-button label="topo">拓扑图</el-radio-button>
+            </el-radio-group>
+          </el-form-item>
+          <!-- 所属应用 -->
+          <el-form-item label="">
+            <el-select v-model="form.region" placeholder="所属应用">
+              <el-option label="区域一" value="shanghai"></el-option>
+              <el-option label="区域二" value="beijing"></el-option>
+            </el-select>
+          </el-form-item>
+          <!-- 所属服务 -->
+          <el-form-item label="">
+            <el-select v-model="form.region" placeholder="所属服务">
+              <el-option label="区域一" value="shanghai"></el-option>
+              <el-option label="区域二" value="beijing"></el-option>
+            </el-select>
+          </el-form-item>
+          <!-- 按钮 -->
+          <el-form-item>
+            <el-button type="primary" @click="onSubmit('form')">
+              搜索
+            </el-button>
+            <el-button class="clearBtn" @click="onSubmit('form')">
+              清空
+            </el-button>
+          </el-form-item>
+        </el-form>
       </el-col>
     </el-row>
 
+    <!-- 拓扑图 -->
     <el-row :gutter="20">
       <el-col :span="24">
         <div class="topo">
@@ -61,6 +73,7 @@
 <script>
 import * as echarts from "echarts";
 import G6 from "@antv/g6";
+import { nodes } from "./data.js";
 
 export default {
   name: "ServiceTopo",
@@ -68,7 +81,8 @@ export default {
   data() {
     return {
       dialogVisible: false,
-      formInline: {
+      form: {
+        radio: "topo",
         user: "",
         region: "",
       },
@@ -105,92 +119,6 @@ export default {
     },
 
     initGraph() {
-      // 自定义节点
-      let res = G6.registerNode("img-jsx", {
-        jsx: (cfg, group) => {
-          return `
-        <group style={{display: flex, flex-direction: column, align-items: center}} id="group">
-          <circle
-            style={{
-              stroke: ${cfg.color},
-              r: 100,
-              fill: '${cfg.color}',
-              marginLeft: 75,
-              cursor: 'pointer'
-            }}
-            cy="50%"
-            name="circle"
-            draggable="true"
-            >
-              <image
-                style={{
-                  img: ${cfg.img},
-                  width: 120,
-                  height: 120,
-                  marginLeft: 17,
-                  marginTop: -56,
-                  cursor: 'pointer'
-                }}
-                draggable="true"
-              />
-          </circle>
-
-          <text style={{
-            marginTop: -40,
-            marginLeft: -200,
-            fill: '#333',
-            fontSize: 45,
-            }}
-            y="50%"
-            dominant-baseline="middle"
-            text-anchor="middle"
-            draggable="true"
-          >
-          ${cfg.label}
-          </text>
-
-      </group>
-      `;
-        },
-        /**
-         * 绘制后的附加操作，默认没有任何操作
-         * @param  {Object} cfg combo 的配置项
-         * @param  {G.Group} group 图形分组，combo 中的图形对象的容器
-         */
-        afterDraw(cfg, group) {},
-        /**
-         * 更新 combo ，combo 文本
-         * @override
-         * @param  {Object} cfg combo 的配置项
-         * @param  {Combo} combo combo item
-         */
-        update(cfg, combo) {},
-        /**
-         * 更新 combo 后的操作，一般同 afterDraw 配合使用
-         * @override
-         * @param  {Object} cfg combo 的配置项
-         * @param  {Combo} combo combo item
-         */
-        afterUpdate(cfg, combo) {},
-        /**
-         * 设置 combo 的状态，主要是交互状态，业务状态请在 draw 方法中实现
-         * 单图形的 combo 仅考虑 selected、active 状态，有其他状态需求的用户自己复写这个方法
-         * @param  {String} name 状态名称
-         * @param  {Object} value 状态值
-         * @param  {Combo} combo combo item
-         */
-        setState(name, value, combo) {
-          console.log(name, value, combo);
-        },
-        /**
-         * 获取锚点（相关边的连入点）
-         * @param  {Object} cfg combo 的配置项
-         * @return {Array|null} 锚点（相关边的连入点）的数组,如果为 null，则没有锚点
-         */
-        getAnchorPoints(cfg) {},
-      });
-      // console.log(res);
-
       // 自定义事件 ==> G6.registerBehavior(behaviorName: string, behavior: BehaviorOption)
       // Behavior 代表了一种在图表上行为的特定方式，例如拖动、缩放、单击
       // 使用 G6.registerBehavior 方法来注册自定义行为，并在 getEvents() 方法中指定要绑定的事件类型及其对应的回调函数
@@ -245,127 +173,36 @@ export default {
         }
       );
 
+      nodes.forEach((node) => {
+        if (node.state === "1") {
+          node.color = "#F7F3EF";
+          node.stateStyles = {
+            hover: {
+              stroke: "#FFD270",
+            },
+          };
+        } else if (node.state === "2") {
+          node.color = "#E5F3F3";
+          node.stateStyles = {
+            hover: {
+              stroke: "#0FC7C1",
+            },
+          };
+        } else if (node.state === "3") {
+          node.color = "#F2EDF0";
+          node.stateStyles = {
+            hover: {
+              stroke: "#E37C81",
+            },
+          };
+        }
+      });
+
       // 数据对象，节点、边、分组数组
       const data = {
-        nodes: [
-          {
-            id: "1", // 节点的唯一标志符
-            comboId: "a", // 节点所属于的组合的标志符
-            label: "shop_gateway", // 标签文字
-            img:
-              "http://localhost:" +
-              window.location.port +
-              "/topo_images/cube2.svg",
-            color: "#F7F3EF",
-          },
-          {
-            id: "2",
-            comboId: "a",
-            label: "shop_auth",
-            img:
-              "http://localhost:" +
-              window.location.port +
-              "/topo_images/cube2.svg",
-            color: "#F7F3EF",
-          },
-          {
-            id: "3",
-            comboId: "a",
-            label: "shop_user",
-            img:
-              "http://localhost:" +
-              window.location.port +
-              "/topo_images/cube2.svg",
-            color: "#F7F3EF",
-          },
-          {
-            id: "4",
-            comboId: "a",
-            label: "shop_audit",
-            img:
-              "http://localhost:" +
-              window.location.port +
-              "/topo_images/cube.svg",
-            color: "#E5F3F3",
-          },
-          {
-            id: "5",
-            comboId: "a",
-            label: "shop_kafka",
-            img:
-              "http://localhost:" +
-              window.location.port +
-              "/topo_images/cube.svg",
-            color: "#E5F3F3",
-          },
-          {
-            id: "6",
-            comboId: "a",
-            label: "shop_order",
-            img:
-              "http://localhost:" +
-              window.location.port +
-              "/topo_images/cube.svg",
-            color: "#E5F3F3",
-          },
-          {
-            id: "7",
-            label: "192.168.31.107:6379",
-            img:
-              "http://localhost:" +
-              window.location.port +
-              "/topo_images/data.svg",
-            color: "#E5F3F3",
-          },
-          {
-            id: "8",
-            label: "192.168.110.101:9092",
-            img:
-              "http://localhost:" +
-              window.location.port +
-              "/topo_images/kafka.svg",
-            color: "#E5F3F3",
-          },
-          {
-            id: "9",
-            label: "192.168.110.115:3306",
-            img:
-              "http://localhost:" +
-              window.location.port +
-              "/topo_images/mysql.svg",
-            color: "#F2EDF0",
-          },
-          {
-            id: "10",
-            comboId: "b",
-            label: "bank1",
-            img:
-              "http://localhost:" +
-              window.location.port +
-              "/topo_images/cube.svg",
-            color: "#E5F3F3",
-          },
-          {
-            id: "11",
-            comboId: "b",
-            label: "bank1",
-            img:
-              "http://localhost:" +
-              window.location.port +
-              "/topo_images/cube.svg",
-            color: "#E5F3F3",
-          },
-          {
-            id: "12",
-            comboId: "b",
-            label: "bank1",
-            img:
-              "http://localhost:" +
-              window.location.port +
-              "/topo_images/cube.svg",
-            color: "#E5F3F3",
-          },
-        ],
+        // 节点对象属性：id是必须的
+        nodes,
+        // 边对象属性：target、source是必须的
         edges: [
           //! 1 --> 2
           {
@@ -735,6 +572,7 @@ export default {
             curveOffset: -100, // 设置曲线偏移量为负值
           },
         ],
+        // 分组对象属性
         combos: [
           {
             id: "a", // 唯一的标志符，标识不同分组
@@ -752,8 +590,26 @@ export default {
               stroke: "#DEDEED", // 边框颜色
             },
 
+            label: {
+              position: "bottom-right", // 图标位置
+              offset: [-10, 10], // 图标偏移量
+              style: {
+                fontSize: 24,
+                fill: "#1890FF",
+                cursor: "pointer",
+              },
+            },
+
             // parentId: "b",// 父级分组的标识符 分组之间的层级关系 a的父级分组是b
             collapsed: false, // 默认不折叠
+
+            linkPoints: {
+              top: true,
+              bottom: true,
+              left: true,
+              right: true,
+              // ... 四个圆的样式可以在这里指定
+            },
           },
           {
             id: "b",
@@ -853,32 +709,32 @@ export default {
         },
       });
 
-      const tooltip2 = new G6.Tooltip({
-        offsetX: 10,
-        offsetY: 10,
-        // v4.2.1 起支持配置 trigger，click 代表点击后出现 tooltip。默认为 mouseenter
-        trigger: "click",
-        // the types of items that allow the tooltip show up
-        // 允许出现 tooltip 的 item 类型
-        itemTypes: ["node", "edge"],
-        // custom the tooltip's content
-        // 自定义 tooltip 内容
-        getContent: (e) => {
-          const outDiv = document.createElement("div");
-          outDiv.style.width = "fit-content";
-          //outDiv.style.padding = '0px 0px 20px 0px';
-          outDiv.innerHTML = `
+      // const tooltip2 = new G6.Tooltip({
+      //   offsetX: 10,
+      //   offsetY: 10,
+      //   // v4.2.1 起支持配置 trigger，click 代表点击后出现 tooltip。默认为 mouseenter
+      //   trigger: "click",
+      //   // the types of items that allow the tooltip show up
+      //   // 允许出现 tooltip 的 item 类型
+      //   itemTypes: ["node", "edge"],
+      //   // custom the tooltip's content
+      //   // 自定义 tooltip 内容
+      //   getContent: (e) => {
+      //     const outDiv = document.createElement("div");
+      //     outDiv.style.width = "fit-content";
+      //     //outDiv.style.padding = '0px 0px 20px 0px';
+      //     outDiv.innerHTML = `
 
-      <h4>Custom Content</h4>
-      <ul>
-        <li>Type: ${e.item.getType()}</li>
-      </ul>
-      <ul>
-        <li>Label: ${e.item.getModel().label || e.item.getModel().id}</li>
-      </ul>`;
-          return outDiv;
-        },
-      });
+      // <h4>Custom Content</h4>
+      // <ul>
+      //   <li>Type: ${e.item.getType()}</li>
+      // </ul>
+      // <ul>
+      //   <li>Label: ${e.item.getModel().label || e.item.getModel().id}</li>
+      // </ul>`;
+      //     return outDiv;
+      //   },
+      // });
 
       // 获取容器图形
       const container = document.getElementById("container");
@@ -887,26 +743,28 @@ export default {
 
       // 创建图形实例
       const graph = new G6.Graph({
-        // 指定图形的容器
+        // 指定图形的容器--必须
         container: "container",
-        // 指定画布宽高
+        // 指定图形的宽高--必须
         width,
         height,
         // 使图形自适应容器大小
         fitView: true,
-        // 表示缩放时，图形和容器边界之间的最小距离
-        fitViewPadding: 0,
+        // 表示缩放时，图形和容器边界之间的最小距离，画布上四周的留白宽度
+        fitViewPadding: 0, //或者是数组[10,20,30,40]
+        fitCenter: true,
         // 设置图的最小缩放值，表示非常大的缩放比例即几乎不缩小
         minZoom: 0.00000001,
         // 布局算法配置对象
         layout: {
-          type: "comboForce", // comboForce力导向布局算法，用于对包含组合的图进行布局
+          type: "comboForce", // comboForce力导向布局，用于对包含组合的图进行布局，默认为random布局
           preventOverlap: true, // 防止节点重叠
+          // nodeSize: 30  // 节点大小，用于算法中防止节点重叠时的碰撞检测。由于已经在上一节的元素配置中设置了每个节点的 size 属性，则不需要在此设置 nodeSize
           groupByTypes: false, // 若希望在带有 combo 的图上，节点、边、combo 的层级符合常规逻辑，需要将 groupByTypes 设置为 false
           // nodeSpacing: (d) => 20, // 指定节点之间的最小空间距离为 8
           // center: [500, 500], // 可选，默认为图的中心
-          linkDistance: 700, // 可选，边长
-          nodeStrength: 500, // 可选
+          linkDistance: 200, // 布局时，边的距离长度
+          nodeStrength: 200, // 可选
           edgeStrength: 0.1, // 可选
           onTick: () => {
             // console.log("ticking可选");
@@ -915,37 +773,69 @@ export default {
             // console.log("combo force layout done 可选");
           },
         },
-        // 默认节点的样式: 尺寸、填充色、描边线宽
+        // !!!!!!!!!!!!!!!!!!!!实例化图时全局配置，使用 graph.node(nodeFn)配置 > 数据中动态配置 > 实例化图时全局配置
+        // 默认节点的样式: 尺寸、填充色、描边线宽，包括节点的一般属性和样式属性（style）
+        // 用户在实例化 Graph 时候可以通过 defaultNode 配置节点，这里的配置是全局的配置，将会在所有节点上生效
         defaultNode: {
-          className: "node", // 添加类名为 "node"
-          type: "img-jsx",
-          size: 100,
-          color: "#5B8FF9",
-          style: {
-            lineWidth: 2,
-            fill: "#C6E5FF",
-          },
-          nodeStateStyles: {
-            hover: {
-              // keyShape 的状态样式
-              fill: "#d3adf7",
-            },
-          },
+          /* node type, the priority is lower than the type in the node data */
+          type: "donut",
+          /* node size */
+          size: 60,
+          /* style for the keyShape */
+          // style: {
+          //   fill: '#9EC9FF',
+          //   stroke: '#5B8FF9',
+          //   lineWidth: 3,
+          // },
           labelCfg: {
-            position: "bottom", // 将标签文字放置在节点中心
-            style: {
-              fill: "red", // 设置标签文字颜色
-              fontSize: 18, // 设置标签文字大小
-            },
+            /* label's position, options: center, top, bottom, left, right */
+            position: "bottom",
+            /* label's offset to the keyShape, 4 by default */
+            //   offset: 12,
+            /* label's style */
+            //   style: {
+            //     fontSize: 20,
+            //     fill: '#ccc',
+            //     fontWeight: 500
+            //   }
+          },
+          /* configurations for four linkpoints */
+          // linkPoints: {
+          //   top: true,
+          //   right: true,
+          //   bottom: true,
+          //   left: true,
+          //   /* linkPoints' size, 8 by default */
+          //   //   size: 5,
+          //   /* linkPoints' style */
+          //   //   fill: '#ccc',
+          //   //   stroke: '#333',
+          //   //   lineWidth: 2,
+          // },
+          /* icon configuration */
+          icon: {
+            /* whether show the icon, false by default */
+            show: true,
+            /* icon's img address, string type */
+            img: "https://gw.alipayobjects.com/zos/basement_prod/012bcf4f-423b-4922-8c24-32a89f8c41ce.svg",
+            /* icon's size, 20 * 20 by default: */
+            //   width: 40,
+            //   height: 40
           },
         },
-        // 默认边的样式，包括尺寸、颜色s
+        // 默认边的样式：同上
         defaultEdge: {
           size: 2,
           color: "orange",
           shape: "arrow", // 直线箭头
-          edgeSpacing: 50, // 边和边之间的间距
+          edgeSpacing: 20, // 边和边之间的间距
+          autoRotate: true, // 边上的标签文本根据边的方向旋转
+          // 该边连入 source 点的第 1 个 anchorPoint，
+          sourceAnchor: 1,
+          // 该边连入 source 点的第 1 个 anchorPoint，
+          targetAnchor: 1,
         },
+        // 默认分组的样式：同上
         defaultCombo: {
           style: {
             comboSpacing: 40, // Combo 和 Combo 之间的间距
@@ -966,81 +856,167 @@ export default {
             },
           ],
         },
-        plugins: [tooltip, tooltip2],
+        // 插件
+        plugins: [tooltip],
+
+        // 节点不同状态下的样式集合
+        nodeStateStyles: {
+          // 鼠标 hover 上节点，即 hover 状态为 true 时的样式
+          // hover: {
+          //   stroke:"#0FC7C1  #FFD270  #E37C81"
+          // },
+          // 鼠标点击节点，即 click 状态为 true 时的样式
+          // click: {
+          //   stroke: "#000",
+          //   lineWidth: 3,
+          // },
+        },
+
+        // 边不同状态下的样式集合
+        edgeStateStyles: {
+          // 鼠标点击边，即 click 状态为 true 时的样式
+          click: {
+            stroke: "steelblue",
+          },
+        },
+
+        // 开启动画
+        animate: true,
       });
 
-      // 将数据对象传入图形实例并且渲染图表
+      graph.node((node) => {
+        console.log("node: ", node);
+        return {
+          /* node type, the priority is lower than the type in the node data */
+          type: "donut",
+
+          /* node size */
+          size: 100,
+
+          /* style for the keyShape */
+          style: {
+            fill: "#fff",
+            stroke: node.color,
+            lineWidth: 10,
+          },
+
+          labelCfg: {
+            /* label's position, options: center, top, bottom, left, right */
+            position: "bottom",
+            /* label's offset to the keyShape, 4 by default */
+            // offset: 12,
+            /* label's style */
+            style: {
+              fontSize: 25,
+              fill: "black",
+              fontWeight: 500,
+            },
+          },
+
+          /* configurations for four linkpoints */
+          // linkPoints: {
+          //   top: true,
+          //   right: true,
+          //   bottom: true,
+          //   left: true,
+          //   /* linkPoints' size, 8 by default */
+          //   size: 5,
+          //   /* linkPoints' style */
+          //   fill: "#ccc",
+          //   stroke: "#333",
+          //   lineWidth: 2,
+          // },
+
+          /* icon configuration */
+          icon: {
+            /* whether show the icon, false by default */
+            show: true,
+            /* icon's img address, string type */
+            img: node.img,
+            /* icon's size, 20 * 20 by default: */
+            width: 60,
+            height: 60,
+          },
+        };
+      });
+
+      // 将数据对象传入图形实例
       graph.data(data);
-
+      // 渲染图表
       graph.render();
+      // 在图实例 graph 上监听
+      // graph.on("元素类型:事件名", (e) => { });
 
-      // 事件
-      // graph.on("node:mouseenter", (evt) => {
-      //   console.log("enter");
-      //   graph.setItemState(evt.item, "hover", true);
+      // 鼠标进入节点
+      graph.on("node:mouseenter", (e) => {
+        const nodeItem = e.item; // 获取鼠标进入的节点元素对象
+        console.log(nodeItem);
+        graph.setItemState(nodeItem, "hover", true); // 设置当前节点的 hover 状态为 true
+      });
+
+      // 鼠标离开节点
+      graph.on("node:mouseleave", (e) => {
+        const nodeItem = e.item; // 获取鼠标离开的节点元素对象
+        graph.setItemState(nodeItem, "hover", false); // 设置当前节点的 hover 状态为 false
+      });
+
+      // 点击节点
+      // graph.on("node:click", (e) => {
+      //   // 先将所有当前是 click 状态的节点置为非 click 状态
+      //   const clickNodes = graph.findAllByState("node", "click");
+      //   clickNodes.forEach((cn) => {
+      //     graph.setItemState(cn, "click", false);
+      //   });
+      //   const nodeItem = e.item; // 获取被点击的节点元素对象
+      //   graph.setItemState(nodeItem, "click", true); // 设置当前节点的 click 状态为 true
       // });
 
-      // graph.on("node:mouseleave", (evt) => {
-      //   console.log("leave");
-      //   graph.setItemState(evt.item, "hover", false);
+      // 点击边
+      // graph.on("edge:click", (e) => {
+      //   // 先将所有当前是 click 状态的边置为非 click 状态
+      //   const clickEdges = graph.findAllByState("edge", "click");
+      //   clickEdges.forEach((ce) => {
+      //     graph.setItemState(ce, "click", false);
+      //   });
+      //   const edgeItem = e.item; // 获取被点击的边元素对象
+      //   graph.setItemState(edgeItem, "click", true); // 设置当前边的 click 状态为 true
       // });
 
       //  graph.getNodes() 方法用于获取图表中的所有节点。
       // 该方法返回一个包含图表中所有节点的数组。每个节点都是一个包含节点属性和状态的对象
-      const nodes = graph.getNodes();
-      console.log("node ==> ", nodes);
+      // const nodes = graph.getNodes();
+      // console.log("node ==> ", nodes);
 
-      nodes.forEach((item) => {
-        let res = item.getModel();
-        let res2 = res.style;
-        console.log(res2);
-      });
+      // nodes.forEach((item) => {
+      //   let res = item.getModel();
+      //   let res2 = res.style;
+      //   console.log(res2);
+      // });
 
-      nodes.forEach((node) => {
-        const shape = node.getKeyShape();
-        console.log(shape);
-        shape.on("mouseenter", () => {
-          const group = shape.getParent();
-          const shadow = group.find(
-            (element) => element.get("className") === "node-shadow"
-          );
+      // nodes.forEach((node) => {
+      //   const shape = node.getKeyShape();
+      //   console.log(shape);
+      //   shape.on("mouseenter", () => {
+      //     const group = shape.getParent();
+      //     const shadow = group.find(
+      //       (element) => element.get("className") === "node-shadow"
+      //     );
 
-          if (shadow) {
-            shadow.attr("shadowBlur", 10);
-            shadow.attr("shadowColor", "#ddd");
-          }
-        });
+      //     if (shadow) {
+      //       shadow.attr("shadowBlur", 10);
+      //       shadow.attr("shadowColor", "red");
+      //     }
+      //   });
 
-        shape.on("mouseleave", () => {
-          const group = shape.getParent();
-          const shadow = group.find(
-            (element) => element.get("className") === "node-shadow"
-          );
-          if (shadow) {
-            shadow.attr("shadowBlur", 0);
-            shadow.attr("shadowColor", "");
-          }
-        });
-      });
-
-      // graph.on("node:click", (evt) => {
-      //   const node = evt.item;
-      //   const model = node.getModel();
-
-      //   // 隐藏自定义的Tooltip
-      //   node.getComponent("customTooltip").hide();
-
-      //   // 显示另一个Tooltip
-      //   graph.showTooltip({
-      //     x: evt.x,
-      //     y: evt.y,
-      //     title: "点击的Tooltip",
-      //     items: [
-      //       {
-      //         name: "节点名称",
-      //         value: model.label,
-      //       },
-      //     ],
+      //   shape.on("mouseleave", () => {
+      //     const group = shape.getParent();
+      //     const shadow = group.find(
+      //       (element) => element.get("className") === "node-shadow"
+      //     );
+      //     if (shadow) {
+      //       shadow.attr("shadowBlur", 0);
+      //       shadow.attr("shadowColor", "");
+      //     }
       //   });
       // });
     },
@@ -1057,121 +1033,11 @@ export default {
     background-image: linear-gradient(#f4f4f4 1px, transparent 0),
       linear-gradient(90deg, #f4f4f4 1px, transparent 0);
     background-size: 10px 10px;
-    .topo-top {
-      height: 170px;
-      background-color: #fff;
-      border: 2px solid #c8c8c8;
-    }
+    // .topo-top {
+    //   height: 170px;
+    //   background-color: #fff;
+    //   border: 2px solid #c8c8c8;
+    // }
   }
 }
-
-// 清除按钮点击后变色
-.clearBtn:mouseout {
-  /* 在鼠标移出时的样式 */
-  /* 例如，恢复默认背景颜色为白色 */
-  background-color: white;
-}
-// .clearBtn {
-//   // color: #409eff;
-//   // background: #ecf5ff;
-//   border-color: #b3d8ff;
-// }
-</style>
-
-<style lang="">
-/* 
-      // 监听节点拖拽事件
-      graph.on("node:dragstart", (evt) => {
-        const { item } = evt;
-        // 获取拖拽节点的初始位置
-        const model = item.getModel();
-        console.log("节点初始位置：", model.x, model.y);
-      });
-
-      graph.on("node:drag", (evt) => {
-        const { item, dx, dy } = evt;
-        // 更新节点位置
-        const model = item.getModel();
-        graph.updateItem(item, {
-          x: model.x + dx,
-          y: model.y + dy,
-        });
-        // 获取更新后的节点位置
-        console.log("节点当前位置：", model.x + dx, model.y + dy);
-      });
-
-      graph.on("node:dragend", (evt) => {
-        const { item } = evt;
-        // 获取最终节点位置
-        const model = item.getModel();
-        console.log("节点最终位置：", model.x, model.y);
-      }); */
-
-/* 自定义节点 */
-/* 
-
-            // 自定义节点
-      G6.registerNode("customNode", {
-        draw(cfg, group) {
-          console.log(cfg, group);
-          // 获取节点对应的文件夹路径
-          const folderPath = cfg.folderPath;
-
-          // 创建图像形状并设置样式
-          // const image = group.addShape("image", {
-          //   attrs: {
-          //     x: cfg.x - cfg.size / 2, // 根据节点位置和大小确定图像位置
-          //     y: cfg.y - cfg.size / 2,
-          //     width: cfg.size,
-          //     height: cfg.size,
-          //     img: folderPath, // 使用文件夹路径作为图像资源
-          //     // 其他样式属性...
-          //   },
-          // });
-
-          const image2 = group.addShape("image", {
-            attrs: {
-              // x: 0,
-              // y: 0,
-              // fill: "blue",
-              img: "http://localhost:"+window.location.port+"/topo_images/mysql.svg",
-            },
-            // 在 G6 3.3 及之后的版本中，必须指定 name，可以是任意字符串，但需要在同一个自定义元素类型中保持唯一性
-            name: "image-shape",
-          });
-
-          return image2;
-        }, */
-/* }); */
-
-/* 
-          //! a-b
-          {
-            // 边的起始节点
-            source: "a",
-            // 边的终止节点
-            target: "b",
-            // 边的标签，用于描述边的关系
-            label: "shopping ——> bank",
-            // 边的大小
-            size: 3,
-            // 标签的配置信息对象
-            labelCfg: {
-              autoRotate: true, // 标签是否自动旋转
-              style: {
-                stroke: "#fff", // 标签文字的边框颜色
-                lineWidth: 5, // 标签文字的边框线宽
-                fontSize: 20, // 标签文字的字号大小
-              },
-            },
-            // 边的样式配置信息对象
-            style: {
-              stroke: "#999", // 边的颜色，默认为空字符串表示使用默认颜色
-              arrow: true, // 是否显示箭头
-              endArrow: {
-                path: G6.Arrow.vee(), // 箭头的路径描述
-                d: 2, // 箭头的大小，默认为空，需填入具体数值
-              },
-            },
-          }, */
 </style>
