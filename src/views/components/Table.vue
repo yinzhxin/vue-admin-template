@@ -5,7 +5,7 @@
     border
     stripe
     fit
-    :header-cell-style="{ backgroundColor: '#E8E8E9' }"
+    :header-cell-style="{ backgroundColor: '#eceff3', color: '#606266' }"
     :style="tableStyle"
     :data="tableData"
     :height="inTableHeight"
@@ -13,6 +13,7 @@
     @selection-change="selectionChange"
     @row-click="rowClick"
   >
+    <!-- :highlight-current-row="true" -->
     <!-- 选择框列 -->
     <el-table-column
       v-if="isShowSelect"
@@ -139,7 +140,7 @@ export default {
     // 表格自定义样式，默认宽度100%
     tableStyle: {
       type: Object,
-      default: () => ({ width: "100%" }),
+      default: () => ({ width: "100%" ,fontSize:"16px"}),
     },
 
     // 是否显示选择框列，默认不显示

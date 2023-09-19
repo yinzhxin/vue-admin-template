@@ -93,8 +93,6 @@ G6 中所有内置的元素样式详见 [内置节点](https://g6.antv.antgroup.
 
 
 
-
-
 ```
 该示例使用了内置 rect 节点，节点的 keyShape 是中间的 rect，
 其他 Shape 包括上下左右四个 circle 以及一个 text。
@@ -102,4 +100,130 @@ G6 中所有内置的元素样式详见 [内置节点](https://g6.antv.antgroup.
 
 该节点上的其他图形需要使用其他配置项进行配置。
 例如，上下左右四个 circle 的样式需要在 linkPoints 中配置，文本样式需要在 labelCfg 中配置。
+```
+
+
+
+
+
+````
+“chardata”:[{
+      	durdingTime:1,
+        pendingTime:94,
+        stayingTime:0
+      }]
+````
+
+
+
+```
+ {
+        id: "root",
+        label: "GET:/demo/{name}",
+        subText: "shop_user",
+        chartData: [
+          {
+            duringTime: 1,
+            pendingTime: 94,
+            stayingTime: 0,
+          },
+        ],
+        children: [
+          {
+            id: "root/1",
+            label: "balance/api/auth",
+            subText: "shop_user",
+            chartData: [
+              {
+                duringTime: 1,
+                pendingTime: 94,
+                stayingTime: 0,
+              },
+            ],
+
+          },
+        ],
+      },
+```
+
+
+
+
+
+````
+    // data: [
+          //   "connect/api/auth",
+          //   "letter/api/auth",
+          //   "com/api/auth",
+          //   "POST/api/auth",
+          //   "/api/auth",
+          //   "balance/api/auth",
+          //   "Kafka/api/auth",
+          //   "POST/api/auth",
+          //   "/api/auth",
+          //   "balance/api/auth",
+          //   "GET:/demo/{name}",
+          //   "balance/api/auth",
+          //   "/api/auth",
+          //   "POST/api/auth",
+          //   "balance/api/auth",
+          // ],
+````
+
+
+
+`````
+    if (node.depth === 0) {
+          node.style = {
+            fill: "#fff",
+            stroke: "#9A60B4",
+            lineWidth: 3,
+          };
+        } else if (node.depth === 1) {
+          node.style = {
+            fill: "#fff",
+            stroke: "#BE76DE",
+            lineWidth: 3,
+          };
+        } else if (node.depth === 2) {
+          node.style = {
+            fill: "#fff",
+            stroke: "#CF81F2",
+            lineWidth: 3,
+          };
+        } else if (node.depth === 3) {
+          node.style = {
+            fill: "#fff",
+            stroke: "#EA7CCC",
+            lineWidth: 3,
+          };
+        } else if (node.depth === 4) {
+          node.style = {
+            fill: "#fff",
+            stroke: "#EE8AF8",
+            lineWidth: 3,
+          };
+        }
+`````
+
+```
+else if (node.depth === 2 || node.depth === 5) {
+          node.style = {
+            fill: "#fff",
+            stroke: "#5470C6",
+            lineWidth: 3,
+          };
+        } else if (node.depth === 3 || node.depth === 6) {
+          node.style = {
+            fill: "#fff",
+            stroke: "#73C0DE",
+            lineWidth: 3,
+          };
+        } else if (node.depth === 4 || node.depth === 7 || node.depth === 10) {
+          node.style = {
+            fill: "#fff",
+            stroke: "#91CC75",
+            lineWidth: 3,
+          };
+        }
 ```

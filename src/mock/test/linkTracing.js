@@ -1,4 +1,7 @@
 import Mock from 'mockjs'
+import { v4 as uuidv4 } from 'uuid';
+import moment from 'moment';
+
 
 export const tableData = Mock.mock({
   'data|10': [{
@@ -8,7 +11,7 @@ export const tableData = Mock.mock({
     app: 'shop_user',
     'status|1': ['success', 'fail'],
     'time|1': ["0ms", "45ms", "30ms", "5ms"],
-    requestTime: '@date',
-    traceId: '@word'
+    requestTime: () => moment().format('YYYY-MM-DD HH:mm:ss'),
+    traceId: () => uuidv4()
   }]
 })
