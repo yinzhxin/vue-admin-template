@@ -8,8 +8,6 @@ import 'element-ui/lib/theme-chalk/index.css'
 import locale from 'element-ui/lib/locale/lang/zh-CN' // lang i18n 中文
 
 import '@/styles/index.scss' // global css
-// import '@styles/element-variables.scss'
-
 import App from './App'
 import store from './store'
 import router from './router'

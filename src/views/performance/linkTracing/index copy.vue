@@ -184,15 +184,7 @@
             <!-- 树状图表 -->
             <div id="container" style="height: 100%" />
             <!-- 柱状图 -->
-            <BarYChart
-              :height="'1000%'"
-              :width="'100%'"
-              :duringTime="duringTime"
-              :pendingTime="pendingTime"
-              :stayingTime="stayingTime"
-              :labelList="labelList"
-              :label="label"
-            />
+            <BarYChart :height="'1000%'" :width="'100%'" />
           </div>
         </el-tab-pane>
         <el-tab-pane label="Span列表" name="2"></el-tab-pane>
@@ -314,14 +306,6 @@ export default {
     return {
       graphData: data,
       graph: "",
-
-      // 柱状图数据
-      duringTime: [],
-      pendingTime: [],
-      stayingTime: [],
-      labelList: [],
-      label: [],
-
       dialogVisible: false,
       drawerVisible: false,
       drawerTitle: "",
@@ -423,22 +407,6 @@ export default {
           count: 1, // 总页数
         },
       },
-
-      // 颜色数组--12种
-      colorList: [
-        "#9A60B4",
-        "#BE76DE",
-        "#CF81F2",
-        "#EA7CCC",
-        "#EE8AF8",
-        "#3F48CC",
-        "#0094D4",
-        "#00A2E8",
-        "#00ABF5",
-        "#99D9EA",
-        "#22B14C",
-        "#B5E61D",
-      ],
     };
   },
 
@@ -466,63 +434,37 @@ export default {
 
     // 处理数据
     processData(data) {
-      const result = { label: [], chartData: [], labelList: [] };
+      const result = {
+        label: [],
+        chartData: [],
+      };
 
-      this.extractData(data, 0, result);
-      this.labelList = result.labelList;
-      this.label = result.label;
-      console.log(this.labelList);
+      this.extractData(data, result);
+
+      const duringTime = [];
+      const pendingTime = [];
+      const stayingTime = [];
 
       for (let i = 0; i < result.chartData.length; i++) {
         for (let j = 0; j < result.chartData[i].length; j++) {
-          this.duringTime.push(result.chartData[i][j].duringTime);
-          this.pendingTime.push(result.chartData[i][j].pendingTime);
-          this.stayingTime.push(result.chartData[i][j].stayingTime);
+          duringTime.push(result.chartData[i][j].duringTime);
+          pendingTime.push(result.chartData[i][j].pendingTime);
+          stayingTime.push(result.chartData[i][j].stayingTime);
         }
       }
     },
 
-    // // 递归
-    // extractData(obj, result) {
-    //   if (obj.hasOwnProperty("chartData") || obj.hasOwnProperty("label")) {
-    //     result.label.push(obj.label);
-    //     result.chartData.push(obj.chartData);
-    //   }
-
-    //   if (obj.hasOwnProperty("children") && Array.isArray(obj.children)) {
-    //     obj.children.forEach((child) => {
-    //       this.extractData(child, result);
-    //     });
-    //   }
-    // },
-
-    // // 递归遍历树节点并设置颜色
-    // setColor(obj, level) {
-    //   const color = this.colorList[level];
-    //   obj.color = color;
-    //   if (obj.children) {
-    //     for (const child of obj.children) {
-    //       this.setColor(child, level + 1);
-    //     }
-    //   }
-    //   return obj;
-    // },
-
-    // 递归遍历树节点并设置颜色和提取数据
-    extractData(obj, level, result) {
-      const color = this.colorList[level];
-      obj.color = color;
-
+    // 递归
+    extractData(obj, result) {
       if (obj.hasOwnProperty("chartData") || obj.hasOwnProperty("label")) {
-        result.labelList.push({ label: obj.label, color: obj.color });
         result.label.push(obj.label);
         result.chartData.push(obj.chartData);
       }
 
-      if (obj.children && Array.isArray(obj.children)) {
-        for (const child of obj.children) {
-          this.extractData(child, level + 1, result);
-        }
+      if (obj.hasOwnProperty("children") && Array.isArray(obj.children)) {
+        obj.children.forEach((child) => {
+          this.extractData(child, result);
+        });
       }
     },
 
@@ -537,6 +479,7 @@ export default {
 
     // 打开抽屉
     openDrawer() {
+      this.array = [];
       this.processData(this.graphData);
       this.$nextTick(() => {
         this.initGraph();
@@ -547,14 +490,16 @@ export default {
     // 关闭抽屉
     closeDrawer(done) {
       this.drawerVisible = false;
-      // this.graph.destroy(); // 销毁图形实体
-      this.graph.clear(); // 清除画布元素。
-      this.graphData = "";
+      // 销毁图形实体
+      // this.graph.destroy();
+      // 清除画布元素。
+      // 该方法一般用于清空数据源，重新设置数据源，重新 render 的场景，此时所有的图形都会被清除。
+      this.graph.clear();
     },
 
     // tab组件的切换函数
     handleClick(tab, event) {
-      // console.log(tab, event);
+      console.log(tab, event);
     },
 
     // 打开内部的抽屉组件
@@ -585,32 +530,38 @@ export default {
 
     // 初始化画布
     initGraph() {
+      // 自定义事件
       G6.registerBehavior("behaviorName", {
-        getEvents: () => ({ "node:click": "onClick" }),
-        onClick: (evt) => this.open(),
+        getEvents() {
+          return {
+            "node:click": "onClick",
+          };
+        },
+        onClick: (evt) => {
+          this.open();
+        },
       });
-
       const container = document.getElementById("container");
       const width = 350;
       const height = container.scrollHeight || 1000;
-
       console.log(width, height);
-
-      this.graph = new G6.TreeGraph({
+      const graph = new G6.TreeGraph({
         container: "container",
         width,
         height,
+        // 模式
         modes: {
-          default: ["behaviorName"],
+          default: ["behaviorName"], // 禁止拖拽和缩放
         },
+        // 全局配置节点
         defaultNode: {
           size: 10,
           anchorPoints: [
             [0.5, 0],
             [0.5, 1],
           ],
-          style: {},
         },
+        // 全局配置边
         defaultEdge: {
           type: "polyline",
           style: {
@@ -619,6 +570,7 @@ export default {
             lineWidth: 2,
           },
         },
+        // 布局
         layout: {
           type: "indented",
           direction: "H",
@@ -632,31 +584,123 @@ export default {
           getSide: (d) => {
             return "right";
           },
+          // fitView: true,
         },
       });
 
+      // type: "indented"：表示使用缩进布局，节点之间有缩进效果。
+      // direction: "H"：表示水平方向上的排列，即横向排列。
+      // indent: 20：表示节点之间的缩进距离为 20。
+      // getHeight: () => { return 25; }：用于定义节点的高度，此处指定了所有节点的高度为 25。
+      // getWidth: () => { return 8; }：用于定义节点的宽度，此处指定了所有节点的宽度为 8。
+      // getSide: (d) => { return "right"; }：根据节点数据 d 来确定节点的排列方向，此处指定了所有节点以右侧对齐方式排列。
+      // 这些值的大小代表了节点在布局中的尺寸。通过调整这些值，你可以控制节点之间的间距、排列方式和节点的大小。
+
+      // 例如，indent 的值决定了节点之间的缩进距离，getHeight 决定了节点的高度，getWidth 决定了节点的宽度
+
       // 动态配置节点
-      this.graph.node((node) => {
-        node.style = {
-          fill: "#fff",
-          stroke: node.color,
-          lineWidth: 3,
-        };
+      graph.node((node) => {
+        if (node.depth === 0) {
+          node.style = {
+            fill: "#fff",
+            stroke: "#9A60B4",
+            lineWidth: 3,
+          };
+        } else if (node.depth === 1) {
+          node.style = {
+            fill: "#fff",
+            stroke: "#BE76DE",
+            lineWidth: 3,
+          };
+        } else if (node.depth === 2) {
+          node.style = {
+            fill: "#fff",
+            stroke: "#CF81F2",
+            lineWidth: 3,
+          };
+        } else if (node.depth === 3) {
+          node.style = {
+            fill: "#fff",
+            stroke: "#EA7CCC",
+            lineWidth: 3,
+          };
+        } else if (node.depth === 4) {
+          node.style = {
+            fill: "#fff",
+            stroke: "#EE8AF8",
+            lineWidth: 3,
+          };
+        } else if (node.depth === 5) {
+          node.style = {
+            fill: "#fff",
+            stroke: "#3F48CC",
+            lineWidth: 3,
+          };
+        } else if (node.depth === 6) {
+          node.style = {
+            fill: "#fff",
+            stroke: "#0094D4",
+            lineWidth: 3,
+          };
+        } else if (node.depth === 7) {
+          node.style = {
+            fill: "#fff",
+            stroke: "#00A2E8",
+            lineWidth: 3,
+          };
+        } else if (node.depth === 8) {
+          node.style = {
+            fill: "#fff",
+            stroke: "#00ABF5",
+            lineWidth: 3,
+          };
+        } else if (node.depth === 9) {
+          node.style = {
+            fill: "#fff",
+            stroke: "#99D9EA",
+            lineWidth: 3,
+          };
+        } else if (node.depth === 10) {
+          node.style = {
+            fill: "#fff",
+            stroke: "#22B14C",
+            lineWidth: 3,
+          };
+        } else if (node.depth === 11) {
+          node.style = {
+            fill: "#fff",
+            stroke: "#B5E61D",
+            lineWidth: 3,
+          };
+        }
 
         return {
           label: node.label,
           labelCfg: {
             position: "right",
+            // offset: 5,
           },
         };
       });
 
       this.updateData(this.graphData);
       this.renderGraph();
-      // this.graph.fitView(0);
-      // this.graph.fitCenter();
-      // this.graph.zoom(1);
-      this.graph.translate(0, 45);
+      // graph.fitView(0);
+      // graph.fitCenter();
+      graph.translate(0, 45);
+      // graph.zoom(1);
+
+      this.graph = graph;
+      // console.log("graph ==> ", this.graph);
+
+      // //在拉取新数据重新渲染页面之前先获取点（0， 0）在画布上的位置
+      // const lastPoint = graph.getCanvasByPoint(0, 0);
+
+      // //获取重新渲染之后点（0， 0）在画布的位置
+      // const newPoint = graph.getCanvasByPoint(0, 0);
+
+      // //移动画布相对位移
+      // graph.translate(lastPoint.x - newPoint.x, lastPoint.y - newPoint.y);
     },
   },
 };

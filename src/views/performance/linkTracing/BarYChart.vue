@@ -29,9 +29,35 @@ export default {
         return [];
       },
     },
-    title: {
-      type: String,
-      default: "",
+    pendingTime: {
+      type: Array,
+      default: () => {
+        return [];
+      },
+    },
+    duringTime: {
+      type: Array,
+      default: () => {
+        return [];
+      },
+    },
+    stayingTime: {
+      type: Array,
+      default: () => {
+        return [];
+      },
+    },
+    labelList: {
+      type: Array,
+      default: () => {
+        return [];
+      },
+    },
+    label: {
+      type: Array,
+      default: () => {
+        return [];
+      },
     },
   },
 
@@ -74,6 +100,16 @@ export default {
           axisPointer: {
             type: "shadow",
           },
+          formatter: (params) => {
+            let seriesName = params[0].seriesName;
+            let dataName = params[0].name;
+            let value = params[0].value;
+            if (seriesName === "pendingTime") {
+              return dataName + ": " + value;
+            } else {
+              return;
+            }
+          },
         },
 
         grid: {
@@ -84,10 +120,13 @@ export default {
           containLabel: true,
           backgroundColor: "gray", // 设置柱子占据的背景色
         },
+
         xAxis: {
           type: "value",
           position: "top",
+          splitNumber: 9,
         },
+
         yAxis: {
           show: false,
           type: "category",
@@ -98,57 +137,42 @@ export default {
             },
           },
 
-          data: [
-            "GET:/demo/{name}",
-            "balance/api/auth",
-            "/api/auth",
-            "POST/api/auth",
-            "balance/api/auth",
-            "/api/auth",
-            "POST/api/auth",
-            "Kafka/api/auth",
-            "balance/api/auth",
-            "/api/auth",
-            "POST/api/auth",
-            "balance/api/auth",
-            "/api/auth",
-            "POST/api/auth",
-            "com/api/auth",
-            "letter/api/auth",
-            "connect/api/auth",
-          ],
+          data: this.label,
 
-          // reverse: true, // 反转 Y 轴坐标轴的顺序
-          inverse: true,
+          inverse: true, // 反转 Y 轴坐标轴的顺序
         },
+
         series: [
           {
+            data: this.duringTime,
             name: "duringTime",
             type: "bar",
-            barWidth: 10, // 设置柱子的粗细
-            borderRadius: 10,
             stack: "total",
-            label: {
-              // show: true,
-              show: false,
-            },
-            emphasis: {
-              focus: "series",
-            },
-            data: [
-              3, 4, 3, 5, 25, 15, 30, 20, 25, 29, 39, 33, 15, 2, 35, 2, 17,
-            ],
-            itemStyle: {
-              normal: {
-                color: "rgba(0,0,0,0)",
-              },
-            },
+            label: { show: false },
+            emphasis: { focus: "series" },
             showBackground: true,
+            itemStyle: {
+              normal: { color: "rgba(0,0,0,0)" },
+            },
           },
           {
+            data: this.stayingTime,
+            name: "stayingTime",
+            type: "bar",
+            stack: "total",
+            label: { show: false },
+            emphasis: { focus: "series" },
+            showBackground: true,
+            itemStyle: {
+              normal: { color: "rgba(0,0,0,0)" },
+            },
+          },
+          {
+            data: this.pendingTime,
             name: "pendingTime",
             type: "bar",
             stack: "total",
+            barWidth: 10, // 设置柱子的粗细
             label: {
               show: true,
               position: "top",
@@ -156,97 +180,22 @@ export default {
             emphasis: {
               focus: "series",
             },
-            data: [
-              78, 34, 3, 35, 5, 45, 10, 40, 30, 36, 11, 37, 15, 48, 25, 43, 33,
-            ],
+            showBackground: true,
             itemStyle: {
+              borderRadius: 5, // 统一设置四个角的圆角大小
               normal: {
                 color: (item) => {
-                  // console.log(item)
-                  const value = item.data; // 获取数据值
-                  const colorList = [
-                    "#9A60B4",
-                    "#BE76DE",
-                    "#CF81F2",
-                    "#EA7CCC",
-                    "#EE8AF8",
-                    "#3F48CC",
-                    "#0094D4",
-                    "#00A2E8",
-                    "#00ABF5",
-                    "#99D9EA",
-                    "#22B14C",
-                    "#B5E61D",
-                  ]; // 定义颜色列表
-                  if (value == 78) {
-                    return colorList[0];
-                  } else if (value == 34) {
-                    return colorList[1];
-                  } else if (value == 3) {
-                    return colorList[2];
-                  } else if (value == 35) {
-                    return colorList[3];
-                  } else if (value == 5) {
-                    return colorList[4];
-                  } else if (value == 45) {
-                    return colorList[5];
-                  } else if (value == 10) {
-                    return colorList[7];
-                  } else if (value == 40) {
-                    return colorList[8];
-                  } else if (value == 30) {
-                    return colorList[3];
-                  } else if (value == 36) {
-                    return colorList[4];
-                  } else if (value == 11) {
-                    return colorList[5];
-                  } else if (value == 37) {
-                    return colorList[6];
-                  } else if (value == 15) {
-                    return colorList[7];
-                  } else if (value == 15) {
-                    return colorList[7];
-                  } else if (value == 48) {
-                    return colorList[8];
-                  } else if (value == 25) {
-                    return colorList[9];
-                  } else if (value == 25) {
-                    return colorList[9];
-                  } else if (value == 43) {
-                    return colorList[10];
-                  } else {
-                    return colorList[10];
-                  }
+                  console.log(item);
+                  let res = this.labelList.filter((elem) => {
+                    console.log(elem.label);
+                    item.name == elem.label;
+                    return
+                  });
+                  // console.log(res)
+                  return res.color;
                 },
               },
-              borderRadius: 5, // 统一设置四个角的圆角大小
             },
-            showBackground: true,
-            backgroundStyle: {
-              opacity: 0.3,
-            },
-          },
-          {
-            name: "stayingTime",
-            type: "bar",
-            stack: "total",
-            label: {
-              // show: true,
-              show: false,
-            },
-            emphasis: {
-              focus: "series",
-            },
-            data: [
-              19, 62, 94, 60, 70, 40, 60, 40, 45, 35, 50, 30, 70, 50, 40, 55,
-              50,
-            ],
-            itemStyle: {
-              normal: {
-                color: "rgba(0,0,0,0)",
-              },
-            },
-            showBackground: true,
           },
         ],
         barGap: 1, // 减小数值以缩小柱状图之间的间距

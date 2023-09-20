@@ -11,17 +11,13 @@
     </div>
 
     <div class="select">
-      <el-select
-        size="mini"
-        v-model="value1"
-        style="margin-left: 10px"
-      ></el-select>
-      <el-select size="mini" v-model="value1"></el-select>
+      <el-select size="small" v-model="value1"></el-select>
+      <el-select size="small" v-model="value2"> </el-select>
+      <el-button size="small" icon="el-icon-refresh"></el-button>
     </div>
 
     <div class="right-menu">
       <el-badge class="notice">
-        <!-- <i class="el-icon-search"></i> -->
         <i class="el-icon-bell"></i>
       </el-badge>
 
@@ -58,7 +54,7 @@ export default {
       circleUrl:
         "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
 
-      value1: "",
+      value1: "animeter101/eoitek-shopping (5)",
       value2: "",
     };
   },
@@ -178,9 +174,10 @@ export default {
 }
 
 ::v-deep .select {
-  margin-top: 12px;
-  &:first-child {
-    margin-left: 10px;
+  display: flex;
+  align-items: center;
+  & > * {
+    margin-right: 10px;
   }
 }
 </style>

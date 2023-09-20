@@ -1,7 +1,7 @@
 export const data = {
   id: "root",
   label: "GET:/demo/{name}",
-  subText: "shop_user",
+  subLabel: "shop_user",
   chartData: [
     {
       duringTime: 3,
@@ -13,7 +13,7 @@ export const data = {
     {
       id: "root/1",
       label: "balance/api/auth",
-      subText: "shop_user",
+      subLabel: "shop_user",
       chartData: [
         {
           duringTime: 4,
@@ -25,7 +25,7 @@ export const data = {
         {
           id: "root/1/1",
           label: "/api/auth",
-          subText: "shop_user",
+          subLabel: "shop_user",
           chartData: [
             {
               duringTime: 0,
@@ -36,8 +36,8 @@ export const data = {
           children: [
             {
               id: "root/1/1/1",
-              label: "POST/api/auth",
-              subText: "shop_user",
+              label: "POST/api/auth22",
+              subLabel: "shop_user",
               status: "error",
               chartData: [
                 {
@@ -49,8 +49,8 @@ export const data = {
               children: [
                 {
                   id: "root/1/1/1/1",
-                  label: "balance/api/auth",
-                  subText: "shop_user",
+                  label: "balance/api/auth11",
+                  subLabel: "shop_user",
                   chartData: [
                     {
                       duringTime: 25,
@@ -61,8 +61,8 @@ export const data = {
                   children: [
                     {
                       id: "root/1/1/1/1/1",
-                      label: "/api/auth",
-                      subText: "shop_user",
+                      label: "/api/auth33",
+                      subLabel: "shop_user",
                       chartData: [
                         {
                           duringTime: 15,
@@ -73,8 +73,8 @@ export const data = {
                       children: [
                         {
                           id: "root/1/1/1/1/1/1",
-                          label: "POST/api/auth",
-                          subText: "shop_user",
+                          label: "POST/api/auth55",
+                          subLabel: "shop_user",
                           chartData: [
                             {
                               duringTime: 30,
@@ -85,8 +85,8 @@ export const data = {
                           children: [
                             {
                               id: "root/1/1/1/1/1/1/1",
-                              label: "Kafka/api/auth",
-                              subText: "shop_user",
+                              label: "Kafka/api/auth0",
+                              subLabel: "shop_user",
                               chartData: [
                                 {
                                   duringTime: 20,
@@ -105,8 +105,8 @@ export const data = {
             },
             {
               id: "root/1/1/2",
-              label: "balance/api/auth",
-              subText: "shop_user",
+              label: "balance/api/auth9",
+              subLabel: "shop_user",
               chartData: [
                 {
                   duringTime: 25,
@@ -117,8 +117,8 @@ export const data = {
               children: [
                 {
                   id: "root/1/1/2/1",
-                  label: "/api/auth",
-                  subText: "shop_user",
+                  label: "/api/auth8",
+                  subLabel: "shop_user",
                   chartData: [
                     {
                       duringTime: 30,
@@ -129,8 +129,8 @@ export const data = {
                   children: [
                     {
                       id: "root/1/1/2/1/1",
-                      label: "POST/api/auth",
-                      subText: "shop_user",
+                      label: "POST/api/auth7",
+                      subLabel: "shop_user",
                       chartData: [
                         {
                           duringTime: 40,
@@ -141,8 +141,8 @@ export const data = {
                       children: [
                         {
                           id: "root/1/1/2/1/1/1",
-                          label: "balance/api/auth",
-                          subText: "shop_user",
+                          label: "balance/api/auth6",
+                          subLabel: "shop_user",
                           chartData: [
                             {
                               duringTime: 35,
@@ -153,8 +153,8 @@ export const data = {
                           children: [
                             {
                               id: "root/1/1/2/1/1/1/1",
-                              label: "/api/auth",
-                              subText: "shop_user",
+                              label: "/api/auth1",
+                              subLabel: "shop_user",
                               chartData: [
                                 {
                                   duringTime: 15,
@@ -165,8 +165,8 @@ export const data = {
                               children: [
                                 {
                                   id: "root/1/1/2/1/1/1/1/1",
-                                  label: "POST/api/auth",
-                                  subText: "shop_user",
+                                  label: "POST/api/auth2",
+                                  subLabel: "shop_user",
                                   chartData: [
                                     {
                                       duringTime: 10,
@@ -177,8 +177,8 @@ export const data = {
                                   children: [
                                     {
                                       id: "root/1/1/2/1/1/1/1/1/1",
-                                      label: "com/api/auth",
-                                      subText: "shop_user",
+                                      label: "com/api/auth3",
+                                      subLabel: "shop_user",
                                       chartData: [
                                         {
                                           duringTime: 35,
@@ -189,8 +189,8 @@ export const data = {
                                       children: [
                                         {
                                           id: "root/1/1/2/1/1/1/1/1/1/1",
-                                          label: "letter/api/auth",
-                                          subText: "shop_user",
+                                          label: "letter/api/auth4",
+                                          subLabel: "shop_user",
                                           chartData: [
                                             {
                                               duringTime: 15,
@@ -201,8 +201,8 @@ export const data = {
                                         },
                                         {
                                           id: "root/1/1/2/1/1/1/1/1/1/2",
-                                          label: "connect/api/auth",
-                                          subText: "shop_user",
+                                          label: "connect/api/auth5",
+                                          subLabel: "shop_user",
                                           chartData: [
                                             {
                                               duringTime: 17,
