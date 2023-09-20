@@ -141,13 +141,16 @@
       <div class="tabText">
         <div style="margin-right: 80px; margin-bottom: 20px">
           <el-tag style="color: #0fc7c1">TraceID</el-tag>
+          dgvesvgw-fsdfgs4324-sdgsbh
         </div>
+        <br />
         <div style="margin-right: 80px; margin-bottom: 20px">
           请求时间：2023-10-10 20：13：45
         </div>
         <div style="margin-right: 80px; margin-bottom: 20px">
           状态：<el-tag type="danger">失败</el-tag>
         </div>
+        <br />
         <div style="margin-right: 80px; margin-bottom: 20px">
           总耗时：100 ms
         </div>
@@ -166,11 +169,10 @@
       </el-tabs>
 
       <div class="drawer-content">
-        <div
-          id="container"
-          style="height: 200%; width: 40%;"
-        />
-        <BarYChart :height="'100%'" :width="'100%'" />
+        <!-- 树状图表 -->
+        <div id="container" style="height: 1000px; width: 350px" />
+        <!-- 柱状图 -->
+        <BarYChart :height="'1000px'" :width="'100%'" />
       </div>
 
       <el-drawer
@@ -456,7 +458,10 @@ export default {
     // 关闭抽屉
     closeDrawer(done) {
       this.drawerVisible = false;
-      this.graph.destroy(); // 销毁图形实体
+      // 销毁图形实体
+      this.graph.destroy();
+      // 清除画布元素。该方法一般用于清空数据源，重新设置数据源，重新 render 的场景，此时所有的图形都会被清除。
+      // this.graph.clear();
     },
 
     // handleOpenDrawer() {
@@ -510,7 +515,7 @@ export default {
       });
 
       const container = document.getElementById("container");
-      const width =  600;
+      const width = 600;
       const height = container.scrollHeight || 2000;
       console.log(width, height);
       const graph = new G6.TreeGraph({
@@ -544,7 +549,7 @@ export default {
           direction: "H",
           indent: 20,
           getHeight: () => {
-            return 30;
+            return 25;
           },
           getWidth: () => {
             return 8;
@@ -643,9 +648,12 @@ export default {
       graph.data(this.data);
       graph.render();
       graph.fitView();
-      // graph.translate(0, 55);
+      graph.translate(0, 30);
+      graph.zoom(0.5);
+      // graph.updateViewport({ x: 0, y: 0 });
 
       this.graph = graph;
+      console.log("graph ==> ", this.graph);
     },
   },
 };
