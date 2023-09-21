@@ -312,8 +312,9 @@ export default {
   components: { Table, BarYChart },
   data() {
     return {
-      graphData: data,
+      graphData: "",
       graph: "",
+      isFirstRender: true,
 
       // 柱状图数据
       duringTime: [],
@@ -457,6 +458,8 @@ export default {
       console.error("Action:", e.action);
       console.error("Trigger:", e.trigger);
     });
+
+    this.isFirstRender = true;
   },
 
   methods: {
@@ -471,7 +474,7 @@ export default {
       this.extractData(data, 0, result);
       this.labelList = result.labelList;
       this.label = result.label;
-      console.log(this.labelList);
+      // console.log(this.labelList);
 
       for (let i = 0; i < result.chartData.length; i++) {
         for (let j = 0; j < result.chartData[i].length; j++) {
@@ -481,32 +484,6 @@ export default {
         }
       }
     },
-
-    // // 递归
-    // extractData(obj, result) {
-    //   if (obj.hasOwnProperty("chartData") || obj.hasOwnProperty("label")) {
-    //     result.label.push(obj.label);
-    //     result.chartData.push(obj.chartData);
-    //   }
-
-    //   if (obj.hasOwnProperty("children") && Array.isArray(obj.children)) {
-    //     obj.children.forEach((child) => {
-    //       this.extractData(child, result);
-    //     });
-    //   }
-    // },
-
-    // // 递归遍历树节点并设置颜色
-    // setColor(obj, level) {
-    //   const color = this.colorList[level];
-    //   obj.color = color;
-    //   if (obj.children) {
-    //     for (const child of obj.children) {
-    //       this.setColor(child, level + 1);
-    //     }
-    //   }
-    //   return obj;
-    // },
 
     // 递归遍历树节点并设置颜色和提取数据
     extractData(obj, level, result) {
@@ -537,6 +514,7 @@ export default {
 
     // 打开抽屉
     openDrawer() {
+      this.graphData = data;
       this.processData(this.graphData);
       this.$nextTick(() => {
         this.initGraph();
@@ -547,8 +525,13 @@ export default {
     // 关闭抽屉
     closeDrawer(done) {
       this.drawerVisible = false;
+      this.duringTime = [];
+      this.pendingTime = [];
+      this.stayingTime = [];
+      this.labelList = [];
+      this.label = [];
       // this.graph.destroy(); // 销毁图形实体
-      this.graph.clear(); // 清除画布元素。
+      // this.graph.clear(); // 清除画布元素。hnb
       this.graphData = "";
     },
 
@@ -652,11 +635,30 @@ export default {
       });
 
       this.updateData(this.graphData);
-      this.renderGraph();
+
+      if (this.isFirstRender == true) {
+        this.renderGraph();
+      }
+
+      this.isFirstRender = false;
       // this.graph.fitView(0);
       // this.graph.fitCenter();
       // this.graph.zoom(1);
       this.graph.translate(0, 45);
+
+      //在拉取新数据重新渲染页面之前先获取点（0， 0）在画布上的位置
+      const lastPoint = this.graph.getCanvasByPoint(0, 0);
+
+      //获取重新渲染之后点（0， 0）在画布的位置
+      const newPoint = this.graph.getCanvasByPoint(0, 0);
+
+      const res = this.graph.getZoom();
+
+      console.log(lastPoint, newPoint);
+      console.log(res);
+
+      //移动画布相对位移
+      // graph.translate(lastPoint.x - newPoint.x, lastPoint.y - newPoint.y);
     },
   },
 };
@@ -742,4 +744,32 @@ export default {
 .el-drawer.rtl {
   overflow: scroll;
 }
+</style>
+
+<style lang="">
+/* // // 递归
+    // extractData(obj, result) {
+    //   if (obj.hasOwnProperty("chartData") || obj.hasOwnProperty("label")) {
+    //     result.label.push(obj.label);
+    //     result.chartData.push(obj.chartData);
+    //   }
+
+    //   if (obj.hasOwnProperty("children") && Array.isArray(obj.children)) {
+    //     obj.children.forEach((child) => {
+    //       this.extractData(child, result);
+    //     });
+    //   }
+    // },
+
+    // // 递归遍历树节点并设置颜色
+    // setColor(obj, level) {
+    //   const color = this.colorList[level];
+    //   obj.color = color;
+    //   if (obj.children) {
+    //     for (const child of obj.children) {
+    //       this.setColor(child, level + 1);
+    //     }
+    //   }
+    //   return obj;
+    // }, */
 </style>
