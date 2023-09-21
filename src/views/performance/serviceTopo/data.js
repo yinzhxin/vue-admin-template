@@ -5,6 +5,79 @@ export const nodes = [
     label: "shop_gateway", // 节点的标签文字
     state: "1",// 状态 --> 显示颜色
     img: "http://localhost:" + window.location.port + "/topo_images/cube2.svg",
+    "serverSystem": "eoitek-shoping",
+    "serverSystemGroup": "未分组",
+    "requestNum": 130,
+    "requestGraph": [
+      {
+        "name": "10",
+        "value": "6:00"
+      },
+      {
+        "name": "20",
+        "value": "6:05"
+      },
+      {
+        "name": "30",
+        "value": "6:10"
+      },
+      {
+        "name": "10",
+        "value": "6:15"
+      },
+      {
+        "name": "0",
+        "value": "6:20"
+      }
+    ],
+    "errorRate": 23.07,
+    "errorGraph": [
+      {
+        "name": "0",
+        "value": "6:00"
+      },
+      {
+        "name": "0",
+        "value": "6:05"
+      },
+      {
+        "name": "0",
+        "value": "6:10"
+      },
+      {
+        "name": "20",
+        "value": "6:15"
+      },
+      {
+        "name": "10",
+        "value": "6:20"
+      }
+    ],
+    "responseTime": 53,
+    "responseGraph": [
+      {
+        "name": "0",
+        "value": "6:00"
+      },
+      {
+        "name": "0",
+        "value": "6:05"
+      },
+      {
+        "name": "0",
+        "value": "6:10"
+      },
+      {
+        "name": "62",
+        "value": "6:15"
+      },
+      {
+        "name": "53",
+        "value": "6:20"
+      }
+    ],
+    "urgentAlarmNum": 70,
+    "severeAlarmNum": 100
   },
   {
     id: "2",
@@ -12,6 +85,79 @@ export const nodes = [
     label: "shop_auth",
     state: "1",
     img: "http://localhost:" + window.location.port + "/topo_images/cube2.svg",
+    "serverSystem": "eoitek-shoping",
+    "serverSystemGroup": "未分组",
+    "requestNum": 130,
+    "requestGraph": [
+      {
+        "name": "0",
+        "value": "6:00"
+      },
+      {
+        "name": "0",
+        "value": "6:05"
+      },
+      {
+        "name": "0",
+        "value": "6:10"
+      },
+      {
+        "name": "100",
+        "value": "6:15"
+      },
+      {
+        "name": "30",
+        "value": "6:20"
+      }
+    ],
+    "errorRate": 23.07,
+    "errorGraph": [
+      {
+        "name": "0",
+        "value": "6:00"
+      },
+      {
+        "name": "0",
+        "value": "6:05"
+      },
+      {
+        "name": "0",
+        "value": "6:10"
+      },
+      {
+        "name": "20",
+        "value": "6:15"
+      },
+      {
+        "name": "10",
+        "value": "6:20"
+      }
+    ],
+    "responseTime": 53,
+    "responseGraph": [
+      {
+        "name": "0",
+        "value": "6:00"
+      },
+      {
+        "name": "0",
+        "value": "6:05"
+      },
+      {
+        "name": "0",
+        "value": "6:10"
+      },
+      {
+        "name": "62",
+        "value": "6:15"
+      },
+      {
+        "name": "53",
+        "value": "6:20"
+      }
+    ],
+    "urgentAlarmNum": 70,
+    "severeAlarmNum": 100
   },
   {
     id: "3",
@@ -19,6 +165,79 @@ export const nodes = [
     label: "shop_user",
     state: "1",
     img: "http://localhost:" + window.location.port + "/topo_images/cube2.svg",
+    "serverSystem": "eoitek-shoping",
+    "serverSystemGroup": "未分组",
+    "requestNum": 130,
+    "requestGraph": [
+      {
+        "name": "0",
+        "value": "6:00"
+      },
+      {
+        "name": "0",
+        "value": "6:05"
+      },
+      {
+        "name": "0",
+        "value": "6:10"
+      },
+      {
+        "name": "100",
+        "value": "6:15"
+      },
+      {
+        "name": "30",
+        "value": "6:20"
+      }
+    ],
+    "errorRate": 23.07,
+    "errorGraph": [
+      {
+        "name": "0",
+        "value": "6:00"
+      },
+      {
+        "name": "0",
+        "value": "6:05"
+      },
+      {
+        "name": "0",
+        "value": "6:10"
+      },
+      {
+        "name": "20",
+        "value": "6:15"
+      },
+      {
+        "name": "10",
+        "value": "6:20"
+      }
+    ],
+    "responseTime": 53,
+    "responseGraph": [
+      {
+        "name": "0",
+        "value": "6:00"
+      },
+      {
+        "name": "0",
+        "value": "6:05"
+      },
+      {
+        "name": "0",
+        "value": "6:10"
+      },
+      {
+        "name": "62",
+        "value": "6:15"
+      },
+      {
+        "name": "53",
+        "value": "6:20"
+      }
+    ],
+    "urgentAlarmNum": 70,
+    "severeAlarmNum": 100
   },
   {
     id: "4",
@@ -26,6 +245,79 @@ export const nodes = [
     label: "shop_audit",
     state: "2",
     img: "http://localhost:" + window.location.port + "/topo_images/cube.svg",
+    "serverSystem": "eoitek-shoping",
+    "serverSystemGroup": "未分组",
+    "requestNum": 130,
+    "requestGraph": [
+      {
+        "name": "0",
+        "value": "6:00"
+      },
+      {
+        "name": "0",
+        "value": "6:05"
+      },
+      {
+        "name": "0",
+        "value": "6:10"
+      },
+      {
+        "name": "100",
+        "value": "6:15"
+      },
+      {
+        "name": "30",
+        "value": "6:20"
+      }
+    ],
+    "errorRate": 23.07,
+    "errorGraph": [
+      {
+        "name": "0",
+        "value": "6:00"
+      },
+      {
+        "name": "0",
+        "value": "6:05"
+      },
+      {
+        "name": "0",
+        "value": "6:10"
+      },
+      {
+        "name": "20",
+        "value": "6:15"
+      },
+      {
+        "name": "10",
+        "value": "6:20"
+      }
+    ],
+    "responseTime": 53,
+    "responseGraph": [
+      {
+        "name": "0",
+        "value": "6:00"
+      },
+      {
+        "name": "0",
+        "value": "6:05"
+      },
+      {
+        "name": "0",
+        "value": "6:10"
+      },
+      {
+        "name": "62",
+        "value": "6:15"
+      },
+      {
+        "name": "53",
+        "value": "6:20"
+      }
+    ],
+    "urgentAlarmNum": 70,
+    "severeAlarmNum": 100
 
   },
   {
@@ -34,6 +326,79 @@ export const nodes = [
     label: "shop_kafka",
     state: "2",
     img: "http://localhost:" + window.location.port + "/topo_images/cube.svg",
+    "serverSystem": "eoitek-shoping",
+    "serverSystemGroup": "未分组",
+    "requestNum": 130,
+    "requestGraph": [
+      {
+        "name": "0",
+        "value": "6:00"
+      },
+      {
+        "name": "0",
+        "value": "6:05"
+      },
+      {
+        "name": "0",
+        "value": "6:10"
+      },
+      {
+        "name": "100",
+        "value": "6:15"
+      },
+      {
+        "name": "30",
+        "value": "6:20"
+      }
+    ],
+    "errorRate": 23.07,
+    "errorGraph": [
+      {
+        "name": "0",
+        "value": "6:00"
+      },
+      {
+        "name": "0",
+        "value": "6:05"
+      },
+      {
+        "name": "0",
+        "value": "6:10"
+      },
+      {
+        "name": "20",
+        "value": "6:15"
+      },
+      {
+        "name": "10",
+        "value": "6:20"
+      }
+    ],
+    "responseTime": 53,
+    "responseGraph": [
+      {
+        "name": "0",
+        "value": "6:00"
+      },
+      {
+        "name": "0",
+        "value": "6:05"
+      },
+      {
+        "name": "0",
+        "value": "6:10"
+      },
+      {
+        "name": "62",
+        "value": "6:15"
+      },
+      {
+        "name": "53",
+        "value": "6:20"
+      }
+    ],
+    "urgentAlarmNum": 70,
+    "severeAlarmNum": 100
   },
   {
     id: "6",
@@ -41,24 +406,316 @@ export const nodes = [
     label: "shop_order",
     state: "2",
     img: "http://localhost:" + window.location.port + "/topo_images/cube.svg",
+    "serverSystem": "eoitek-shoping",
+    "serverSystemGroup": "未分组",
+    "requestNum": 130,
+    "requestGraph": [
+      {
+        "name": "0",
+        "value": "6:00"
+      },
+      {
+        "name": "0",
+        "value": "6:05"
+      },
+      {
+        "name": "0",
+        "value": "6:10"
+      },
+      {
+        "name": "100",
+        "value": "6:15"
+      },
+      {
+        "name": "30",
+        "value": "6:20"
+      }
+    ],
+    "errorRate": 23.07,
+    "errorGraph": [
+      {
+        "name": "0",
+        "value": "6:00"
+      },
+      {
+        "name": "0",
+        "value": "6:05"
+      },
+      {
+        "name": "0",
+        "value": "6:10"
+      },
+      {
+        "name": "20",
+        "value": "6:15"
+      },
+      {
+        "name": "10",
+        "value": "6:20"
+      }
+    ],
+    "responseTime": 53,
+    "responseGraph": [
+      {
+        "name": "0",
+        "value": "6:00"
+      },
+      {
+        "name": "0",
+        "value": "6:05"
+      },
+      {
+        "name": "0",
+        "value": "6:10"
+      },
+      {
+        "name": "62",
+        "value": "6:15"
+      },
+      {
+        "name": "53",
+        "value": "6:20"
+      }
+    ],
+    "urgentAlarmNum": 70,
+    "severeAlarmNum": 100
   },
   {
     id: "7",
     label: "192.168.31.107:6379",
     state: "2",
     img: "http://localhost:" + window.location.port + "/topo_images/data.svg",
+    "serverSystem": "eoitek-shoping",
+    "serverSystemGroup": "未分组",
+    "requestNum": 130,
+    "requestGraph": [
+      {
+        "name": "0",
+        "value": "6:00"
+      },
+      {
+        "name": "0",
+        "value": "6:05"
+      },
+      {
+        "name": "0",
+        "value": "6:10"
+      },
+      {
+        "name": "100",
+        "value": "6:15"
+      },
+      {
+        "name": "30",
+        "value": "6:20"
+      }
+    ],
+    "errorRate": 23.07,
+    "errorGraph": [
+      {
+        "name": "0",
+        "value": "6:00"
+      },
+      {
+        "name": "0",
+        "value": "6:05"
+      },
+      {
+        "name": "0",
+        "value": "6:10"
+      },
+      {
+        "name": "20",
+        "value": "6:15"
+      },
+      {
+        "name": "10",
+        "value": "6:20"
+      }
+    ],
+    "responseTime": 53,
+    "responseGraph": [
+      {
+        "name": "0",
+        "value": "6:00"
+      },
+      {
+        "name": "0",
+        "value": "6:05"
+      },
+      {
+        "name": "0",
+        "value": "6:10"
+      },
+      {
+        "name": "62",
+        "value": "6:15"
+      },
+      {
+        "name": "53",
+        "value": "6:20"
+      }
+    ],
+    "urgentAlarmNum": 70,
+    "severeAlarmNum": 100
   },
   {
     id: "8",
     label: "192.168.110.101:9092",
     state: "2",
     img: "http://localhost:" + window.location.port + "/topo_images/kafka.svg",
+    "serverSystem": "eoitek-shoping",
+    "serverSystemGroup": "未分组",
+    "requestNum": 130,
+    "requestGraph": [
+      {
+        "name": "0",
+        "value": "6:00"
+      },
+      {
+        "name": "0",
+        "value": "6:05"
+      },
+      {
+        "name": "0",
+        "value": "6:10"
+      },
+      {
+        "name": "100",
+        "value": "6:15"
+      },
+      {
+        "name": "30",
+        "value": "6:20"
+      }
+    ],
+    "errorRate": 23.07,
+    "errorGraph": [
+      {
+        "name": "0",
+        "value": "6:00"
+      },
+      {
+        "name": "0",
+        "value": "6:05"
+      },
+      {
+        "name": "0",
+        "value": "6:10"
+      },
+      {
+        "name": "20",
+        "value": "6:15"
+      },
+      {
+        "name": "10",
+        "value": "6:20"
+      }
+    ],
+    "responseTime": 53,
+    "responseGraph": [
+      {
+        "name": "0",
+        "value": "6:00"
+      },
+      {
+        "name": "0",
+        "value": "6:05"
+      },
+      {
+        "name": "0",
+        "value": "6:10"
+      },
+      {
+        "name": "62",
+        "value": "6:15"
+      },
+      {
+        "name": "53",
+        "value": "6:20"
+      }
+    ],
+    "urgentAlarmNum": 70,
+    "severeAlarmNum": 100
   },
   {
     id: "9",
     label: "192.168.110.115:3306",
     state: "3",
     img: "http://localhost:" + window.location.port + "/topo_images/mysql.svg",
+    "serverSystem": "eoitek-shoping",
+    "serverSystemGroup": "未分组",
+    "requestNum": 130,
+    "requestGraph": [
+      {
+        "name": "0",
+        "value": "6:00"
+      },
+      {
+        "name": "0",
+        "value": "6:05"
+      },
+      {
+        "name": "0",
+        "value": "6:10"
+      },
+      {
+        "name": "100",
+        "value": "6:15"
+      },
+      {
+        "name": "30",
+        "value": "6:20"
+      }
+    ],
+    "errorRate": 23.07,
+    "errorGraph": [
+      {
+        "name": "0",
+        "value": "6:00"
+      },
+      {
+        "name": "0",
+        "value": "6:05"
+      },
+      {
+        "name": "0",
+        "value": "6:10"
+      },
+      {
+        "name": "20",
+        "value": "6:15"
+      },
+      {
+        "name": "10",
+        "value": "6:20"
+      }
+    ],
+    "responseTime": 53,
+    "responseGraph": [
+      {
+        "name": "0",
+        "value": "6:00"
+      },
+      {
+        "name": "0",
+        "value": "6:05"
+      },
+      {
+        "name": "0",
+        "value": "6:10"
+      },
+      {
+        "name": "62",
+        "value": "6:15"
+      },
+      {
+        "name": "53",
+        "value": "6:20"
+      }
+    ],
+    "urgentAlarmNum": 70,
+    "severeAlarmNum": 100
   },
   // {
   //   id: "10",

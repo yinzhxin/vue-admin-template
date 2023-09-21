@@ -11,9 +11,37 @@
     </div>
 
     <div class="select">
-      <el-select size="small" v-model="value1"></el-select>
-      <el-select size="small" v-model="value2"> </el-select>
-      <el-button size="small" icon="el-icon-refresh"></el-button>
+      <el-form inline v-model="form">
+        <el-form-item label="系统">
+          <el-select
+            v-model="form.project"
+            @focus="setMinWidthEmpty"
+            style="width: 100%"
+            clearable
+          >
+            <el-option
+              v-for="item in projectOption"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="1h">
+          <el-date-picker
+            v-model="form.time"
+            type="datetimerange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          >
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="">
+          <i class="el-icon-refresh" @click="handleRefresh"></i>
+        </el-form-item>
+      </el-form>
     </div>
 
     <div class="right-menu">
@@ -53,9 +81,20 @@ export default {
     return {
       circleUrl:
         "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
-
-      value1: "animeter101/eoitek-shopping (5)",
-      value2: "",
+      form: {
+        project: "animeter101/eoitek-shopping (5)",
+        time: "",
+      },
+      projectOption: [
+        {
+          value: "animeter101/eoitek-shopping (5)",
+          label: "animeter101/eoitek-shopping (5)",
+        },
+        {
+          value: "animeter101/eoitek-shopping (0)",
+          label: "animeter101/eoitek-shopping (0)",
+        },
+      ],
     };
   },
   computed: {
@@ -68,6 +107,18 @@ export default {
     async logout() {
       await this.$store.dispatch("user/logout");
       this.$router.push(`/login?redirect=${this.$route.fullPath}`);
+    },
+    setMinWidthEmpty(val) {
+      // 无数据的情况下，给请选择提示设置最小宽度
+      let domEmpty = document.getElementsByClassName(
+        "el-select-dropdown__empty"
+      );
+      if (domEmpty.length > 0) {
+        domEmpty[0].style["min-width"] = val.srcElement.clientWidth + 2 + "px";
+      }
+    },
+    handleRefresh() {
+      alert("刷新");
     },
   },
 };
@@ -167,7 +218,7 @@ export default {
       // left: -12px;
       cursor: pointer;
       & > *:first-child {
-        margin-right: 10px;
+        margin-right: -460px;
       }
     }
   }
@@ -177,7 +228,15 @@ export default {
   display: flex;
   align-items: center;
   & > * {
-    margin-right: 10px;
+    margin-right: -380px;
+    margin-top: 20px;
+  }
+  .el-icon-refresh {
+    font-size: 30px;
+    font-weight: 700;
+    vertical-align: middle;
+    cursor: pointer;
+    color: #0fc7c1;
   }
 }
 </style>

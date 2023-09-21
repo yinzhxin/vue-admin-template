@@ -183,18 +183,18 @@ export default {
               },
             },
           },
-          {
-            data: this.stayingTime,
-            name: "stayingTime",
-            type: "bar",
-            stack: "total",
-            label: { show: false },
-            emphasis: { focus: "series" },
-            showBackground: true,
-            itemStyle: {
-              normal: { color: "rgba(0,0,0,0)" },
-            },
-          },
+          // {
+          //   data: this.stayingTime,
+          //   name: "stayingTime",
+          //   type: "bar",
+          //   stack: "total",
+          //   label: { show: false },
+          //   emphasis: { focus: "series" },
+          //   showBackground: true,
+          //   itemStyle: {
+          //     normal: { color: "rgba(0,0,0,0)" },
+          //   },
+          // },
         ],
         barGap: 1, // 减小数值以缩小柱状图之间的间距
       };

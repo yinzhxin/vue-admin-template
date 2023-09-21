@@ -3,7 +3,7 @@
     <el-row :gutter="20" style="margin-bottom: 0px">
       <el-col :span="24">
         <el-form :inline="true" :model="form" ref="form">
-          <!-- TraceID -->
+          <!-- traceId -->
           <el-form-item label="">
             <el-input
               v-model="form.traceId"
@@ -11,16 +11,16 @@
               clearable
             />
           </el-form-item>
-          <!-- 所属应用，分组 -->
+          <!-- appId -->
           <el-form-item label="">
             <el-select
-              v-model="form.group"
+              v-model="form.appId"
               placeholder="所属应用"
               multiple
               clearable
             >
               <el-option
-                v-for="item in appSelection"
+                v-for="item in appList"
                 :key="item.label"
                 :label="item.label"
                 :value="item.value"
@@ -30,7 +30,7 @@
           <!-- 所属服务 -->
           <el-form-item label="">
             <el-select
-              v-model="form.group2"
+              v-model="form.serverId"
               placeholder="所属服务"
               multiple
               clearable
@@ -43,48 +43,52 @@
               />
             </el-select>
           </el-form-item>
-          <!-- ndpoint 名称 -->
+          <!-- Endpoint 名称 -->
           <el-form-item label="">
             <el-select
-              v-model="form.ndpoint"
-              placeholder="ndpoint 名称"
+              v-model="form.Endpoint"
+              placeholder="Endpoint 名称"
               multiple
               clearable
             >
               <el-option
-                v-for="item in ndpointSelection"
+                v-for="item in EndpointSelection"
                 :key="item.label"
                 :label="item.label"
                 :value="item.value"
               />
             </el-select>
           </el-form-item>
-          <!-- 实例名称 -->
+          <!-- instanceId -->
           <el-form-item label="">
             <el-select
-              v-model="form.instance"
+              v-model="form.instanceId"
               placeholder="实例名称"
               multiple
               clearable
             >
               <el-option
-                v-for="item in instanceSelection"
+                v-for="item in instanceList"
                 :key="item.label"
                 :label="item.label"
                 :value="item.value"
               />
             </el-select>
           </el-form-item>
-          <!-- 状态：成功/失败 -->
+          <!-- status：成功1/失败0 -->
           <el-form-item label="">
             <el-select v-model="form.status" placeholder="请求状态" clearable>
-              <el-option label="成功" value="success"></el-option>
-              <el-option label="失败" value="fail"></el-option>
+              <el-option label="成功" value="1"></el-option>
+              <el-option label="失败" value="0"></el-option>
             </el-select>
           </el-form-item>
-          <!-- 总耗时 -->
+          <!-- spendTime -->
           <el-form-item label="">
-            <el-input v-model="form.time" placeholder="请输入" clearable />
+            <el-input
+              v-model="form.spendTime"
+              placeholder="请输入总耗时"
+              clearable
+            />
           </el-form-item>
           <!-- 按钮：搜索/清空 -->
           <el-form-item>
@@ -173,7 +177,7 @@
           <div>深度：{{ "17" }}</div>
         </div>
         <div>
-          <div style="margin-bottom: 20px">总耗时：{{ rowObj.time }}</div>
+          <div style="margin-bottom: 20px">总耗时：{{ rowObj.spendTime }}</div>
           <div style="height: 30px"></div>
         </div>
       </div>
@@ -182,10 +186,12 @@
         <el-tab-pane label="树形" name="1">
           <div class="drawer-content">
             <!-- 树状图表 -->
-            <div id="container" style="height: 100%" />
+            <!-- <div id="container-wrapper" ref="containerWrapper"> -->
+            <div id="container" ref="container" />
+            <!-- </div> -->
             <!-- 柱状图 -->
             <BarYChart
-              :height="'1000%'"
+              :height="'125%'"
               :width="'100%'"
               :duringTime="duringTime"
               :pendingTime="pendingTime"
@@ -307,14 +313,19 @@ import { tableData } from "@/mock/linkTracing";
 import { data } from "./data.js";
 import Clipboard from "clipboard";
 
+// import { getAppList, getProjectList, getTraceList } from "@/api/link";
+
 export default {
   name: "LinkTracing",
   components: { Table, BarYChart },
   data() {
     return {
+      serverId: "",
       graphData: "",
       graph: "",
       isFirstRender: true,
+      canvasWidth: 0, // 画布宽度
+      canvasHeight: 0, // 画布高度
 
       // 柱状图数据
       duringTime: [],
@@ -331,50 +342,51 @@ export default {
       spanRadio: "all",
       rowObj: "",
       form: {
+        serverId: [],
+        Endpoint: "",
         traceId: "",
-        app: "no",
-        server: "shop_user",
-        ndpoint: "",
-        instance: "",
-        status: "fail",
-        time: "",
+        appId: ["no"],
+        instanceId: "",
+        status: "",
+        spendTime: "",
       },
 
-      // 所属应用
-      appSelection: [
+      // !所属应用
+      appList: [
         { label: "未分组", value: "no" },
         { label: "aaa", value: "aaa" },
         { label: "bbb", value: "bbb" },
         { label: "ccc", value: "ccc" },
       ],
+      // !实例名称
+      instanceList: [
+        { label: "aaa", value: "aaa" },
+        { label: "bbb", value: "bbb" },
+        { label: "ccc", value: "ccc" },
+        { label: "ddd", value: "ddd" },
+      ],
       // 所属服务
       serverSelection: [
         { label: "未服务", value: "no" },
-        { label: "shop_user", value: "shop_user" },
+        { label: "shop_aaa", value: "shop_aaa" },
         { label: "shop_xxx", value: "shop_xxx" },
         { label: "shop_yyy", value: "shop_yyy" },
       ],
-      // ndpoint 名称
-      ndpointSelection: [
+      // Endpoint 名称
+      EndpointSelection: [
         { label: "aaa", value: "aaa" },
         { label: "bbb", value: "bbb" },
         { label: "ccc", value: "ccc" },
         { label: "ddd", value: "ddd" },
       ],
-      // 实例名称
-      instanceSelection: [
-        { label: "aaa", value: "aaa" },
-        { label: "bbb", value: "bbb" },
-        { label: "ccc", value: "ccc" },
-        { label: "ddd", value: "ddd" },
-      ],
+
       // 表格数据
       table: {
         tableData: tableData.data,
         columns: [
           {
-            label: "ndpoint 名称",
-            index: "ndpoint",
+            label: "Endpoint 名称",
+            index: "Endpoint",
             render(h, data) {
               return (
                 <div style="cursor:pointer">
@@ -383,7 +395,7 @@ export default {
                   ) : (
                     <span> </span>
                   )}
-                  {data.row.ndpoint}
+                  {data.row.Endpoint}
                 </div>
               );
             },
@@ -414,7 +426,7 @@ export default {
               );
             },
           },
-          { label: "耗时", index: "time", sortable: true },
+          { label: "耗时", index: "spendTime", sortable: true },
           { label: "请求时间", index: "requestTime", sortable: true },
           { label: "TraceID", index: "traceId" },
         ],
@@ -444,22 +456,23 @@ export default {
   },
 
   mounted() {
-    var clipboard = new Clipboard(".el-icon-document-copy");
-
-    clipboard.on("success", function (e) {
-      console.info("Action:", e.action);
-      console.info("Text:", e.text);
-      console.info("Trigger:", e.trigger);
-
-      e.clearSelection();
-    });
-
-    clipboard.on("error", function (e) {
-      console.error("Action:", e.action);
-      console.error("Trigger:", e.trigger);
-    });
-
+    this.serverId = this.$route.query.serverId;
+    // console.log(this.serverId);
+    this.form.serverId.push(this.serverId);
     this.isFirstRender = true;
+
+    // var clipboard = new Clipboard(".el-icon-document-copy");
+    // clipboard.on("success", function (e) {
+    //   console.info("Action:", e.action);
+    //   console.info("Text:", e.text);
+    //   console.info("Trigger:", e.trigger);
+
+    //   e.clearSelection();
+    // });
+    // clipboard.on("error", function (e) {
+    //   console.error("Action:", e.action);
+    //   console.error("Trigger:", e.trigger);
+    // });
   },
 
   methods: {
@@ -518,6 +531,7 @@ export default {
       this.processData(this.graphData);
       this.$nextTick(() => {
         this.initGraph();
+        // this.initSize();
       });
       this.drawerVisible = true;
     },
@@ -566,6 +580,23 @@ export default {
       this.graph.render();
     },
 
+    // 浏览器窗口发生变化时，画布自适应窗口大小
+    initSize() {
+      const self = this; // 因为箭头函数会改变this指向，指向windows。所以先把this保存
+      setTimeout(() => {
+        // todo 浏览器窗口发生变化时
+        window.onresize = function () {
+          // todo 获取div parentContent 的宽度和高度
+          this.canvasWidth = self.$refs.containerWrapper.clientWidth;
+          this.canvasHeight = self.$refs.containerWrapper.clientHeight;
+          // todo 修改画布的大小
+          self.graph.changeSize(this.canvasWidth, this.canvasHeight);
+          // todo 将图移动到画布中心位置
+          self.graph.fitCenter();
+        };
+      }, 20);
+    },
+
     // 初始化画布
     initGraph() {
       G6.registerBehavior("behaviorName", {
@@ -575,7 +606,7 @@ export default {
 
       const container = document.getElementById("container");
       const width = 350;
-      const height = container.scrollHeight || 1000;
+      const height = container.scrollHeight * 2 || 1000;
 
       console.log(width, height);
 
@@ -637,6 +668,7 @@ export default {
       this.updateData(this.graphData);
 
       if (this.isFirstRender == true) {
+        console.log(this.isFirstRender);
         this.renderGraph();
       }
 
@@ -711,8 +743,9 @@ export default {
 
 /* 树状和柱状的父容器样式 */
 .drawer-content {
-  height: 100%;
+  height: 100vh;
   display: flex;
+  overflow-y: scroll;
 }
 
 /* 按钮样式 */
@@ -737,13 +770,23 @@ export default {
   padding: 0px 20px 0;
   margin-bottom: 0;
 }
+
+#container-wrapper {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
 </style>
 
 <style>
 /* 抽屉样式 增加滚轮 */
-.el-drawer.rtl {
+/* .el-drawer.rtl {
   overflow: scroll;
-}
+} */
 </style>
 
 <style lang="">

@@ -6,7 +6,7 @@
         <el-form :inline="true" :model="form" ref="form">
           <!-- 拓扑图/列表 -->
           <el-form-item label="" style="margin-right: 10px">
-            <el-radio-group v-model="form.radio">
+            <el-radio-group v-model="form.radio" @change="handleChange">
               <el-radio-button label="list">
                 <i class="el-icon-tickets"></i>
                 列表
@@ -20,33 +20,33 @@
           <!-- 所属应用 -->
           <el-form-item label="">
             <el-select
-              v-model="form.region1"
+              v-model="form.app"
               placeholder="所属应用"
               multiple
               clearable
             >
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
+              <el-option label="app1" value="app1"></el-option>
+              <el-option label="app2" value="app2"></el-option>
             </el-select>
           </el-form-item>
           <!-- 所属服务 -->
           <el-form-item label="">
             <el-select
-              v-model="form.region2"
+              v-model="form.server"
               placeholder="所属服务"
               multiple
               clearable
             >
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
+              <el-option label="server1" value="server1"></el-option>
+              <el-option label="server1" value="server1"></el-option>
             </el-select>
           </el-form-item>
           <!-- 按钮 -->
           <el-form-item>
-            <el-button type="primary" @click="onSubmit('form')">
+            <el-button type="primary" @click="handleSearch('form')">
               搜索
             </el-button>
-            <el-button class="clearBtn" @click="onSubmit('form')">
+            <el-button class="clearBtn" @click="handleClear('form')">
               清空
             </el-button>
           </el-form-item>
@@ -56,21 +56,31 @@
           <i class="el-icon-back toTotalTopo" @click="handleBack">
             返回总拓扑图
           </i>
-          <el-select v-model="toTotalTopo" multiple clearable>
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
+          <el-select v-model="toTotalTopo" @click="handleChangeserverId">
+            <el-option
+              v-for="item in serverIdOption"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
           </el-select>
         </div>
       </el-col>
     </el-row>
 
-    <!-- 拓扑图 -->
+    <!-- 拓扑图 / 列表 -->
     <el-row :gutter="20">
       <el-col :span="24">
         <div class="topo">
-          <div class="topo-container">
+          <div class="topo-container" v-if="form.radio == 'topo'">
             <!-- 创建容器 -->
-            <div id="container" style="background: #f6f9fc"></div>
+            <div id="container"></div>
+          </div>
+
+          <div class="topo-container" v-if="form.radio == 'list'">
+            <!-- 列表 -->
+            <h1>LIST</h1>
           </div>
         </div>
       </el-col>
@@ -89,12 +99,13 @@ export default {
   data() {
     return {
       form: {
-        radio: "topo",
-        region1: "",
-        region2: "",
+        radio: "topo", // 默认拓扑图
+        app: "",
+        server: "",
       },
 
       toTotalTopo: "", // 返回总拓扑图右边的选框
+      serverIdOption: "",
       isTotalTopo: true,
 
       graph: null, // 图表实例
@@ -104,6 +115,13 @@ export default {
   },
 
   mounted() {
+    this.serverIdOption = nodes.map((item) => {
+      return {
+        label: item.label,
+        value: item.label,
+      };
+    });
+    // console.log(this.serverIdOption);
     this.initGraph();
   },
 
@@ -115,8 +133,8 @@ export default {
   },
 
   methods: {
-    // 查询表单
-    onSubmit(ruleForm) {
+    // 搜索
+    handleSearch(ruleForm) {
       this.$refs[ruleForm].validate((valid) => {
         if (valid) {
           return true;
@@ -126,9 +144,62 @@ export default {
       });
     },
 
+    // 清空
+    handleClear(ruleForm) {
+      this.form = {
+        app: "",
+        server: "",
+      };
+    },
+
+    // 单选切换
+    handleChange(value) {
+      if (value == "topo") {
+        // 切换到topo，重新初始化
+        this.initGraph();
+      }
+    },
+
     // 跳转到链路追踪路由
-    redirectTo(page) {
-      this.$router.push({ name: "LinkTracing" });
+    redirectTo(id) {
+      this.$router.push({
+        name: "LinkTracing",
+        query: { serverId: id }, // 应用服务节点的名称/id
+      });
+    },
+
+    // 右键菜单
+    handleMenuClick(target, item) {
+      // console.log(target.innerHTML, item);
+      // 要查询的节点id--应用服务节点
+      const nodeId = item._cfg.id;
+      if (target.innerHTML == "查看链路") {
+        this.redirectTo(item._cfg.model.label);
+      } else if (target.innerHTML == "查看上下游") {
+        this.toTotalTopo = item._cfg.model.label;
+        // 获取上游和下游所有节点，上游节点--"source"，下游节点--"target"
+        const allNodes = this.graph.getNeighbors(nodeId, undefined);
+        // 根据获取的节点获取它们的id
+        const allNodeIds = allNodes.map((node) => node.get("id"));
+        // console.log("上游和下游节点的ID: ", allNodeIds);
+        // 上下游节点的id和要查询id
+        const ids = [...allNodeIds, nodeId];
+        // 筛选
+        const resNodes = nodes.filter((node) => ids.includes(node.id));
+        // console.log("筛选结果: ", resNodes);
+        // 更新图表数据
+        this.graphStreamData = { nodes: resNodes, edges, combos };
+        // 初始化图表数据
+        this.updateData(this.graphStreamData);
+        // 渲染
+        this.renderGraph();
+        // 显示返回总拓扑的标志
+        this.isTotalTopo = !this.isTotalTopo;
+      } else if (target.innerHTML == "查看告警") {
+        alert("查看告警");
+      } else if (target.innerHTML == "查看服务详情") {
+        alert("查看服务详情");
+      }
     },
 
     // 返回总拓扑
@@ -138,6 +209,8 @@ export default {
       this.updateData(this.graphData);
       this.renderGraph();
     },
+
+    handleChangeserverId(val) {},
 
     // 更新图表数据
     updateData(newData) {
@@ -164,37 +237,7 @@ export default {
                 <h3> <i class="el-icon-bell"></i> <span />查看告警</h3>
             </div>`;
         },
-        handleMenuClick: (target, item) => {
-          console.log(target.innerHTML, item);
-          if (target.innerHTML == "查看链路") {
-            this.redirectTo("链路");
-          } else if (target.innerHTML == "查看上下游") {
-            // 要查询的节点id
-            const nodeId = item._cfg.id;
-            // 获取上游和下游所有节点，上游节点--"source"，下游节点--"target"
-            const allNodes = this.graph.getNeighbors(nodeId, undefined);
-            // 根据获取的节点获取它们的id
-            const allNodeIds = allNodes.map((node) => node.get("id"));
-            console.log("上游和下游节点的ID: ", allNodeIds);
-            // 上下游节点的id和要查询id
-            const ids = [...allNodeIds, nodeId];
-            // 筛选
-            const resNodes = nodes.filter((node) => ids.includes(node.id));
-            console.log("筛选结果: ", resNodes);
-            // 更新图表数据
-            this.graphStreamData = { nodes: resNodes, edges, combos };
-            // 初始化图表数据
-            this.updateData(this.graphStreamData);
-            // 渲染
-            this.renderGraph();
-            // 显示返回总拓扑的标志
-            this.isTotalTopo = !this.isTotalTopo;
-          } else if (target.innerHTML == "查看告警") {
-            alert("查看告警");
-          } else if (target.innerHTML == "查看服务详情") {
-            alert("查看服务详情");
-          }
-        },
+        handleMenuClick: this.handleMenuClick,
         // 需要加上父级容器的 padding-left 16、自身偏移量 10
         offsetX: 16 + 10,
         // 需要加上父级容器的 padding-top 24、画布兄弟元素高度、自身偏移量 10
@@ -215,13 +258,8 @@ export default {
           const node_type = e.item.getType();
           const node = e.item.getModel();
           // console.log(e);
-          let comboTitle = "未分组";
-          if (node.comboId == "a") {
-            comboTitle = "animeter101/eoitek-shopping (5) / 未分组";
-          } else if (node.comboId == "b") {
-            comboTitle = "animeter101/eoitek-bank (0) / 未分组";
-          }
-          // console.log(node);
+          console.log(node);
+          const comboTitle = `${node.serverSystem} / ${node.serverSystemGroup}`;
           // 创建一个容器元素 outDiv，并设置其样式和内容
           const outDiv = document.createElement("div");
           // 设置容器宽度为内容适应宽度
@@ -229,18 +267,30 @@ export default {
           outDiv.style.padding = "0";
           // 使用 HTML 字符串构建 Tooltip 的内容
           outDiv.innerHTML = `
-                <strong>${node.label}-${node.id}</strong> <br />
+                <strong style="font-size:16px">${node.label}-${node.id}</strong> <br />
+
                 <span>${comboTitle}</span><br /><br />
-                <div> 请求数：219 </div>
-                <div> 错误率：219 </div>
-                <div> 平均响应时间：219
+
+                <div style="display:flex;align-items:center;flex-direction:row"> 
+                    <div>请求数：${node.requestNum} </div>
+                    <div id="chart-${node.id}" style="width: 200px; height: 100px;"></div>
+                </div>
+
+                <div style="display:flex;align-items:center;flex-direction:row"> 
+                    <div> 错误率：${node.errorRate} </div>
+                    <div id="chart-${node.id}" style="width: 200px; height: 80px;"></div>
+                </div>
+
+                <div style="display:flex;align-items:center;flex-direction:row"> 
+                    <div> 平均响应时间：${node.responseTime}</div>
                     <div id="chart-${node.id}" style="width: 200px; height: 100px;"></div>
                 </div>
 
                 <div>
                     告警数：
-                    紧急:<span style="color:red">1</span><span /><span />
-                    严重:<span style="color:orange">0</span>
+                    紧急:<span style="color:red">${node.urgentAlarmNum}</span>
+                    <span /><span />
+                    严重:<span style="color:orange">${node.severeAlarmNum}</span>
                 </div>
                 `;
 
@@ -251,27 +301,74 @@ export default {
           const chart = echarts.init(chartContainer);
 
           // 定义折线图数据
-          const data = {
-            categories: ["1", "2", "3", "4", "5", "6"],
-            series: [
+          const data = node.requestGraph;
+          console.log(data);
+
+          // data提供的数据数组
+          const dateList = data.map((item) => item.value); // 获取数据中的数值
+          const valueList = data.map((item) => item.name); // 获取数据中的标签
+
+          // console.log(values, labels);
+
+          const options = {
+            // Make gradient line here
+            visualMap: [
               {
-                name: "数据集",
-                type: "line",
-                data: [12, 19, 3, 5, 2, 3],
+                show: false,
+                type: "continuous",
+                seriesIndex: 0,
+                min: 0,
+                max: 400,
+              },
+              {
+                show: false,
+                type: "continuous",
+                seriesIndex: 1,
+                dimension: 0,
+                min: 0,
+                max: dateList.length - 1,
               },
             ],
-          };
-
-          // 配置折线图选项
-          const options = {
-            xAxis: {
-              type: "category",
-              data: data.categories,
+            tooltip: {
+              trigger: "axis",
             },
-            yAxis: {
-              type: "value",
-            },
-            series: data.series,
+            xAxis: [
+              {
+                data: dateList,
+              },
+              {
+                data: dateList,
+                gridIndex: 1,
+              },
+            ],
+            yAxis: [
+              {},
+              {
+                gridIndex: 1,
+              },
+            ],
+            grid: [
+              {
+                bottom: "60%",
+              },
+              {
+                top: "60%",
+              },
+            ],
+            series: [
+              {
+                type: "line",
+                showSymbol: false,
+                data: valueList,
+              },
+              {
+                type: "line",
+                showSymbol: false,
+                data: valueList,
+                xAxisIndex: 1,
+                yAxisIndex: 1,
+              },
+            ],
           };
 
           // 使用刚指定的配置项和数据显示图表
@@ -314,7 +411,7 @@ export default {
       // 获取容器图形
       const container = document.getElementById("container");
       const width = container.scrollWidth;
-      const height = container.scrollHeight || 600; // 根据容器的高计算出图的高，可自定义
+      const height = container.scrollHeight || 650; // 根据容器的高计算出图的高，可自定义
 
       // 创建图形实例
       this.graph = new G6.Graph({
@@ -434,12 +531,30 @@ export default {
       this.graph.on("node:mouseenter", (e) => {
         const nodeItem = e.item; // 获取鼠标进入的节点元素对象
         this.graph.setItemState(nodeItem, "hover", true); // 设置当前节点的 hover 状态为 true
+
+        // 获取与节点相关联的所有边
+        const edges = nodeItem.getEdges();
+        // 设置边的样式
+        edges.forEach((edge) => {
+          const group = edge.getContainer(); // 获取边所在的容器
+          const shape = edge.getKeyShape(); // 获取边的图形
+          shape.attr("stroke", "#0fc7c1"); // 修改边的描边颜色
+        });
       });
 
       // 鼠标离开节点
       this.graph.on("node:mouseleave", (e) => {
         const nodeItem = e.item; // 获取鼠标离开的节点元素对象
         this.graph.setItemState(nodeItem, "hover", false); // 设置当前节点的 hover 状态为 false
+
+        // 获取与节点相关联的所有边
+        const edges = nodeItem.getEdges();
+        // 清除特效样式
+        edges.forEach((edge) => {
+          const group = edge.getContainer(); // 获取边所在的容器
+          const shape = edge.getKeyShape(); // 获取边的图形
+          shape.attr("stroke", "gray"); // 恢复边的描边颜色
+        });
       });
     },
   },
@@ -448,13 +563,14 @@ export default {
 
 <style lang="scss" scoped>
 .topo {
-  background-color: #fff;
-  .topo-container {
-    padding: 10px;
-    height: 625px;
-    background-image: linear-gradient(#f4f4f4 1px, transparent 0),
-      linear-gradient(90deg, #f4f4f4 1px, transparent 0);
-  }
+  background: #f6f9fc;
+  height: 650px;
+  // .topo-container {
+  //   padding: 10px;
+  //   height: 650px;
+  //   background-image: linear-gradient(#f4f4f4 1px, transparent 0),
+  //     linear-gradient(90deg, #f4f4f4 1px, transparent 0);
+  // }
 }
 
 .el-button--primary {

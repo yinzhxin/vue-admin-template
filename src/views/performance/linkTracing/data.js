@@ -211,6 +211,30 @@ export const data = {
                                             },
                                           ],
                                         },
+                                        {
+                                          id: "root/1/1/2/1/1/1/1/1/1/3",
+                                          label: "connect/api/auth511",
+                                          subLabel: "shop_user",
+                                          chartData: [
+                                            {
+                                              duringTime: 17,
+                                              pendingTime: 33,
+                                              stayingTime: 50,
+                                            },
+                                          ],
+                                        },
+                                        {
+                                          id: "root/1/1/2/1/1/1/1/1/1/4",
+                                          label: "connect/api/auth511",
+                                          subLabel: "shop_user",
+                                          chartData: [
+                                            {
+                                              duringTime: 17,
+                                              pendingTime: 33,
+                                              stayingTime: 50,
+                                            },
+                                          ],
+                                        },
                                       ],
                                     },
                                   ],
