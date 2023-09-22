@@ -788,31 +788,3 @@ export default {
   overflow: scroll;
 } */
 </style>
-
-<style lang="">
-/* // // 递归
-    // extractData(obj, result) {
-    //   if (obj.hasOwnProperty("chartData") || obj.hasOwnProperty("label")) {
-    //     result.label.push(obj.label);
-    //     result.chartData.push(obj.chartData);
-    //   }
-
-    //   if (obj.hasOwnProperty("children") && Array.isArray(obj.children)) {
-    //     obj.children.forEach((child) => {
-    //       this.extractData(child, result);
-    //     });
-    //   }
-    // },
-
-    // // 递归遍历树节点并设置颜色
-    // setColor(obj, level) {
-    //   const color = this.colorList[level];
-    //   obj.color = color;
-    //   if (obj.children) {
-    //     for (const child of obj.children) {
-    //       this.setColor(child, level + 1);
-    //     }
-    //   }
-    //   return obj;
-    // }, */
-</style>

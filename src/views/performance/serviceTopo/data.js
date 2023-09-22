@@ -4,7 +4,7 @@ export const nodes = [
     comboId: "a", // 节点所属分组的标志符
     label: "shop_gateway", // 节点的标签文字
     state: "1",// 状态 --> 显示颜色
-    img: "http://localhost:" + window.location.port + "/topo_images/cube2.svg",
+    img: "/topo_images/cube2.svg",
     "serverSystem": "eoitek-shoping",
     "serverSystemGroup": "未分组",
     "requestNum": 130,
@@ -84,7 +84,7 @@ export const nodes = [
     comboId: "a",
     label: "shop_auth",
     state: "1",
-    img: "http://localhost:" + window.location.port + "/topo_images/cube2.svg",
+    img: "/topo_images/cube2.svg",
     "serverSystem": "eoitek-shoping",
     "serverSystemGroup": "未分组",
     "requestNum": 130,
@@ -164,7 +164,7 @@ export const nodes = [
     comboId: "a",
     label: "shop_user",
     state: "1",
-    img: "http://localhost:" + window.location.port + "/topo_images/cube2.svg",
+    img: "/topo_images/cube2.svg",
     "serverSystem": "eoitek-shoping",
     "serverSystemGroup": "未分组",
     "requestNum": 130,
@@ -244,7 +244,7 @@ export const nodes = [
     comboId: "a",
     label: "shop_audit",
     state: "2",
-    img: "http://localhost:" + window.location.port + "/topo_images/cube.svg",
+    img: "/topo_images/cube.svg",
     "serverSystem": "eoitek-shoping",
     "serverSystemGroup": "未分组",
     "requestNum": 130,
@@ -325,7 +325,7 @@ export const nodes = [
     comboId: "a",
     label: "shop_kafka",
     state: "2",
-    img: "http://localhost:" + window.location.port + "/topo_images/cube.svg",
+    img: "/topo_images/cube.svg",
     "serverSystem": "eoitek-shoping",
     "serverSystemGroup": "未分组",
     "requestNum": 130,
@@ -405,7 +405,7 @@ export const nodes = [
     comboId: "a",
     label: "shop_order",
     state: "2",
-    img: "http://localhost:" + window.location.port + "/topo_images/cube.svg",
+    img: "/topo_images/cube.svg",
     "serverSystem": "eoitek-shoping",
     "serverSystemGroup": "未分组",
     "requestNum": 130,
@@ -484,7 +484,7 @@ export const nodes = [
     id: "7",
     label: "192.168.31.107:6379",
     state: "2",
-    img: "http://localhost:" + window.location.port + "/topo_images/data.svg",
+    img: "/topo_images/data.svg",
     "serverSystem": "eoitek-shoping",
     "serverSystemGroup": "未分组",
     "requestNum": 130,
@@ -563,7 +563,7 @@ export const nodes = [
     id: "8",
     label: "192.168.110.101:9092",
     state: "2",
-    img: "http://localhost:" + window.location.port + "/topo_images/kafka.svg",
+    img: "/topo_images/kafka.svg",
     "serverSystem": "eoitek-shoping",
     "serverSystemGroup": "未分组",
     "requestNum": 130,
@@ -642,7 +642,7 @@ export const nodes = [
     id: "9",
     label: "192.168.110.115:3306",
     state: "3",
-    img: "http://localhost:" + window.location.port + "/topo_images/mysql.svg",
+    img: "/topo_images/mysql.svg",
     "serverSystem": "eoitek-shoping",
     "serverSystemGroup": "未分组",
     "requestNum": 130,
@@ -722,21 +722,21 @@ export const nodes = [
   //   comboId: "b",
   //   label: "bank1",
   //   state: "2",
-  //   img: "http://localhost:" + window.location.port + "/topo_images/cube.svg",
+  //   img:  "/topo_images/cube.svg",
   // },
   // {
   //   id: "11",
   //   comboId: "b",
   //   label: "bank1",
   //   state: "2",
-  //   img: "http://localhost:" + window.location.port + "/topo_images/cube.svg",
+  //   img:  "/topo_images/cube.svg",
   // },
   // {
   //   id: "12",
   //   comboId: "b",
   //   label: "bank1",
   //   state: "2",
-  //   img: "http://localhost:" + window.location.port + "/topo_images/cube.svg",
+  //   img:  "/topo_images/cube.svg",
   // },
 ]
 
@@ -746,60 +746,80 @@ export const edges = [
   {
     source: "1",
     target: "2",
+    "request_num": 160,
+    "average_time": 26.2
   },
 
   //! 2 --> 3
   {
     source: "2",
     target: "3",
+    "request_num": 160,
+    "average_time": 26.2,
   },
 
   //! 2 --> 4
   {
     source: "2",
     target: "4",
+    "request_num": 160,
+    "average_time": 26.2
   },
 
   //! 3 --> 6
   {
     source: "3",
     target: "6",
+    "request_num": 160,
+    "average_time": 26.2
   },
 
   //! 6 --> b
   {
     source: "6",
     target: "b",
+    "request_num": 160,
+    "average_time": 26.2
   },
 
   //! 6 --> 7 <==
   {
     source: "6",
     target: "7",
+    "request_num": 160,
+    "average_time": 26.2
   },
 
   //! 6 --> 9
   {
     source: "6",
     target: "9",
+    "request_num": 160,
+    "average_time": 26.2
   },
 
   //! 3 --> 9
   {
     source: "3",
     target: "9",
+    "request_num": 160,
+    "average_time": 26.2
   },
 
   //! 4 --> 8
   {
     source: "4",
     target: "8",
+    "request_num": 160,
+    "average_time": 26.2
   },
 
   //! 8 --> 5
   {
     source: "8",
     target: "5",
+    "request_num": 160,
+    "average_time": 26.2
   },
 
   // //! 8 --> 8
@@ -812,18 +832,24 @@ export const edges = [
   {
     source: "6",
     target: "10",
+    "request_num": 160,
+    "average_time": 26.2
   },
 
   //! 10--> 11
   {
     source: "10",
     target: "11",
+    "request_num": 160,
+    "average_time": 26.2
   },
 
   //! 11 --> 12
   {
     source: "11",
     target: "12",
+    "request_num": 160,
+    "average_time": 26.2
   },
 ]
 

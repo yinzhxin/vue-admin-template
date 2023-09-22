@@ -91,7 +91,8 @@
 <script>
 import * as echarts from "echarts";
 import G6 from "@antv/g6";
-import { nodes, edges, combos } from "./data.js";
+// import { nodes, edges, combos } from "./data.js";
+import { getTopo } from "@/api/topo";
 
 export default {
   name: "ServiceTopo",
@@ -100,34 +101,106 @@ export default {
     return {
       form: {
         radio: "topo", // 默认拓扑图
-        app: "",
-        server: "",
+        app: "", // 所属应用
+        server: "", // 所属服务
       },
 
       toTotalTopo: "", // 返回总拓扑图右边的选框
-      serverIdOption: "",
-      isTotalTopo: true,
+      serverIdOption: "", // 返回总拓扑图右边的选框的选项数组
+      isTotalTopo: true, // 是否是总拓扑图
 
       graph: null, // 图表实例
       graphData: "", // 图表数据
       graphStreamData: "", // 上下游图表数据
+
+      edgesArray: "",
+      nodesArray: "",
+      combosArray: "",
     };
   },
 
   mounted() {
-    this.serverIdOption = nodes.map((item) => {
-      return {
-        label: item.label,
-        value: item.label,
-      };
+    getTopo({
+      startTime: 0,
+      endTime: 0,
+      systemName: "eoitek-shoping",
+    }).then((res) => {
+      // console.log(res);
+      // this.edgesArray = res.access;
+      // this.nodesArray = res.nodes;
+
+      this.edgesArray = res.access.map((element) => {
+        const newElement = { ...element };
+        newElement.source = newElement["source_id"];
+        newElement.target = newElement["target_id"];
+        newElement.label = `${element["request_num"]}req ${element["average_time"]}ms`;
+
+        delete newElement["source_id"];
+        delete newElement["target_id"];
+        // console.log(newElement);
+        return newElement;
+      });
+
+      this.nodesArray = res.nodes.map((element) => {
+        const newElement = { ...element };
+        newElement.id = newElement["serverId"];
+        newElement.label = newElement["serverId"];
+        newElement.comboId = newElement["serverSystem"];
+        newElement.imgType = newElement["serverType"];
+        // console.log(newElement);
+        return newElement;
+      });
+
+      // 默认
+      this.combosArray = [
+        {
+          id: "eoitek-shoping", // 唯一的标志符，标识不同分组
+          label: "eoitek-shoping", // 分组的标签
+          labelCfg: {
+            style: {
+              fontSize: 40, // 标签文字大小
+            },
+          },
+          size: [300, 300], // 宽 / 高
+          // 分组样式
+          style: {
+            lineDash: [50, 4], // 边框虚线样式，虚线的线段长度 / 间隔长度
+            lineWidth: 12, // 边框线宽
+            stroke: "#DEDEED", // 边框颜色
+          },
+          collapsed: false, // 默认不折叠
+        },
+      ];
+
+      // 初始化服务选项数组
+      this.serverIdOption = this.nodesArray.map((item) => {
+        return {
+          label: item.label,
+          value: item.label,
+        };
+      });
+
+      // 初始化总拓扑图
+      this.initGraph();
     });
-    // console.log(this.serverIdOption);
-    this.initGraph();
+
+    // 初始化服务选项数组
+    // this.serverIdOption = nodes.map((item) => {
+    //   return {
+    //     label: item.label,
+    //     value: item.label,
+    //   };
+    // });
+
+    // edges.forEach((item) => {
+    //   item.label = `${item["request_num"]}req ${item["average_time"]}ms`;
+    // });
   },
 
   beforeDestroy() {
     // 清除数据
     this.graphData = "";
+    this.graphStreamData = "";
     // 销毁画布
     this.graph.destroy();
   },
@@ -146,10 +219,18 @@ export default {
 
     // 清空
     handleClear(ruleForm) {
+      // 表单清空
       this.form = {
+        radio: "topo",
         app: "",
         server: "",
       };
+      // 返回总拓扑图
+      this.isTotalTopo = true;
+      this.updateData(this.graphData);
+      this.renderGraph();
+      // 重新初始化
+      // this.initGraph();
     },
 
     // 单选切换
@@ -164,13 +245,13 @@ export default {
     redirectTo(id) {
       this.$router.push({
         name: "LinkTracing",
-        query: { serverId: id }, // 应用服务节点的名称/id
+        query: { serverId: id }, // 应用服务节点的'名称/id'
       });
     },
 
     // 右键菜单
     handleMenuClick(target, item) {
-      // console.log(target.innerHTML, item);
+      console.log(target.innerHTML, item);
       // 要查询的节点id--应用服务节点
       const nodeId = item._cfg.id;
       if (target.innerHTML == "查看链路") {
@@ -185,10 +266,22 @@ export default {
         // 上下游节点的id和要查询id
         const ids = [...allNodeIds, nodeId];
         // 筛选
-        const resNodes = nodes.filter((node) => ids.includes(node.id));
+        const resNodes = this.nodesArray.filter((node) =>
+          ids.includes(node.id)
+        );
         // console.log("筛选结果: ", resNodes);
+
+        const edgeIds = this.getEdgeIdsByNodeId(nodeId);
+        console.log("节点 " + nodeId + " 相关的边的 ID: ", edgeIds);
+        const edgesInfo = this.getEdgesInfoByIds(edgeIds);
+        console.log(edgesInfo);
+
         // 更新图表数据
-        this.graphStreamData = { nodes: resNodes, edges, combos };
+        this.graphStreamData = {
+          nodes: resNodes,
+          edges: this.edgesArray,
+          combos: this.combosArray,
+        };
         // 初始化图表数据
         this.updateData(this.graphStreamData);
         // 渲染
@@ -202,14 +295,52 @@ export default {
       }
     },
 
+    // 获取节点的边的 ID
+    getEdgeIdsByNodeId(nodeId) {
+      const edges = this.graph.getEdges();
+      const edgeIds = edges
+        .filter(
+          (edge) =>
+            edge.getSource().get("id") === nodeId ||
+            edge.getTarget().get("id") === nodeId
+        )
+        .map((edge) => edge.get("id"));
+      return edgeIds;
+    },
+
+    // 获取边的详细信息
+    getEdgesInfoByIds(edgeIds) {
+      const edgeInfoArray = [];
+      for (const edgeId of edgeIds) {
+        const edge = this.graph.findById(edgeId);
+        if (edge) {
+          const sourceNode = edge.getSource();
+          const targetNode = edge.getTarget();
+          const sourceNodeId = sourceNode.get("id");
+          const targetNodeId = targetNode.get("id");
+          const label = edge.get("label");
+          edgeInfoArray.push({
+            id: edgeId,
+            sourceNodeId,
+            targetNodeId,
+            label,
+          });
+        }
+      }
+      return edgeInfoArray;
+    },
+
     // 返回总拓扑
     handleBack() {
       this.isTotalTopo = !this.isTotalTopo;
       this.graphStreamData = "";
       this.updateData(this.graphData);
       this.renderGraph();
+      // 重新初始化
+      // this.initGraph();
     },
 
+    // 服务名称
     handleChangeserverId(val) {},
 
     // 更新图表数据
@@ -222,7 +353,7 @@ export default {
       this.graph.render();
     },
 
-    // 初始化图表
+    // 初始化图表--在初始化和tab栏切换时候调用
     initGraph() {
       // ContextMenu 是右键菜单，通常是对节点进行进一步操作的组件。
       // 例如：通过右键菜单实现节点的复制，删除，反选，对选择的节点发起新画布分析，或者进行打标，发起关系扩散，数据请求之类的高级自定义行为。
@@ -239,7 +370,7 @@ export default {
         },
         handleMenuClick: this.handleMenuClick,
         // 需要加上父级容器的 padding-left 16、自身偏移量 10
-        offsetX: 16 + 10,
+        offsetX: 16 + 20,
         // 需要加上父级容器的 padding-top 24、画布兄弟元素高度、自身偏移量 10
         offsetY: 0,
         // 在什么类型的元素上响应，是节点
@@ -249,7 +380,7 @@ export default {
       // 提示框组件
       const tooltip = new G6.Tooltip({
         // tooltip相对于鼠标位置的偏移量，用于设置提示框的位置偏移，默认值是 (10, 10)
-        offsetX: 10,
+        offsetX: 30,
         offsetY: 10,
         // 允许出现 tooltip 的 item 类型，是节点
         itemTypes: ["node"],
@@ -258,7 +389,7 @@ export default {
           const node_type = e.item.getType();
           const node = e.item.getModel();
           // console.log(e);
-          console.log(node);
+          // console.log(node);
           const comboTitle = `${node.serverSystem} / ${node.serverSystemGroup}`;
           // 创建一个容器元素 outDiv，并设置其样式和内容
           const outDiv = document.createElement("div");
@@ -267,21 +398,21 @@ export default {
           outDiv.style.padding = "0";
           // 使用 HTML 字符串构建 Tooltip 的内容
           outDiv.innerHTML = `
-                <strong style="font-size:16px">${node.label}-${node.id}</strong> <br />
+                <strong style="font-size:16px">${node.label}</strong> <br />
 
                 <span>${comboTitle}</span><br /><br />
 
-                <div style="display:flex;align-items:center;flex-direction:row"> 
+                <div style="display:flex;align-items:center;flex-direction:row">
                     <div>请求数：${node.requestNum} </div>
                     <div id="chart-${node.id}" style="width: 200px; height: 100px;"></div>
                 </div>
 
-                <div style="display:flex;align-items:center;flex-direction:row"> 
+                <div style="display:flex;align-items:center;flex-direction:row">
                     <div> 错误率：${node.errorRate} </div>
                     <div id="chart-${node.id}" style="width: 200px; height: 80px;"></div>
                 </div>
 
-                <div style="display:flex;align-items:center;flex-direction:row"> 
+                <div style="display:flex;align-items:center;flex-direction:row">
                     <div> 平均响应时间：${node.responseTime}</div>
                     <div id="chart-${node.id}" style="width: 200px; height: 100px;"></div>
                 </div>
@@ -302,7 +433,7 @@ export default {
 
           // 定义折线图数据
           const data = node.requestGraph;
-          console.log(data);
+          // console.log(data);
 
           // data提供的数据数组
           const dateList = data.map((item) => item.value); // 获取数据中的数值
@@ -379,39 +510,10 @@ export default {
         },
       });
 
-      // 设置节点样式--主要是颜色展示和变化
-      nodes.forEach((node) => {
-        if (node.state === "1") {
-          node.color = "#F7F3EF";
-          node.stateStyles = {
-            hover: {
-              stroke: "#FFD270",
-            },
-          };
-        } else if (node.state === "2") {
-          node.color = "#E5F3F3";
-          node.stateStyles = {
-            hover: {
-              stroke: "#0FC7C1",
-            },
-          };
-        } else if (node.state === "3") {
-          node.color = "#F2EDF0";
-          node.stateStyles = {
-            hover: {
-              stroke: "#E37C81",
-            },
-          };
-        }
-      });
-
-      // 数据对象，节点、边、分组
-      this.graphData = { nodes, edges, combos };
-
       // 获取容器图形
       const container = document.getElementById("container");
       const width = container.scrollWidth;
-      const height = container.scrollHeight || 650; // 根据容器的高计算出图的高，可自定义
+      const height = container.scrollHeight || 650;
 
       // 创建图形实例
       this.graph = new G6.Graph({
@@ -488,6 +590,7 @@ export default {
             "drag-canvas",
             "zoom-canvas",
             "behaviorName",
+            "line-dash",
             {
               type: "collapse-expand-combo",
               trigger: "click",
@@ -522,8 +625,44 @@ export default {
         };
       });
 
+      // 动态设置节点样式--主要是颜色展示和变化
+      this.nodesArray.forEach((node) => {
+        console.log(node);
+        if (node.state === "1") {
+          node.color = "#F7F3EF";
+          node.stateStyles = {
+            hover: {
+              stroke: "#FFD270",
+            },
+          };
+        } else if (node.state === "2") {
+          node.color = "#E5F3F3";
+          node.stateStyles = {
+            hover: {
+              stroke: "#0FC7C1",
+            },
+          };
+        } else if (node.state === "3") {
+          node.color = "#F2EDF0";
+          node.stateStyles = {
+            hover: {
+              stroke: "#E37C81",
+            },
+          };
+        }
+      });
+
+      // 数据对象，节点、边、分组
+      this.graphData = {
+        nodes: this.nodesArray,
+        edges: this.edgesArray,
+        combos: this.combosArray,
+      };
+
+      // 图初始化数据
       this.updateData(this.graphData);
 
+      // 渲染画布
       this.renderGraph();
 
       // 图实例监听--graph.on("元素类型:事件名", (e) => {})--主要是节点的动态样式变化
@@ -573,6 +712,13 @@ export default {
   // }
 }
 
+.toTotalTopo {
+  font-size: 22px;
+  font-weight: 700;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
 .el-button--primary {
   background-color: #0fc7c1;
   border-color: #0fc7c1;
@@ -587,12 +733,5 @@ export default {
 
 ::v-deep .el-table--enable-row-hover .el-table__body tr:hover > td {
   background-color: #d9f3f2;
-}
-
-.toTotalTopo {
-  font-size: 22px;
-  font-weight: 700;
-  margin-right: 10px;
-  cursor: pointer;
 }
 </style>
