@@ -485,17 +485,17 @@ export default {
 
                 <span style="font-size: 14px"> ${comboTitle} </span>
 
-                <div style="display: flex; align-items: center; flex-direction: row">
+                <div style="display: flex; align-items: center; flex-direction: row; justify-content:space-between">
                     <div> 请求数：${node.requestNum} </div>
                     <div id="chart-requestGraph${node.label}" style="width: 300px; height: 80px;"></div>
                 </div>
 
-                <div style="display: flex; align-items: center; flex-direction: row">
+                <div style="display: flex; align-items: center; flex-direction: row; justify-content:space-between">
                     <div> 错误率：${node.errorRate} </div>
                     <div id="chart-errorGraph${node.label}" style="width: 300px; height: 80px;"></div>
                 </div>
 
-                <div style="display: flex; align-items: center; flex-direction: row">
+                <div style="display: flex; align-items: center; flex-direction: row; justify-content:space-between">
                     <div> 平均响应时间：${node.responseTime} </div>
                     <div id='chart-responseGraph${node.label}' style="width: 300px; height: 80px;"></div>
                 </div>
