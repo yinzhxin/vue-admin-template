@@ -73,14 +73,31 @@
     <el-row :gutter="20">
       <el-col :span="24">
         <div class="topo">
-          <div class="topo-container" v-if="form.radio == 'topo'">
+          <div class="" v-if="form.radio == 'topo'">
             <!-- 创建容器 -->
             <div id="container"></div>
           </div>
 
-          <div class="topo-container" v-if="form.radio == 'list'">
+          <div
+            class="topo-container"
+            v-if="form.radio == 'list'"
+            style="padding: 10px; height: 100%"
+          >
             <!-- 列表 -->
-            <h1>LIST</h1>
+            <Table :table-data="table.tableData" :columns="table.columns" />
+
+            <div style="padding-top: 15px" v-if="form.radio == 'list'">
+              <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :total="table.page.count"
+                :current-page="table.page.current"
+                :page-size="table.page.size"
+                :page-sizes="[10, 20, 30, 40]"
+                layout="total, sizes, prev, pager, next, jumper"
+              >
+              </el-pagination>
+            </div>
           </div>
         </div>
       </el-col>
@@ -91,11 +108,12 @@
 <script>
 import * as echarts from "echarts";
 import G6 from "@antv/g6";
-// import { nodes, edges, combos } from "./data.js";
 import { getTopo } from "@/api/topo";
+import Table from "@/views/components/Table";
 
 export default {
   name: "ServiceTopo",
+  components: { Table },
 
   data() {
     return {
@@ -116,7 +134,54 @@ export default {
       edgesArray: "",
       nodesArray: "",
       combosArray: "",
+
+      // 表格数据
+      table: {
+        tableData: "",
+        columns: [
+          {
+            label: "服务名称",
+            index: "serverName",
+            render(h, data) {
+              return (
+                <div style="cursor:pointer;color:#0fc7c1">
+                  {data.row.serverName}
+                </div>
+              );
+            },
+            width: "300px",
+          },
+          { label: "所属应用", index: "serverSystemGroup" },
+          { label: "实例数", index: "instanceNum" },
+          { label: "Apdex", index: "apdex" },
+          { label: "请求数", index: "reqNum", sortable: true },
+          { label: "平均吞吐量", index: "avgThroughput", sortable: true },
+          { label: "错误率", index: "errorRate", sortable: true },
+          { label: "平均响应时间", index: "avgResponseTime", sortable: true },
+          { label: "P75响应时间", index: "p75ResponseTime", sortable: true },
+        ],
+        page: {
+          current: 1, // 当前页数--handleCurrentChange
+          size: 20, // 每页条数--handleSizeChange
+          count: 1, // 总页数
+        },
+      },
     };
+  },
+
+  watch: {
+    graphData: {
+      handler: function (newV, oldV) {
+        console.log("总拓扑图 ==> newV ==>", newV, "oldV ==>", oldV);
+      },
+      deep: true,
+    },
+    graphStreamData: {
+      handler: function (newV, oldV) {
+        console.log("上下游拓扑图 ==> newV ==>", newV, "oldV ==>", oldV);
+      },
+      deep: true,
+    },
   },
 
   mounted() {
@@ -124,77 +189,56 @@ export default {
       startTime: 0,
       endTime: 0,
       systemName: "eoitek-shoping",
-    }).then((res) => {
-      // console.log(res);
-      // this.edgesArray = res.access;
-      // this.nodesArray = res.nodes;
+    })
+      .then((res) => {
+        this.table.tableData = res.nodes;
 
-      this.edgesArray = res.access.map((element) => {
-        const newElement = { ...element };
-        newElement.source = newElement["source_id"];
-        newElement.target = newElement["target_id"];
-        newElement.label = `${element["request_num"]}req ${element["average_time"]}ms`;
+        // 边
+        this.edgesArray = res.access.map((item) => {
+          const newItem = { ...item };
+          // 起始id
+          newItem.source = newItem["source_id"];
+          // 目的id
+          newItem.target = newItem["target_id"];
+          // 边的文本文字
+          newItem.label = `${item["request_num"]}req ${item["average_time"]}ms`;
 
-        delete newElement["source_id"];
-        delete newElement["target_id"];
-        // console.log(newElement);
-        return newElement;
-      });
+          delete newItem["source_id"];
+          delete newItem["target_id"];
+          delete newItem["request_num"];
 
-      this.nodesArray = res.nodes.map((element) => {
-        const newElement = { ...element };
-        newElement.id = newElement["serverId"];
-        newElement.label = newElement["serverId"];
-        newElement.comboId = newElement["serverSystem"];
-        newElement.imgType = newElement["serverType"];
-        // console.log(newElement);
-        return newElement;
-      });
+          return newItem;
+        });
 
-      // 默认
-      this.combosArray = [
-        {
-          id: "eoitek-shoping", // 唯一的标志符，标识不同分组
-          label: "eoitek-shoping", // 分组的标签
-          labelCfg: {
-            style: {
-              fontSize: 40, // 标签文字大小
-            },
+        // 节点
+        this.nodesArray = res.nodes.map((item) => {
+          const newItem = { ...item };
+          newItem.id = newItem["serverId"]; // "serverId" / "serverName"
+          newItem.label = newItem["serverId"];
+          newItem.comboId = newItem["serverSystem"]; // "eoitek-shoping"
+          newItem.imgType = newItem["serverType"]; // "web"
+
+          return newItem;
+        });
+
+        // 分组，是默认一个
+        this.combosArray = [
+          {
+            id: "eoitek-shoping", // 唯一的标志符，标识不同分组
+            label: "eoitek-shoping", // 分组的标签
+            collapsed: false, // 默认不折叠
           },
-          size: [300, 300], // 宽 / 高
-          // 分组样式
-          style: {
-            lineDash: [50, 4], // 边框虚线样式，虚线的线段长度 / 间隔长度
-            lineWidth: 12, // 边框线宽
-            stroke: "#DEDEED", // 边框颜色
-          },
-          collapsed: false, // 默认不折叠
-        },
-      ];
+        ];
 
-      // 初始化服务选项数组
-      this.serverIdOption = this.nodesArray.map((item) => {
-        return {
-          label: item.label,
-          value: item.label,
-        };
-      });
+        // 初始化服务选项数组
+        this.serverIdOption = this.nodesArray.map((item) => {
+          return { label: item.label, value: item.label };
+        });
 
-      // 初始化总拓扑图
-      this.initGraph();
-    });
-
-    // 初始化服务选项数组
-    // this.serverIdOption = nodes.map((item) => {
-    //   return {
-    //     label: item.label,
-    //     value: item.label,
-    //   };
-    // });
-
-    // edges.forEach((item) => {
-    //   item.label = `${item["request_num"]}req ${item["average_time"]}ms`;
-    // });
+        // 初始化总拓扑图
+        this.initGraph();
+      })
+      .catch(() => {});
   },
 
   beforeDestroy() {
@@ -203,9 +247,15 @@ export default {
     this.graphStreamData = "";
     // 销毁画布
     this.graph.destroy();
+    // 实例销毁
+    this.graph = null;
   },
 
   methods: {
+    // 分页器
+    handleSizeChange() {},
+    handleCurrentChange() {},
+
     // 搜索
     handleSearch(ruleForm) {
       this.$refs[ruleForm].validate((valid) => {
@@ -225,19 +275,37 @@ export default {
         app: "",
         server: "",
       };
-      // 返回总拓扑图
+
+      // 1.返回总拓扑图
+      // this.isTotalTopo = true;
+      // this.updateData(this.graphData);
+      // this.renderGraph();
+
+      // 2.重新初始化
       this.isTotalTopo = true;
-      this.updateData(this.graphData);
-      this.renderGraph();
-      // 重新初始化
-      // this.initGraph();
+      this.graph.destroy();
+      this.graph = null;
+      this.initGraph();
     },
 
     // 单选切换
     handleChange(value) {
       if (value == "topo") {
-        // 切换到topo，重新初始化
+        // 切换到topo，因切换到list时，实例被销毁，要重新初始化
         this.initGraph();
+        // 实例被销毁，不用下面的方法
+        // this.updateData(this.graphData);
+        // this.renderGraph();
+      } else {
+        // 销毁实体
+        this.graph.destroy();
+        // 数据清空
+        this.graph = null;
+        this.graphData = {
+          nodes: [],
+          edges: [],
+          combos: [],
+        };
       }
     },
 
@@ -251,7 +319,7 @@ export default {
 
     // 右键菜单
     handleMenuClick(target, item) {
-      console.log(target.innerHTML, item);
+      // console.log(target.innerHTML, item);
       // 要查询的节点id--应用服务节点
       const nodeId = item._cfg.id;
       if (target.innerHTML == "查看链路") {
@@ -272,9 +340,9 @@ export default {
         // console.log("筛选结果: ", resNodes);
 
         const edgeIds = this.getEdgeIdsByNodeId(nodeId);
-        console.log("节点 " + nodeId + " 相关的边的 ID: ", edgeIds);
+        // console.log("节点 " + nodeId + " 相关的边的 ID: ", edgeIds);
         const edgesInfo = this.getEdgesInfoByIds(edgeIds);
-        console.log(edgesInfo);
+        // console.log(edgesInfo);
 
         // 更新图表数据
         this.graphStreamData = {
@@ -334,16 +402,21 @@ export default {
     handleBack() {
       this.isTotalTopo = !this.isTotalTopo;
       this.graphStreamData = "";
+
+      // 重新渲染
       this.updateData(this.graphData);
       this.renderGraph();
+
       // 重新初始化
-      // this.initGraph();
+      this.graph = null;
+      this.graphData = "";
+      this.initGraph();
     },
 
     // 服务名称
     handleChangeserverId(val) {},
 
-    // 更新图表数据
+    // 更新图表数据，初次渲染也调用data方法
     updateData(newData) {
       this.graph.data(newData);
     },
@@ -351,6 +424,16 @@ export default {
     // 渲染图表
     renderGraph() {
       this.graph.render();
+    },
+
+    // 初始化图表
+    initCharts(charts) {
+      charts.forEach((chart) => {
+        console.log("cc");
+        const { container, options } = chart;
+        const echartsInstance = echarts.init(container);
+        echartsInstance.setOption(options);
+      });
     },
 
     // 初始化图表--在初始化和tab栏切换时候调用
@@ -386,10 +469,9 @@ export default {
         itemTypes: ["node"],
         // 自定义 tooltip 内容
         getContent: (e) => {
+          console.log("tooltip");
           const node_type = e.item.getType();
           const node = e.item.getModel();
-          // console.log(e);
-          // console.log(node);
           const comboTitle = `${node.serverSystem} / ${node.serverSystemGroup}`;
           // 创建一个容器元素 outDiv，并设置其样式和内容
           const outDiv = document.createElement("div");
@@ -397,123 +479,547 @@ export default {
           outDiv.style.width = "fit-content";
           outDiv.style.padding = "0";
           // 使用 HTML 字符串构建 Tooltip 的内容
+          // <div id="chart-${node.id}" style="width: 200px; height: 100px;"></div>
           outDiv.innerHTML = `
-                <strong style="font-size:16px">${node.label}</strong> <br />
+                <strong style="font-size: 15px"> ${node.label} </strong> <br />
 
-                <span>${comboTitle}</span><br /><br />
+                <span style="font-size: 14px"> ${comboTitle} </span>
 
-                <div style="display:flex;align-items:center;flex-direction:row">
-                    <div>请求数：${node.requestNum} </div>
-                    <div id="chart-${node.id}" style="width: 200px; height: 100px;"></div>
+                <div style="display: flex; align-items: center; flex-direction: row">
+                    <div> 请求数：${node.requestNum} </div>
+                    <div id="chart-requestGraph${node.label}" style="width: 300px; height: 80px;"></div>
                 </div>
 
-                <div style="display:flex;align-items:center;flex-direction:row">
+                <div style="display: flex; align-items: center; flex-direction: row">
                     <div> 错误率：${node.errorRate} </div>
-                    <div id="chart-${node.id}" style="width: 200px; height: 80px;"></div>
+                    <div id="chart-errorGraph${node.label}" style="width: 300px; height: 80px;"></div>
                 </div>
 
-                <div style="display:flex;align-items:center;flex-direction:row">
-                    <div> 平均响应时间：${node.responseTime}</div>
-                    <div id="chart-${node.id}" style="width: 200px; height: 100px;"></div>
+                <div style="display: flex; align-items: center; flex-direction: row">
+                    <div> 平均响应时间：${node.responseTime} </div>
+                    <div id='chart-responseGraph${node.label}' style="width: 300px; height: 80px;"></div>
                 </div>
 
                 <div>
                     告警数：
-                    紧急:<span style="color:red">${node.urgentAlarmNum}</span>
-                    <span /><span />
-                    严重:<span style="color:orange">${node.severeAlarmNum}</span>
+                    紧急:
+                    <span style="color:red"> ${node.urgentAlarmNum} </span>
+                    严重:
+                    <span style="color:orange"> ${node.severeAlarmNum} </span>
                 </div>
                 `;
 
-          // 获取包含折线图的元素，用于绘制折线图
-          const chartContainer = outDiv.querySelector(`#chart-${node.id}`);
+          // const chartContainer = outDiv.querySelector(`#chart-requestGraph`);
+          // const chart = echarts.init(chartContainer);
+          let data = node.requestGraph;
+          let dateList = data.map((item) => item.value); // 获取数据中的数值--x
+          let valueList = data.map((item) => item.name); // 获取数据中的标签--y
 
-          // 基于准备好的 DOM，初始化 echarts 实例
-          const chart = echarts.init(chartContainer);
+          let data1 = node.errorGraph;
+          let dateList1 = data1.map((item) => item.value); // 获取数据中的数值--x
+          let valueList1 = data1.map((item) => item.name); // 获取数据中的标签--y
 
-          // 定义折线图数据
-          const data = node.requestGraph;
-          // console.log(data);
+          let data2 = node.responseGraph;
+          let dateList2 = data2.map((item) => item.value); // 获取数据中的数值--x
+          let valueList2 = data2.map((item) => item.name); // 获取数据中的标签--y
 
-          // data提供的数据数组
-          const dateList = data.map((item) => item.value); // 获取数据中的数值
-          const valueList = data.map((item) => item.name); // 获取数据中的标签
+          // console.log(data,data1,data2)
 
-          // console.log(values, labels);
+          // const options = {
+          //   // grid: {
+          //   //   top: 20,
+          //   //   bottom: 20,
+          //   //   left: 30,
+          //   //   right: 20,
+          //   // },
+          //   xAxis: [
+          //     {
+          //       type: "category",
+          //       data: dateList,
+          //       axisLine: {
+          //         show: false, // 隐藏轴线
+          //       },
+          //       axisTick: {
+          //         show: false, // 隐藏刻度
+          //       },
+          //       axisLabel: {
+          //         show: false, // 隐藏刻度文本
+          //       },
+          //       splitLine: {
+          //         show: false, // 隐藏背景中的横线
+          //       },
+          //     },
+          //   ],
+          //   yAxis: [
+          //     {
+          //       type: "value",
+          //       axisLine: {
+          //         show: false, // 隐藏轴线
+          //       },
+          //       axisTick: {
+          //         show: false, // 隐藏刻度
+          //       },
+          //       axisLabel: {
+          //         show: false, // 隐藏刻度文本
+          //       },
+          //       splitLine: {
+          //         show: false, // 隐藏背景中的横线
+          //       },
+          //     },
+          //   ],
+          //   series: [
+          //     {
+          //       type: "line",
+          //       data: valueList,
+          //       smooth: true,
+          //       symbol: "none", // 隐藏小圆点
+          //       //给折线图下方添加阴影
+          //       areaStyle: {
+          //         normal: {
+          //           color: new echarts.graphic.LinearGradient(
+          //             0,
+          //             0,
+          //             0,
+          //             1,
+          //             [
+          //               {
+          //                 offset: 0,
+          //                 color: "rgba(59, 34, 201,.4)",
+          //               },
+          //               {
+          //                 offset: 1,
+          //                 color: "rgba(16, 25, 112,0.2)",
+          //               },
+          //             ],
+          //             false
+          //           ),
+          //           shadowColor: "rgba(59, 34, 201,1)",
+          //           shadowBlur: 10,
+          //         },
+          //       },
+          //       // itemStyle: {
+          //       //   normal: {
+          //       //     show: false,
+          //       //     color: "#3282FF", //改变折线点的颜色
+          //       //     lineStyle: {
+          //       //       color: "#3282FF", //改变折线颜色
+          //       //     },
+          //       //   },
+          //       //   emphasis: {
+          //       //     show: true,
+          //       //     color: "#3282FF",
+          //       //     borderColor: "#ffffff",
+          //       //     label: {
+          //       //       show: true, //开启显示
+          //       //       position: "top", //在上方显示
+          //       //       textStyle: {
+          //       //         //数值样式
+          //       //         color: "#fff",
+          //       //         fontSize: 16,
+          //       //         padding: [10, 10, 10, 10],
+          //       //         backgroundColor: "rgba(24, 71, 185, .6)",
+          //       //         borderRadius: 4,
+          //       //       },
+          //       //     },
+          //       //   },
+          //       // },
+          //     },
+          //   ],
+          // };
+          // chart.setOption(options);
 
-          const options = {
-            // Make gradient line here
-            visualMap: [
-              {
-                show: false,
-                type: "continuous",
-                seriesIndex: 0,
-                min: 0,
-                max: 400,
+          const charts = [
+            {
+              container: outDiv.querySelector(
+                `#chart-requestGraph${node.label}`
+              ),
+              options: {
+                // grid: {
+                //   top: 20,
+                //   bottom: 20,
+                //   left: 30,
+                //   right: 20,
+                // },
+                xAxis: [
+                  {
+                    type: "category",
+                    data: dateList,
+                    // axisLine: {
+                    //   show: false, // 隐藏轴线
+                    // },
+                    // axisTick: {
+                    //   show: false, // 隐藏刻度
+                    // },
+                    // axisLabel: {
+                    //   show: false, // 隐藏刻度文本
+                    // },
+                    // splitLine: {
+                    //   show: false, // 隐藏背景中的横线
+                    // },
+                  },
+                ],
+                yAxis: [
+                  {
+                    type: "value",
+                    // axisLine: {
+                    //   // show: false, // 隐藏轴线
+                    // },
+                    // axisTick: {
+                    //   // show: false, // 隐藏刻度
+                    // },
+                    // axisLabel: {
+                    //   // show: false, // 隐藏刻度文本
+                    // },
+                    // splitLine: {
+                    //   show: false, // 隐藏背景中的横线
+                    // },
+                  },
+                ],
+                series: [
+                  {
+                    type: "line",
+                    data: valueList,
+                    smooth: true,
+                    symbol: "none", // 隐藏小圆点
+                    //给折线图下方添加阴影
+                    areaStyle: {
+                      normal: {
+                        color: new echarts.graphic.LinearGradient(
+                          0,
+                          0,
+                          0,
+                          1,
+                          [
+                            {
+                              offset: 0,
+                              color: "rgba(59, 34, 201,.4)",
+                            },
+                            {
+                              offset: 1,
+                              color: "rgba(16, 25, 112,0.2)",
+                            },
+                          ],
+                          false
+                        ),
+                        shadowColor: "#3282FF",
+                        shadowBlur: 10,
+                      },
+                    },
+                  },
+                ],
               },
-              {
-                show: false,
-                type: "continuous",
-                seriesIndex: 1,
-                dimension: 0,
-                min: 0,
-                max: dateList.length - 1,
-              },
-            ],
-            tooltip: {
-              trigger: "axis",
             },
-            xAxis: [
-              {
-                data: dateList,
+            {
+              container: outDiv.querySelector(`#chart-errorGraph${node.label}`),
+              data: node.responseTimeGraph,
+              options: {
+                // grid: {
+                //   top: 20,
+                //   bottom: 20,
+                //   left: 30,
+                //   right: 20,
+                // },
+                xAxis: [
+                  {
+                    type: "category",
+                    data: dateList1,
+                    // axisLine: {
+                    //   show: false, // 隐藏轴线
+                    // },
+                    // axisTick: {
+                    //   show: false, // 隐藏刻度
+                    // },
+                    // axisLabel: {
+                    //   show: false, // 隐藏刻度文本
+                    // },
+                    // splitLine: {
+                    //   show: false, // 隐藏背景中的横线
+                    // },
+                  },
+                ],
+                yAxis: [
+                  {
+                    type: "value",
+                    // axisLine: {
+                    //   show: false, // 隐藏轴线
+                    // },
+                    // axisTick: {
+                    //   show: false, // 隐藏刻度
+                    // },
+                    // axisLabel: {
+                    //   show: false, // 隐藏刻度文本
+                    // },
+                    // splitLine: {
+                    //   show: false, // 隐藏背景中的横线
+                    // },
+                  },
+                ],
+                series: [
+                  {
+                    type: "line",
+                    data: valueList1,
+                    smooth: true,
+                    symbol: "none", // 隐藏小圆点
+                    //给折线图下方添加阴影
+                    areaStyle: {
+                      normal: {
+                        color: new echarts.graphic.LinearGradient(
+                          0,
+                          0,
+                          0,
+                          1,
+                          [
+                            {
+                              offset: 0,
+                              color: "rgba(59, 34, 201,.4)",
+                            },
+                            {
+                              offset: 1,
+                              color: "rgba(16, 25, 112,0.2)",
+                            },
+                          ],
+                          false
+                        ),
+                        shadowColor: "#3282FF",
+                        shadowBlur: 10,
+                      },
+                    },
+                    // itemStyle: {
+                    //   normal: {
+                    //     show: false,
+                    //     color: "#3282FF", //改变折线点的颜色
+                    //     lineStyle: {
+                    //       color: "#3282FF", //改变折线颜色
+                    //     },
+                    //   },
+                    //   emphasis: {
+                    //     show: true,
+                    //     color: "#3282FF",
+                    //     borderColor: "#ffffff",
+                    //     label: {
+                    //       show: true, //开启显示
+                    //       position: "top", //在上方显示
+                    //       textStyle: {
+                    //         //数值样式
+                    //         color: "#fff",
+                    //         fontSize: 16,
+                    //         padding: [10, 10, 10, 10],
+                    //         backgroundColor: "rgba(24, 71, 185, .6)",
+                    //         borderRadius: 4,
+                    //       },
+                    //     },
+                    //   },
+                    // },
+                  },
+                ],
               },
-              {
-                data: dateList,
-                gridIndex: 1,
+            },
+            {
+              container: outDiv.querySelector(
+                `#chart-responseGraph${node.label}`
+              ),
+              data: node.newGraph,
+              options: {
+                // grid: {
+                //   top: 20,
+                //   bottom: 20,
+                //   left: 30,
+                //   right: 20,
+                // },
+                xAxis: [
+                  {
+                    type: "category",
+                    data: dateList2,
+                    // axisLine: {
+                    //   show: false, // 隐藏轴线
+                    // },
+                    // axisTick: {
+                    //   show: false, // 隐藏刻度
+                    // },
+                    // axisLabel: {
+                    //   show: false, // 隐藏刻度文本
+                    // },
+                    // splitLine: {
+                    //   show: false, // 隐藏背景中的横线
+                    // },
+                  },
+                ],
+                yAxis: [
+                  {
+                    type: "value",
+                    // axisLine: {
+                    //   show: false, // 隐藏轴线
+                    // },
+                    // axisTick: {
+                    //   show: false, // 隐藏刻度
+                    // },
+                    // axisLabel: {
+                    //   show: false, // 隐藏刻度文本
+                    // },
+                    // splitLine: {
+                    //   show: false, // 隐藏背景中的横线
+                    // },
+                  },
+                ],
+                series: [
+                  {
+                    type: "line",
+                    data: valueList2,
+                    smooth: true,
+                    symbol: "none", // 隐藏小圆点
+                    //给折线图下方添加阴影
+                    areaStyle: {
+                      normal: {
+                        color: new echarts.graphic.LinearGradient(
+                          0,
+                          0,
+                          0,
+                          1,
+                          [
+                            {
+                              offset: 0,
+                              color: "rgba(59, 34, 201,.4)",
+                            },
+                            {
+                              offset: 1,
+                              color: "rgba(16, 25, 112,0.2)",
+                            },
+                          ],
+                          false
+                        ),
+                        shadowColor: "#3282FF",
+                        shadowBlur: 10,
+                      },
+                    },
+                    // itemStyle: {
+                    //   normal: {
+                    //     show: false,
+                    //     color: "#3282FF", //改变折线点的颜色
+                    //     lineStyle: {
+                    //       color: "#3282FF", //改变折线颜色
+                    //     },
+                    //   },
+                    //   emphasis: {
+                    //     show: true,
+                    //     color: "#3282FF",
+                    //     borderColor: "#ffffff",
+                    //     label: {
+                    //       show: true, //开启显示
+                    //       position: "top", //在上方显示
+                    //       textStyle: {
+                    //         //数值样式
+                    //         color: "#fff",
+                    //         fontSize: 16,
+                    //         padding: [10, 10, 10, 10],
+                    //         backgroundColor: "rgba(24, 71, 185, .6)",
+                    //         borderRadius: 4,
+                    //       },
+                    //     },
+                    //   },
+                    // },
+                  },
+                ],
               },
-            ],
-            yAxis: [
-              {},
-              {
-                gridIndex: 1,
-              },
-            ],
-            grid: [
-              {
-                bottom: "60%",
-              },
-              {
-                top: "60%",
-              },
-            ],
-            series: [
-              {
-                type: "line",
-                showSymbol: false,
-                data: valueList,
-              },
-              {
-                type: "line",
-                showSymbol: false,
-                data: valueList,
-                xAxisIndex: 1,
-                yAxisIndex: 1,
-              },
-            ],
-          };
+            },
+          ];
 
-          // 使用刚指定的配置项和数据显示图表
-          chart.setOption(options);
+          this.initCharts(charts);
 
           // 返回 outDiv，作为 Tooltip 实例的内容
           return outDiv;
         },
       });
 
+      // The symbols for the marker inside the combo
+      const collapseIcon = (x, y, r) => {
+        return [
+          ["M", x - r, y],
+          ["a", r, r, 0, 1, 0, r * 2, 0],
+          ["a", r, r, 0, 1, 0, -r * 2, 0],
+          ["M", x - r + 4, y],
+          ["L", x - r + 2 * r - 4, y],
+        ];
+      };
+
+      const expandIcon = (x, y, r) => {
+        return [
+          ["M", x - r, y],
+          ["a", r, r, 0, 1, 0, r * 2, 0],
+          ["a", r, r, 0, 1, 0, -r * 2, 0],
+          ["M", x - r + 4, y],
+          ["L", x - r + 2 * r - 4, y],
+          ["M", x - r + r, y - r + 4],
+          ["L", x, y + r - 4],
+        ];
+      };
+
+      G6.registerCombo(
+        "cCircle",
+        {
+          drawShape: function draw(cfg, group) {
+            const self = this;
+            // 获取形状样式，其中 style.r 对应于内置矩形组合图中的 R
+            const style = self.getShapeStyle(cfg);
+            console.log(style);
+            // 添加一个圆形作为键形状，与扩展的“圆形”类型组合相同
+            const circle = group.addShape("circle", {
+              attrs: {
+                ...style,
+                x: 0,
+                y: 0,
+                r: style.r,
+              },
+              draggable: true,
+              name: "combo-keyShape",
+            });
+            // 在底部添加标记
+            const marker = group.addShape("marker", {
+              attrs: {
+                ...style,
+                fill: "#fff",
+                opacity: 1,
+                x: 0,
+                y: style.r,
+                r: 30,
+                symbol: collapseIcon,
+                lineWidth: 7,
+                lineDash: [0, 0],
+              },
+              draggable: true,
+              name: "combo-marker-shape",
+            });
+
+            console.log(marker);
+
+            return circle;
+          },
+          // 定义标记的更新逻辑
+          afterUpdate: function afterUpdate(cfg, combo) {
+            const self = this;
+            // 获取形状样式，其中 style.r 对应于内置矩形组合图中的 R
+            const style = self.getShapeStyle(cfg);
+            // 从 combo 对象中获取图形组 group
+            const group = combo.get("group");
+            // 在组合的图形组中查找标记形状
+            const marker = group.find(
+              (ele) => ele.get("name") === "combo-marker-shape"
+            );
+            // 更新标记形状
+            marker.attr({
+              x: 0,
+              y: style.r,
+              // 组合数据中的属性“折叠”表示组合的折叠状态，根据“折叠”更新符号
+              symbol: cfg.collapsed ? expandIcon : collapseIcon,
+            });
+          },
+        },
+        "circle"
+      );
+
       // 获取容器图形
       const container = document.getElementById("container");
       const width = container.scrollWidth;
-      const height = container.scrollHeight || 650;
+      const height = container.scrollHeight || 700;
 
       // 创建图形实例
       this.graph = new G6.Graph({
@@ -529,18 +1035,22 @@ export default {
         fitCenter: true,
         // 设置图的最小缩放值，表示非常大的缩放比例即几乎不缩小
         minZoom: 0.00000001,
+        // 若希望在带有 combo 的图上，节点、边、combo 的层级符合常规逻辑，需要将 groupByTypes 设置为 false
+        // groupByTypes: false,
         // 布局算法配置对象
         layout: {
           type: "comboForce", // comboForce力导向布局，用于对包含组合的图进行布局，默认为random布局
           preventOverlap: true, // 防止节点重叠
-          // nodeSize: 30  // 节点大小，用于算法中防止节点重叠时的碰撞检测。由于已经在上一节的元素配置中设置了每个节点的 size 属性，则不需要在此设置 nodeSize
-          groupByTypes: false, // 若希望在带有 combo 的图上，节点、边、combo 的层级符合常规逻辑，需要将 groupByTypes 设置为 false
+          preventNodeOverlap: true,
+          collideStrength: 1,
+          nodeSize: 100, // 节点大小，用于算法中防止节点重叠时的碰撞检测。由于已经在上一节的元素配置中设置了每个节点的 size 属性，则不需要在此设置 nodeSize
+
           // nodeSpacing: (d) => 20, // 指定节点之间的最小空间距离为 8
-          // center: [500, 500], // 可选，默认为图的中心
-          linkDistance: 400, // 布局时，边的距离长度
-          nodeStrength: 200, // 可选
-          edgeStrength: 0.1, // 可选
-          // curveOffset: -100, // 设置曲线偏移量为负值
+          center: [300, 300], // 可选，默认为图的中心
+          linkDistance: 450, // 布局时边的距离长度，指定两个连接的节点之间的期望距离。值越大，节点之间的距离越远。
+          nodeStrength: 200, // 节点的力量，用于决定节点受到的引力和斥力的强度。值越大，节点之间相互排斥的力量越强。
+          edgeStrength: 1, // 边的力量，用于决定边的长度对布局的影响程度。值越小，边在布局中的长度越紧凑。
+          // curveOffset: -100, // 设置曲线偏移量为负值。在布局中，边的形状可以是直线或曲线，通过调整此偏移量可以改变曲线的弯曲程度。
         },
         // 默认节点样式
         defaultNode: {
@@ -581,7 +1091,21 @@ export default {
           targetAnchor: 1, // 该边连入 source 点的第 1 个 anchorPoint
         },
         // 默认分组的样式
-        defaultCombo: {},
+        defaultCombo: {
+          type: "cCircle",
+          labelCfg: {
+            style: {
+              fontSize: 40, // 标签文字大小
+            },
+          },
+          size: [300, 300], // 宽 / 高
+          // 分组样式
+          style: {
+            lineDash: [30, 4], // 边框虚线样式，虚线的线段长度 / 间隔长度
+            lineWidth: 5, // 边框线宽
+            stroke: "#DEDEDE", // 边框颜色
+          },
+        },
         // 指定图的行为模式，默认模式: 拖拽组合、拖拽节点、拖拽画布、缩放画布、自定义点击行为
         modes: {
           default: [
@@ -590,7 +1114,6 @@ export default {
             "drag-canvas",
             "zoom-canvas",
             "behaviorName",
-            "line-dash",
             {
               type: "collapse-expand-combo",
               trigger: "click",
@@ -608,47 +1131,88 @@ export default {
         animate: true,
       });
 
-      // 节点动态设置样式
-      this.graph.node((node) => {
-        return {
-          style: {
-            fill: "#fff",
-            stroke: node.color,
-            lineWidth: 10,
-          },
-          icon: {
-            show: true,
-            img: node.img,
-            width: 60,
-            height: 60,
-          },
-        };
-      });
-
       // 动态设置节点样式--主要是颜色展示和变化
       this.nodesArray.forEach((node) => {
-        console.log(node);
-        if (node.state === "1") {
-          node.color = "#F7F3EF";
-          node.stateStyles = {
-            hover: {
-              stroke: "#FFD270",
-            },
-          };
-        } else if (node.state === "2") {
-          node.color = "#E5F3F3";
-          node.stateStyles = {
-            hover: {
-              stroke: "#0FC7C1",
-            },
-          };
-        } else if (node.state === "3") {
-          node.color = "#F2EDF0";
-          node.stateStyles = {
-            hover: {
-              stroke: "#E37C81",
-            },
-          };
+        switch (node.serverType) {
+          case "web":
+            node.color = "#E5F3F3";
+            node.style = {
+              fill: "#fff",
+              stroke: "#E5F3F3",
+              lineWidth: 10,
+            };
+            node.icon = {
+              show: true,
+              img: "/topo_images/cube.svg",
+              width: 60,
+              height: 60,
+            };
+            node.stateStyles = {
+              hover: {
+                stroke: "#0FC7C1",
+              },
+            };
+            break;
+          case "kafka":
+            node.color = "#E5F3F3";
+            node.style = {
+              fill: "#fff",
+              stroke: "#E5F3F3",
+              lineWidth: 10,
+            };
+            node.icon = {
+              show: true,
+              img: "/topo_images/kafka.svg",
+              width: 60,
+              height: 60,
+            };
+            node.stateStyles = {
+              hover: {
+                stroke: "#0FC7C1",
+              },
+            };
+            break;
+          case "mysql":
+            node.color = "#F2EDF0";
+            node.style = {
+              fill: "#fff",
+              stroke: "#F2EDF0",
+              lineWidth: 10,
+            };
+            node.icon = {
+              show: true,
+              img: "/topo_images/mysql.svg",
+              width: 60,
+              height: 60,
+            };
+            node.stateStyles = {
+              hover: {
+                stroke: "#E37C81",
+              },
+            };
+            break;
+          case "redis":
+            node.color = "#E5F3F3";
+            node.style = {
+              fill: "#fff",
+              stroke: "#E5F3F3",
+              lineWidth: 10,
+            };
+            node.icon = {
+              show: true,
+              img: "/topo_images/redis.svg",
+              width: 60,
+              height: 60,
+            };
+            node.stateStyles = {
+              hover: {
+                stroke: "#0FC7C1",
+              },
+            };
+            break;
+          default:
+            // 未知的 serverType
+            break;
         }
       });
 
@@ -703,13 +1267,13 @@ export default {
 <style lang="scss" scoped>
 .topo {
   background: #f6f9fc;
-  height: 650px;
-  // .topo-container {
-  //   padding: 10px;
-  //   height: 650px;
-  //   background-image: linear-gradient(#f4f4f4 1px, transparent 0),
-  //     linear-gradient(90deg, #f4f4f4 1px, transparent 0);
-  // }
+  height: 700px;
+  .topo-container {
+    padding: 10px;
+    // height: 650px;
+    background-image: linear-gradient(#f4f4f4 1px, transparent 0),
+      linear-gradient(90deg, #f4f4f4 1px, transparent 0);
+  }
 }
 
 .toTotalTopo {
@@ -719,6 +1283,7 @@ export default {
   cursor: pointer;
 }
 
+// 样式颜色改变
 .el-button--primary {
   background-color: #0fc7c1;
   border-color: #0fc7c1;

@@ -312,7 +312,6 @@ import BarYChart from "./BarYChart";
 import { tableData } from "@/mock/linkTracing";
 import { data } from "./data.js";
 import Clipboard from "clipboard";
-
 // import { getAppList, getProjectList, getTraceList } from "@/api/link";
 
 export default {
@@ -455,11 +454,19 @@ export default {
     };
   },
 
+  watch: {
+    graph: {
+      handler: function (newV, oldV) {
+        console.log("newV ==>", newV, "oldV ==>", oldV);
+      },
+      deep: true,
+    },
+  },
+
   mounted() {
     this.serverId = this.$route.query.serverId;
-    // console.log(this.serverId);
     this.form.serverId.push(this.serverId);
-    this.isFirstRender = true;
+    // this.isFirstRender = true;
 
     // var clipboard = new Clipboard(".el-icon-document-copy");
     // clipboard.on("success", function (e) {
@@ -516,8 +523,6 @@ export default {
       }
     },
 
-    // 复制粘贴
-
     // 点击表格行
     handleRowClick(row) {
       this.drawerTitle = "TraceId: 根节点 label";
@@ -531,7 +536,12 @@ export default {
       this.processData(this.graphData);
       this.$nextTick(() => {
         this.initGraph();
+        // this.graph.changeData(this.graphData);
+
         // this.initSize();
+
+        // this.updateData(this.graphData);
+        // this.renderGraph();
       });
       this.drawerVisible = true;
     },
@@ -544,9 +554,10 @@ export default {
       this.stayingTime = [];
       this.labelList = [];
       this.label = [];
-      // this.graph.destroy(); // 销毁图形实体
-      // this.graph.clear(); // 清除画布元素。hnb
-      this.graphData = "";
+      this.graph.destroy(); // 销毁图形实体
+      // this.graph.clear(); // 清除画布元素。
+      this.graphData = null;
+      this.graph = null;
     },
 
     // tab组件的切换函数
@@ -608,7 +619,7 @@ export default {
       const width = 350;
       const height = container.scrollHeight * 2 || 1000;
 
-      console.log(width, height);
+      // console.log(width, height);
 
       this.graph = new G6.TreeGraph({
         container: "container",
@@ -666,13 +677,14 @@ export default {
       });
 
       this.updateData(this.graphData);
+      this.renderGraph();
 
-      if (this.isFirstRender == true) {
-        console.log(this.isFirstRender);
-        this.renderGraph();
-      }
+      // if (this.isFirstRender == true) {
+      //   console.log(this.isFirstRender);
+      //   this.renderGraph();
+      // }
 
-      this.isFirstRender = false;
+      // this.isFirstRender = false;
       // this.graph.fitView(0);
       // this.graph.fitCenter();
       // this.graph.zoom(1);
@@ -686,8 +698,8 @@ export default {
 
       const res = this.graph.getZoom();
 
-      console.log(lastPoint, newPoint);
-      console.log(res);
+      // console.log(lastPoint, newPoint);
+      // console.log(res);
 
       //移动画布相对位移
       // graph.translate(lastPoint.x - newPoint.x, lastPoint.y - newPoint.y);

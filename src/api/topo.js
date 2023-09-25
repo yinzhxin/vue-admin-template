@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-// 获取全量项目名称
+// 获取拓扑图
 export function getTopo(params) {
   return request({
     url: '/topology/genNodeAccess',
