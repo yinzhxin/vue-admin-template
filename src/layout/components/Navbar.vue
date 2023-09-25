@@ -6,53 +6,43 @@
         class="hamburger-container"
         @toggleClick="toggleSideBar"
       />
-
       <breadcrumb class="breadcrumb-container" />
     </div>
-
-    <div class="select">
-      <el-form inline v-model="form">
-        <el-form-item label="系统">
-          <el-select
-            v-model="form.project"
-            @focus="setMinWidthEmpty"
-            style="width: 100%"
-            clearable
-          >
-            <el-option
-              v-for="item in projectOption"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="1h">
-          <el-date-picker
-            v-model="form.time"
-            type="datetimerange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          >
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="">
-          <i class="el-icon-refresh" @click="handleRefresh"></i>
-        </el-form-item>
-      </el-form>
-    </div>
-
     <div class="right-menu">
+      <div class="select">
+        <el-select
+          v-model="form.project"
+          clearable
+          size="small"
+          style="margin-right:10px;width:300px;"
+        >
+          <span slot="prefix">系统</span>
+          <el-option
+            v-for="item in projectOption"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
+        <el-date-picker
+          v-model="form.time"
+          type="datetimerange"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          size="small"
+        >
+        </el-date-picker>
+        <i class="el-icon-refresh" @click="handleRefresh"></i>
+      </div>
       <el-badge class="notice">
         <i class="el-icon-bell"></i>
       </el-badge>
-
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <el-avatar :size="40" :src="circleUrl"></el-avatar>
-          <el-button type="text">Admin</el-button>
+          <el-avatar :size="30" :src="circleUrl"></el-avatar>
+          <el-button type="text" style="margin:0 15px 0 10px;">Admin</el-button>
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/">
@@ -108,15 +98,6 @@ export default {
       await this.$store.dispatch("user/logout");
       this.$router.push(`/login?redirect=${this.$route.fullPath}`);
     },
-    setMinWidthEmpty(val) {
-      // 无数据的情况下，给请选择提示设置最小宽度
-      let domEmpty = document.getElementsByClassName(
-        "el-select-dropdown__empty"
-      );
-      if (domEmpty.length > 0) {
-        domEmpty[0].style["min-width"] = val.srcElement.clientWidth + 2 + "px";
-      }
-    },
     handleRefresh() {
       alert("刷新");
     },
@@ -152,12 +133,20 @@ export default {
   }
 
   .right-menu {
-    float: right;
+    flex: 1;
     height: 100%;
     line-height: 50px;
+    display: flex;
+    justify-content: end;
+    align-items: center;
 
     &:focus {
       outline: none;
+    }
+    .select{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
 
     .right-menu-item {
@@ -179,64 +168,27 @@ export default {
     }
 
     .avatar-container {
-      margin-right: 10px;
-
       .avatar-wrapper {
         display: flex;
         align-items: center;
-        margin-top: 3px;
         position: relative;
         cursor: pointer;
-
-        .el-button--text {
-          padding-left: 8px;
-          padding-right: 0;
-          font-size: 18px;
-        }
-
-        .user-avatar {
-          cursor: pointer;
-          width: 40px;
-          height: 40px;
-          border-radius: 10px;
-        }
-
-        .el-icon-caret-bottom {
-          cursor: pointer;
-          position: absolute;
-          right: -20px;
-          top: 25px;
-          font-size: 12px;
-        }
       }
     }
 
     .notice {
       font-weight: 600;
       font-size: 25px;
-      top: -15px;
-      // left: -12px;
       cursor: pointer;
-      & > *:first-child {
-        margin-right: -460px;
-      }
+      margin-right: 10px;
     }
-  }
-}
-
-::v-deep .select {
-  display: flex;
-  align-items: center;
-  & > * {
-    margin-right: -380px;
-    margin-top: 20px;
-  }
-  .el-icon-refresh {
-    font-size: 30px;
-    font-weight: 700;
-    vertical-align: middle;
-    cursor: pointer;
-    color: #0fc7c1;
+    .el-icon-refresh {
+      font-size: 25px;
+      font-weight: 700;
+      cursor: pointer;
+      color: #0fc7c1;
+      margin: 0 10px;
+    }
   }
 }
 </style>

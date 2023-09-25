@@ -19,7 +19,7 @@ export default [
     hidden: true
   },
 
-  // 概览 
+  // 概览
   {
     path: '/',
     component: Layout,
@@ -30,6 +30,19 @@ export default [
         name: 'Dashboard',
         component: () => import('@/views/dashboard/index'),
         meta: { title: '概览', icon: 'dashboard' }
+      }
+    ]
+  },
+  // 告警中心
+  {
+    path: '/alarmCenter',
+    component: Layout,
+    children: [
+      {
+        path: 'alarmCenter',
+        name: 'AlarmCenter',
+        component: () => import('@/views/alarmCenter/index'),
+        meta: { title: '告警中心', icon: 'el-icon-message-solid' }
       }
     ]
   },
