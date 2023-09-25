@@ -57,6 +57,6 @@ export default {
 <style lang="scss" scoped>
 // 放大缩小时隐藏竖向滚动条
 ::v-deep .el-scrollbar__wrap {
-  overflow-y: hidden; 
+  overflow-y: auto;
 }
 </style>
