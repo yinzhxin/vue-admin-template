@@ -2,7 +2,7 @@
   <div :class="classObj" class="app-wrapper">
     <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
     <sidebar class="sidebar-container" />
-    <div class="main-container">
+    <div class="main-container" :style="{ 'padding-left': sidebar.opened?'210px':'54px' }">
       <div :class="{'fixed-header':fixedHeader}">
         <navbar />
       </div>
@@ -59,7 +59,6 @@ export default {
     position: relative;
     height: 100%;
     width: 100%;
-    display: flex;
     &.mobile.openSidebar{
       position: fixed;
       top: 0;
@@ -86,6 +85,9 @@ export default {
 
   .hideSidebar .fixed-header {
     width: calc(100% - 54px)
+  }
+  .openSidebar .fixed-header{
+    width: calc(100% - 210px)
   }
 
   .mobile .fixed-header {
