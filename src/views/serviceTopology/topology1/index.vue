@@ -246,7 +246,7 @@ export default {
               "http://localhost:" +
               window.location.port +
               "/topo_images/cube.svg",
-            color: "#E5F3F3",
+            color: "#ECF5FF",
           },
           {
             id: "5",
@@ -256,7 +256,7 @@ export default {
               "http://localhost:" +
               window.location.port +
               "/topo_images/cube.svg",
-            color: "#E5F3F3",
+            color: "#ECF5FF",
           },
           {
             id: "6",
@@ -266,7 +266,7 @@ export default {
               "http://localhost:" +
               window.location.port +
               "/topo_images/cube.svg",
-            color: "#E5F3F3",
+            color: "#ECF5FF",
           },
           {
             id: "7",
@@ -275,7 +275,7 @@ export default {
               "http://localhost:" +
               window.location.port +
               "/topo_images/data.svg",
-            color: "#E5F3F3",
+            color: "#ECF5FF",
           },
           {
             id: "8",
@@ -284,7 +284,7 @@ export default {
               "http://localhost:" +
               window.location.port +
               "/topo_images/kafka.svg",
-            color: "#E5F3F3",
+            color: "#ECF5FF",
           },
           {
             id: "9",
@@ -303,7 +303,7 @@ export default {
               "http://localhost:" +
               window.location.port +
               "/topo_images/cube.svg",
-            color: "#E5F3F3",
+            color: "#ECF5FF",
           },
           {
             id: "11",
@@ -313,7 +313,7 @@ export default {
               "http://localhost:" +
               window.location.port +
               "/topo_images/cube.svg",
-            color: "#E5F3F3",
+            color: "#ECF5FF",
           },
           {
             id: "12",
@@ -323,7 +323,7 @@ export default {
               "http://localhost:" +
               window.location.port +
               "/topo_images/cube.svg",
-            color: "#E5F3F3",
+            color: "#ECF5FF",
           },
         ],
         edges: [
