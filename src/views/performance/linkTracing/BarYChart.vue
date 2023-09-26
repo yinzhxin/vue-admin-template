@@ -173,9 +173,7 @@ export default {
               borderRadius: 5, // 统一设置四个角的圆角大小
               normal: {
                 color: (item) => {
-                  // console.log(item);
                   let res = this.labelList.filter((elem) => {
-                    // console.log(elem.label);
                     return item.name == elem.label;
                   });
                   return res[0].color; // 返回第一个匹配项的颜色

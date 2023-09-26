@@ -186,7 +186,7 @@ export default {
       font-size: 25px;
       font-weight: 700;
       cursor: pointer;
-      color: #0fc7c1;
+      color: #409EFF;
       margin: 0 10px;
     }
   }
