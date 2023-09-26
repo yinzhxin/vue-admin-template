@@ -1,112 +1,92 @@
 <template>
-  <div class="dashboard-container">
+  <div class="wrap-container">
     <!-- 表单 -->
-    <el-row :gutter="20" style="margin-bottom: 0px">
-      <el-col :span="24">
-        <el-form :inline="true" :model="form" ref="form">
-          <!-- 拓扑图/列表 -->
-          <el-form-item label="" style="margin-right: 10px">
-            <el-radio-group v-model="form.radio" @change="handleChange">
-              <el-radio-button label="list">
-                <i class="el-icon-tickets"></i>
-                列表
-              </el-radio-button>
-              <el-radio-button label="topo">
-                <i class="el-icon-share"></i>
-                拓扑图
-              </el-radio-button>
-            </el-radio-group>
-          </el-form-item>
-          <!-- 所属应用 -->
-          <el-form-item label="">
-            <el-select
-              v-model="form.app"
-              placeholder="所属应用"
-              multiple
-              clearable
-            >
-              <el-option label="app1" value="app1"></el-option>
-              <el-option label="app2" value="app2"></el-option>
-            </el-select>
-          </el-form-item>
-          <!-- 所属服务 -->
-          <el-form-item label="">
-            <el-select
-              v-model="form.server"
-              placeholder="所属服务"
-              multiple
-              clearable
-            >
-              <el-option label="server1" value="server1"></el-option>
-              <el-option label="server1" value="server1"></el-option>
-            </el-select>
-          </el-form-item>
-          <!-- 按钮 -->
-          <el-form-item>
-            <el-button type="primary" @click="handleSearch('form')">
-              搜索
-            </el-button>
-            <el-button class="clearBtn" @click="handleClear('form')">
-              清空
-            </el-button>
-            <el-button type="primary" @click="handleClear('form')">
-              刷新
-            </el-button>
-          </el-form-item>
+    <el-form :inline="true" :model="form" ref="form">
+      <!-- 拓扑图/列表 -->
+      <el-form-item label="">
+        <el-radio-group v-model="form.radio" @change="handleChange">
+          <el-radio-button label="list">
+            <i class="el-icon-tickets"></i>
+            列表
+          </el-radio-button>
+          <el-radio-button label="topo">
+            <i class="el-icon-share"></i>
+            拓扑图
+          </el-radio-button>
+        </el-radio-group>
+      </el-form-item>
+      <!-- 所属应用 -->
+      <el-form-item label="">
+        <el-select
+          v-model="form.app"
+          placeholder="所属应用"
+          multiple
+          clearable
+        >
+          <el-option label="app1" value="app1"></el-option>
+          <el-option label="app2" value="app2"></el-option>
+        </el-select>
+      </el-form-item>
+      <!-- 所属服务 -->
+      <el-form-item label="">
+        <el-select
+          v-model="form.server"
+          placeholder="所属服务"
+          multiple
+          clearable
+        >
+          <el-option label="server1" value="server1"></el-option>
+          <el-option label="server1" value="server1"></el-option>
+        </el-select>
+      </el-form-item>
+      <!-- 按钮 -->
+      <el-form-item>
+        <el-button type="primary" @click="handleSearch('form')">
+          搜索
+        </el-button>
+        <el-button class="clearBtn" @click="handleClear('form')">
+          清空
+        </el-button>
+      </el-form-item>
+    </el-form>
 
-          <el-form-item v-if="form.radio == 'list'">
-            <el-button type="primary">
-              <i class="el-icon-menu" /> 应用管理
-            </el-button>
-          </el-form-item>
-        </el-form>
-
-        <div style="margin-bottom: 10px" v-if="!isTotalTopo">
-          <i class="el-icon-back toTotalTopo" @click="handleBack">
-            返回总拓扑图
-          </i>
-          <el-select v-model="toTotalTopo" @click="handleChangeserverId">
-            <el-option
-              v-for="item in serverIdOption"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
-        </div>
-      </el-col>
-    </el-row>
+    <div v-if="!isTotalTopo&&form.radio == 'topo'" class="back-div">
+      <i class="el-icon-back toTotalTopo" @click="handleBack">
+        返回总拓扑图
+      </i>
+      <el-select v-model="toTotalTopo" @click="handleChangeserverId">
+        <el-option
+          v-for="item in serverIdOption"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        >
+        </el-option>
+      </el-select>
+    </div>
 
     <!-- 拓扑图 / 列表 -->
-    <el-row :gutter="20">
-      <el-col :span="24">
-        <div class="topo">
-          <div class="" v-if="form.radio == 'topo'">
-            <!-- 创建容器 -->
-            <div id="container"></div>
-          </div>
+    <div class="topo">
+      <div v-if="form.radio == 'topo'">
+        <!-- 创建容器 -->
+        <div id="container"></div>
+      </div>
 
-          <div class="topo-container" v-if="form.radio == 'list'">
-            <!-- 列表 -->
-            <Table :table-data="table.tableData" :columns="table.columns" />
-
-            <div style="padding-top: 15px" v-if="form.radio == 'list'">
-              <el-pagination
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                :total="table.page.count"
-                :current-page="table.page.current"
-                :page-size="table.page.size"
-                :page-sizes="[10, 20, 30, 40]"
-                layout="total, sizes, prev, pager, next, jumper"
-              >
-              </el-pagination>
-            </div>
-          </div>
-        </div>
-      </el-col>
-    </el-row>
+      <template v-else>
+        <!-- 列表 -->
+        <Table :table-data="table.tableData" :columns="table.columns" />
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :total="table.page.count"
+          :current-page="table.page.current"
+          :page-size="table.page.size"
+          :page-sizes="[10, 20, 30, 40]"
+          layout="total, sizes, prev, pager, next, jumper"
+        >
+        </el-pagination>
+      </template>
+    </div>
   </div>
 </template>
 
@@ -303,6 +283,7 @@ export default {
       // 隐藏 返回总拓扑的按钮
       this.isTotalTopo = true;
       if (value == "topo") {
+        this.isTotalTopo = true
         // 切换到topo，因切换到list时，实例被销毁，要重新初始化
         this.initGraph();
         // 实例被销毁，不用下面的方法
@@ -1193,19 +1174,19 @@ export default {
 
 <style lang="scss" scoped>
 .topo {
-  background: #f6f9fc;
-  height: 700px;
-  .topo-container {
-    padding: 10px;
-    background-image: linear-gradient(#f4f4f4 1px, transparent 0),
-      linear-gradient(90deg, #f4f4f4 1px, transparent 0);
+  min-height: 700px;
+  .el-pagination{
+    margin-top:10px;
   }
 }
-
-.toTotalTopo {
-  font-size: 22px;
-  font-weight: 700;
-  margin-right: 10px;
-  cursor: pointer;
+.back-div{
+  display: flex;
+  align-items: center;
+  .toTotalTopo {
+    font-size: 22px;
+    font-weight: 700;
+    margin-right: 10px;
+    cursor: pointer;
+  }
 }
 </style>

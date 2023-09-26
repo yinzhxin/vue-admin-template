@@ -1,5 +1,5 @@
 <template>
-  <section class="app-main" :style="styles">
+  <section class="app-main">
     <transition name="fade-transform" mode="out-in">
       <router-view :key="key" />
     </transition>
@@ -11,23 +11,12 @@ export default {
   name: "AppMain",
   computed: {
     key() {
-      // console.log("$route.path: ", this.$route.path);
-      if (this.$route.path === "/operImprove/application/application1") {
-        this.styles.backgroundColor = "#fff";
-        this.styles.padding = "0px";
-      } else {
-        this.styles.backgroundColor = "#eef0f3";
-        this.styles.padding = "20px";
-      }
       return this.$route.path;
     },
   },
   data() {
     return {
-      styles: {
-        backgroundColor: "#eef0f3",
-        padding: "20px",
-      },
+
     };
   },
 };
