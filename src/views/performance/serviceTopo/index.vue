@@ -1,5 +1,5 @@
 <template>
-  <div class="wrap-container">
+  <div class="dashboard-container">
     <!-- 表单 -->
     <el-form :inline="true" :model="form" ref="form">
       <!-- 拓扑图/列表 -->
@@ -1165,13 +1165,16 @@ export default {
 <style lang="scss" scoped>
 .topo {
   min-height: 700px;
-  .el-pagination {
-    margin-top: 10px;
+  background: #fff;
+  padding: 20px;
+  .el-pagination{
+    margin-top:10px;
   }
 }
 .back-div {
   display: flex;
   align-items: center;
+  margin-bottom: 10px;
   .toTotalTopo {
     font-size: 22px;
     font-weight: 700;
