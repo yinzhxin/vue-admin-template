@@ -21,9 +21,9 @@
             >
               <el-option
                 v-for="item in appList"
-                :key="item.label"
-                :label="item.label"
-                :value="item.value"
+                :key="item.appId"
+                :label="item.appName"
+                :value="item.appId"
               />
             </el-select>
           </el-form-item>
@@ -36,7 +36,7 @@
               clearable
             >
               <el-option
-                v-for="item in serverSelection"
+                v-for="item in serviceList"
                 :key="item.label"
                 :label="item.label"
                 :value="item.value"
@@ -47,12 +47,13 @@
           <el-form-item label="">
             <el-select
               v-model="form.Endpoint"
+              value-key="label"
               placeholder="Endpoint 名称"
               multiple
               clearable
             >
               <el-option
-                v-for="item in EndpointSelection"
+                v-for="item in endpointList"
                 :key="item.label"
                 :label="item.label"
                 :value="item.value"
@@ -69,9 +70,9 @@
             >
               <el-option
                 v-for="item in instanceList"
-                :key="item.label"
-                :label="item.label"
-                :value="item.value"
+                :key="item.instanceId"
+                :label="item.instanceName"
+                :value="item.instanceId"
               />
             </el-select>
           </el-form-item>
@@ -92,10 +93,12 @@
           </el-form-item>
           <!-- 按钮：搜索/清空 -->
           <el-form-item>
-            <el-button type="primary" @click="onSubmit('form')">
+            <el-button type="primary" @click="handleSearch('form')">
               搜索
             </el-button>
-            <el-button class="clearBtn" @click="onSubmit">清空</el-button>
+            <el-button class="clearBtn" @click="handleClear('form')"
+              >清空</el-button
+            >
           </el-form-item>
           <!-- 提示问号 -->
           <el-tooltip effect="dark" placement="top" class="tooltip">
@@ -131,7 +134,7 @@
             <el-pagination
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
-              :total="table.page.count"
+              :total="table.page.total"
               :current-page="table.page.current"
               :page-size="table.page.size"
               :page-sizes="[10, 20, 30, 40]"
@@ -145,11 +148,12 @@
 
     <!-- 抽屉 -->
     <el-drawer
-      style="overflow-y: auto"
+      custom-class="drawer-wrapper"
       direction="rtl"
       size="70%"
       :visible.sync="drawerVisible"
       :before-close="closeDrawer"
+      :destroy-on-close="true"
     >
       <template v-slot:title>
         <h3>{{ drawerTitle }}</h3>
@@ -188,12 +192,13 @@
         <el-tab-pane label="树形" name="1">
           <div class="drawer-content">
             <!-- 树状图表 -->
-            <!-- <div id="container-wrapper" ref="containerWrapper"> -->
-            <div id="container" ref="container" />
-            <!-- </div> -->
+            <div style="width: 50%; height: 100%">
+              <div id="container" ref="container" />
+            </div>
+
             <!-- 柱状图 -->
             <BarYChart
-              :height="'125%'"
+              :height="'100%'"
               :width="'100%'"
               :duringTime="duringTime"
               :pendingTime="pendingTime"
@@ -204,38 +209,33 @@
           </div>
         </el-tab-pane>
         <el-tab-pane label="Span列表" name="2">
-          <div style="height: 100%; overflow-y: scroll">
-            <Table
-              :table-data="table2.tableData2"
-              :columns="table2.columns"
-              :maxHeight="600"
-              :tableStyle="{ 'padding-right': '20px' }"
-            />
-            <div style="padding-top: 20px">
-              <el-pagination
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                :total="table2.page.count"
-                :current-page="table2.page.current"
-                :page-size="table2.page.size"
-                :page-sizes="[10, 20, 30, 40]"
-                layout="total, sizes, prev, pager, next, jumper"
-              >
-              </el-pagination>
-            </div>
+          <Table
+            size="mini"
+            :table-data="table2.tableData2"
+            :columns="table2.columns"
+          />
+          <div style="padding: 20px 0">
+            <el-pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :total="table2.page.count"
+              :current-page="table2.page.current"
+              :page-size="table2.page.size"
+              :page-sizes="[10, 20, 30, 40]"
+              layout="total, sizes, prev, pager, next, jumper"
+            >
+            </el-pagination>
           </div>
         </el-tab-pane>
         <el-tab-pane label="拓扑图" name="3">
-          <div style="height: 100vh; overflow-y: scroll">
-            <div id="container-tree" ref="container-tree" />
-          </div>
+          <div id="container-tree" ref="container-tree" />
         </el-tab-pane>
       </el-tabs>
     </el-drawer>
 
     <el-drawer
       :append-to-body="true"
-      :visible.sync="dialogVisible"
+      :visible.sync="nodeDrawerVisible"
       custom-class="my-drawer"
       size="70%"
     >
@@ -295,24 +295,61 @@
 
 <script>
 import G6 from "@antv/g6";
+import Clipboard from "clipboard";
 import Table from "@/views/components/Table.vue";
 import BarYChart from "./BarYChart";
-import { tableData, data, tableData2, treeData } from "@/mock/linkTracing";
-import Clipboard from "clipboard";
+import {
+  getProjectList,
+  getAppList,
+  getInstanceList,
+  getTraceList,
+  getTraceInfo,
+  traceData,
+  tableData2,
+  treeData,
+} from "@/mock/linkTracing";
 
 export default {
   name: "LinkTracing",
   components: { Table, BarYChart },
   data() {
     return {
-      serverId: "",
+      serverId: "", // query参数
+      projectId: "",
+      projectList: [],
+      form: {
+        traceId: "",
+        appId: [],
+        instanceId: [],
+        serverId: [],
+        Endpoint: [],
+        status: "",
+        spendTime: "",
+      },
+      // !所属应用
+      appList: [],
+      // !实例名称
+      instanceList: [],
+      // !所属服务
+      serviceList: [
+        { label: "shop_aaa", value: "shop_aaa" },
+        { label: "shop_xxx", value: "shop_xxx" },
+        { label: "shop_yyy", value: "shop_yyy" },
+      ],
+      // !Endpoint 名称
+      endpointList: [
+        { label: "aaa", value: "aaa" },
+        { label: "bbb", value: "bbb" },
+        { label: "ccc", value: "ccc" },
+        { label: "ddd", value: "ddd" },
+      ],
+
+      graph: null,
       graphData: "",
-      graph: "",
-      isFirstRender: true,
       canvasWidth: 0, // 画布宽度
       canvasHeight: 0, // 画布高度
 
-      graphTree: "",
+      graphTree: null,
 
       // 柱状图数据
       duringTime: [],
@@ -321,82 +358,44 @@ export default {
       labelList: [],
       label: [],
 
-      dialogVisible: false,
+      nodeDrawerVisible: false,
       drawerVisible: false,
-      drawerTitle: "",
       activeName: "1",
       activeName2: "1",
       spanRadio: "all",
-      rowObj: "",
-      form: {
-        serverId: [],
-        Endpoint: "",
-        traceId: "",
-        appId: ["no"],
-        instanceId: "",
-        status: "",
-        spendTime: "",
-      },
-
-      // !所属应用
-      appList: [
-        { label: "未分组", value: "no" },
-        { label: "aaa", value: "aaa" },
-        { label: "bbb", value: "bbb" },
-        { label: "ccc", value: "ccc" },
-      ],
-      // !实例名称
-      instanceList: [
-        { label: "aaa", value: "aaa" },
-        { label: "bbb", value: "bbb" },
-        { label: "ccc", value: "ccc" },
-        { label: "ddd", value: "ddd" },
-      ],
-      // 所属服务
-      serverSelection: [
-        { label: "未服务", value: "no" },
-        { label: "shop_aaa", value: "shop_aaa" },
-        { label: "shop_xxx", value: "shop_xxx" },
-        { label: "shop_yyy", value: "shop_yyy" },
-      ],
-      // Endpoint 名称
-      EndpointSelection: [
-        { label: "aaa", value: "aaa" },
-        { label: "bbb", value: "bbb" },
-        { label: "ccc", value: "ccc" },
-        { label: "ddd", value: "ddd" },
-      ],
+      rowObj: "", // 表格行数据
+      drawerTitle: "", // 点击表格出现的抽屉组件的标题
 
       // 表格数据
       table: {
-        tableData: tableData.data,
+        tableData: [],
         columns: [
           {
             label: "Endpoint 名称",
-            index: "Endpoint",
+            index: "endpoint",
             render(h, data) {
               return (
                 <div style="cursor:pointer">
-                  {data.row.status == "fail" ? (
+                  {data.row.status == "0" ? (
                     <span style="display: inline-block; width:2px; height:25px; background-color:#f56c6c; vertical-align:middle; margin-right:5px"></span>
                   ) : (
                     <span> </span>
                   )}
-                  {data.row.Endpoint}
+                  {data.row.endpoint}
                 </div>
               );
             },
             width: "300px",
           },
           { label: "所属服务", index: "server" },
-          { label: "所属应用", index: "app" },
+          { label: "所属应用", index: "appName" },
           {
             label: "状态",
             index: "status",
             render: (h, data) => {
               return (
                 <div>
-                  {data.row.status == "success" ? (
+                  {data.row.status == "1" ? (
                     <span style="font-size:16px">
                       <i class="el-icon-success" style="color:#67C23A" />
                       <span />
@@ -413,14 +412,21 @@ export default {
               );
             },
           },
-          { label: "耗时", index: "spendTime", sortable: true },
-          { label: "请求时间", index: "requestTime", sortable: true },
+          {
+            label: "耗时",
+            index: "spendTime",
+            sortable: true,
+            render(h, data) {
+              return <div>{data.row.spendTime} ms</div>;
+            },
+          },
+          { label: "请求时间", index: "executeTime", sortable: true },
           { label: "TraceID", index: "traceId" },
         ],
         page: {
           current: 1, // 当前页数--handleCurrentChange
-          size: 20, // 每页条数--handleSizeChange
-          count: 1, // 总页数
+          size: 10, // 每页条数--handleSizeChange
+          total: 1, // 总页数
         },
       },
 
@@ -459,10 +465,10 @@ export default {
           value: `
   Exception in thread "main" java.lang.NullPointerException: Attempt to invoke virtual method "int java.lang.String.length()" on a null object reference
 	at com.example.MyClass.myMethod(MyClass.java:15)
-	at com.example.Main.main(Main.java:8) 
+	at com.example.Main.main(Main.java:8)
   Exception in thread "main" java.lang.NullPointerException: Attempt to invoke virtual method "int java.lang.String.length()" on a null object reference
 	at com.example.MyClass.myMethod(MyClass.java:15)
-	at com.example.Main.main(Main.java:8) 
+	at com.example.Main.main(Main.java:8)
   Exception in thread "main" java.lang.NullPointerException: Attempt to invoke virtual method "int java.lang.String.length()" on a null object reference
 	at com.example.MyClass.myMethod(MyClass.java:15)
 	at com.example.Main.main(Main.java:8)
@@ -473,7 +479,7 @@ export default {
       table2: {
         tableData2,
         columns: [
-          { label: "Endpoint", index: "Endpoint" },
+          { label: "Endpoint", index: "endpoint" },
           { label: "所属服务", index: "server" },
           { label: "Span 数量", index: "spanNum" },
           { label: "耗时", index: "spendTime", sortable: true },
@@ -494,52 +500,78 @@ export default {
         page: {
           current: 1, // 当前页数--handleCurrentChange
           size: 20, // 每页条数--handleSizeChange
-          count: 1, // 总页数
+          total: 1, // 总页数
         },
       },
     };
   },
 
-  watch: {
-    // graph: {
-    //   handler: function (newV, oldV) {
-    //     console.log("newV ==>", newV, "oldV ==>", oldV);
-    //   },
-    //   deep: true,
-    // },
-  },
+  // watch: {
+  //   graph: {
+  //     handler: function (newV, oldV) {
+  //       console.log("newV ==> ", newV, "oldV ==> ", oldV);
+  //     },
+  //     deep: true,
+  //   },
+  // },
 
   mounted() {
     this.serverId = this.$route.query.serverId;
-    this.form.serverId.push(this.serverId);
+    // this.form.serverId.push(this.serverId);
 
-    // var clipboard = new Clipboard(".el-icon-document-copy");
-    // clipboard.on("success", function (e) {
-    //   console.info("Action:", e.action);
-    //   console.info("Text:", e.text);
-    //   console.info("Trigger:", e.trigger);
-
-    //   e.clearSelection();
-    // });
-    // clipboard.on("error", function (e) {
-    //   console.error("Action:", e.action);
-    //   console.error("Trigger:", e.trigger);
-    // });
+    getProjectList().then((res) => {
+      // console.log(res);
+    });
+    getAppList().then((res) => {
+      this.appList = res;
+    });
+    getInstanceList().then((res) => {
+      this.instanceList = res;
+    });
+    this.queryList();
   },
 
   methods: {
+    // 链路列表
+    queryList() {
+      getTraceList({
+        projectId: this.projectId,
+        traceId: this.form.traceId,
+        appId: this.form.appId,
+        instanceId: this.form.instanceId,
+        status: this.form.status,
+        spendTime: this.form.spendTime,
+        pageNum: this.table.page.current,
+        pageSize: this.table.page.size,
+      })
+        .then((res) => {
+          this.table.tableData = res;
+          this.table.page.current = 1;
+          this.table.page.size = 10;
+          this.table.page.total = 10;
+        })
+        .catch(() => {});
+    },
+
     // 分页器
-    handleSizeChange() {},
-    handleCurrentChange() {},
+    handleSizeChange(val) {
+      this.table.page.size = val;
+      this.queryList();
+    },
+
+    handleCurrentChange(val) {
+      this.table.page.current = val;
+      this.queryList();
+    },
 
     // 处理数据
     processData(data) {
       const result = { label: [], chartData: [], labelList: [] };
 
       this.extractData(data, 0, result);
+
       this.labelList = result.labelList;
       this.label = result.label;
-      // console.log(this.labelList);
 
       for (let i = 0; i < result.chartData.length; i++) {
         for (let j = 0; j < result.chartData[i].length; j++) {
@@ -570,21 +602,20 @@ export default {
 
     // 点击表格行
     handleRowClick(row) {
-      this.drawerTitle = "TraceId: 根节点 label";
       this.rowObj = row;
+      this.drawerTitle = row.endpoint;
+      // getTraceInfo({ traceId: row.traceId }).then((res) => {
+      //   console.log(res)
+      // });
       this.openDrawer();
     },
 
     // 打开抽屉
     openDrawer() {
-      this.graphData = data;
+      this.graphData = traceData;
       this.processData(this.graphData);
       this.$nextTick(() => {
         this.initGraph();
-        // this.graph.changeData(this.graphData);
-        // this.initSize();
-        // this.updateData(this.graphData);
-        // this.renderGraph();
       });
       this.drawerVisible = true;
     },
@@ -592,14 +623,14 @@ export default {
     // 关闭抽屉
     closeDrawer(done) {
       this.drawerVisible = false;
+
       this.duringTime = [];
       this.pendingTime = [];
       this.stayingTime = [];
       this.labelList = [];
       this.label = [];
+
       this.graph.destroy(); // 销毁图形实体
-      // this.graph.clear(); // 清除画布元素。
-      this.graphData = null;
       this.graph = null;
     },
 
@@ -621,19 +652,33 @@ export default {
     },
 
     // 打开内部的抽屉组件
-    open() {
-      this.dialogVisible = true;
+    openNodeDrawer() {
+      this.nodeDrawerVisible = true;
     },
 
-    // 按钮
-    onSubmit(ruleForm) {
+    // 搜索
+    handleSearch(ruleForm) {
       this.$refs[ruleForm].validate((valid) => {
         if (valid) {
+          this.queryList();
           return true;
         } else {
           return false;
         }
       });
+    },
+
+    // 清空
+    handleClear(ruleForm) {
+      this.form = {
+        traceId: "",
+        appId: [],
+        instanceId: [],
+        serverId: [],
+        Endpoint: [],
+        status: "",
+        spendTime: "",
+      };
     },
 
     // 更新图表数据
@@ -667,21 +712,21 @@ export default {
     initGraph() {
       G6.registerBehavior("behaviorName", {
         getEvents: () => ({ "node:click": "onClick" }),
-        onClick: (evt) => this.open(),
+        onClick: (evt) => this.openNodeDrawer(),
       });
 
       const container = document.getElementById("container");
-      const width = 350;
-      const height = container.scrollHeight * 2 || 1000;
+      const width = container.scrollWidth || 350;
+      const height = container.scrollHeight * 3 || 1000;
 
-      // console.log(width, height);
+      console.log(width, height);
 
       this.graph = new G6.TreeGraph({
         container: "container",
         width,
         height,
         modes: {
-          default: ["behaviorName"],
+          default: ["behaviorName", "zoom-canvas"],
         },
         defaultNode: {
           size: 10,
@@ -704,10 +749,10 @@ export default {
           direction: "H",
           indent: 20,
           getHeight: () => {
-            return 20;
+            return 14;
           },
           getWidth: () => {
-            return 10;
+            return 9;
           },
           getSide: (d) => {
             return "right";
@@ -733,37 +778,30 @@ export default {
 
       this.updateData(this.graphData);
       this.renderGraph();
-
-      // this.graph.fitView(0);
-      // this.graph.fitCenter();
-      // this.graph.zoom(1.1);
       this.graph.translate(0, 45);
+      graph.fitView();
 
-      //在拉取新数据重新渲染页面之前先获取点（0， 0）在画布上的位置
-      const lastPoint = this.graph.getCanvasByPoint(0, 0);
-
-      //获取重新渲染之后点（0， 0）在画布的位置
-      const newPoint = this.graph.getCanvasByPoint(0, 0);
-
-      const res = this.graph.getZoom();
-
-      // console.log(lastPoint, newPoint);
-      // console.log(res);
-
-      //移动画布相对位移
-      // graph.translate(lastPoint.x - newPoint.x, lastPoint.y - newPoint.y);
+      if (typeof window !== "undefined")
+        window.onresize = () => {
+          if (!graph || graph.get("destroyed")) return;
+          if (!container || !container.scrollWidth || !container.scrollHeight)
+            return;
+          graph.changeSize(container.scrollWidth, container.scrollHeight);
+        };
     },
 
     // 初始化画布
     initGraph_tree() {
       const container = document.getElementById("container-tree");
+      // container.style.backgroundColor = "#e6e6e6"; // 设置容器的背景颜色为白色
       const width = container.scrollWidth;
-      const height = container.scrollHeight || 550;
+      const height = container.scrollHeight || 420;
+      console.log(width, height);
       const minimap = new G6.Minimap({
-        size: [125, 75],
+        size: [150, 75],
       });
       const toolbar = new G6.ToolBar({
-        position: { x: 10, y: 0 },
+        position: { x: 0, y: 0 },
       });
       this.graphTree = new G6.TreeGraph({
         container: "container-tree",
@@ -856,6 +894,11 @@ export default {
   overflow: hidden;
 }
 
+/* 进度条样式 */
+::v-deep .el-progress__text {
+  display: none;
+}
+
 /* 问号提示组件的样式 */
 .tooltip {
   margin-top: 7px;
@@ -863,7 +906,6 @@ export default {
   color: #409eff;
 }
 
-/*  */
 .traceId {
   font-size: 18px;
   margin-left: 13px;
@@ -874,6 +916,7 @@ export default {
     margin: 0 10px;
   }
 }
+
 .traceContent {
   display: flex;
   justify-content: space-between;
@@ -884,35 +927,21 @@ export default {
 
 /* tab组件的样式 */
 .tab-style {
-  margin-left: 20px;
+  margin: 0 20px;
 }
 
 /* 树状和柱状的父容器样式 */
 .drawer-content {
-  height: 100vh;
-  overflow-y: scroll;
   display: flex;
+  // 用屏幕可视高度减去 头部与底部的高度，就是中间元素的高度
+  height: calc(100vh - 0px);
 }
 
-/* 抽屉样式 */
+/* 抽屉样式，头部 */
 ::v-deep .el-drawer__header {
   padding: 0px 20px 0;
   margin-bottom: 0;
 }
-/* 进度条样式 */
-::v-deep .el-progress__text {
-  display: none;
-}
-
-// #container-wrapper {
-//   width: 100%;
-//   height: 100%;
-//   position: absolute;
-//   left: 0;
-//   top: 0;
-//   right: 0;
-//   bottom: 0;
-// }
 
 /* 抽屉的抽屉的相关样式 */
 .log {
@@ -942,8 +971,8 @@ export default {
 </style>
 
 <style>
-/* 抽屉样式 增加滚轮 */
-/* .el-drawer.rtl {
-  overflow: scroll;
-} */
+/* 公共抽屉样式，增加y轴滚轮 */
+.el-drawer.rtl {
+  overflow-y: scroll;
+}
 </style>

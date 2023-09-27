@@ -1,43 +1,56 @@
 import request from '@/utils/request'
 
-// 获取全量项目名称
-export function getAppList() {
-  return request({
-    url: '/app/list ',
-    method: 'get',
-  })
-}
-
-// 获取全量实例名称
-export function getInstanceList() {
-  return request({
-    url: '/instance/list ',
-    method: 'get',
-  })
-}
-
-// 获取全量项目名称
+/**
+ * 获取全量项目名称
+ * @returns
+ */
 export function getProjectList() {
   return request({
-    url: '/project/list ',
+    url: '/project/list',
     method: 'get',
   })
 }
 
-// 查询链路分页列表
+/**
+ * 获取全量实例名称
+ * @returns
+ */
+export function getInstanceList() {
+  return request({
+    url: '/instance/list',
+    method: 'get',
+  })
+}
+
+/**
+ * 获取全量应用名称
+ * @returns
+ */
+export function getAppList() {
+  return request({
+    url: '/app/list',
+    method: 'get',
+  })
+}
+
+/**
+ * 查询链路分页列表
+ * @returns
+ */
 export function getTraceList(params) {
   return request({
-    url: '/trace/list ',
+    url: '/trace/list',
     method: 'get',
-    params
+    params: {
+      projectId: params.projectId,
+      traceId: params.traceId,
+      appId: params.appId,
+      instanceId: params.instanceId,
+      status: params.status,
+      spendTime: params.spendTime,
+      pageNum: params.pageNum,
+      pageSize: params.pageSize
+    }
   })
 }
 
-// projectId = iukjnzxchvih48978ysaf &
-// traceId=asdfxcvlkj435kjsnbdvknxcvasdkjdshf &
-// appId=98kiokjbcxv0783jnhi12 &
-// instanceId=kjiohbsdbv8934mnbzxvjhfuieurhmbv &
-// status=0 &
-// spendTime=34 &
-// pageNum=1 &
-// pageSize=10

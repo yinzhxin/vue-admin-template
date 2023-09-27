@@ -5,7 +5,6 @@
 <script>
 import * as echarts from "echarts";
 import resize from "./mixins/resize";
-import { options } from "runjs";
 
 export default {
   name: "BarYChart",

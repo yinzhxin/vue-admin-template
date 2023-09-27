@@ -5,6 +5,7 @@
     border
     stripe
     fit
+    :size="size"
     :header-cell-style="{ backgroundColor: '#eceff3', color: '#606266' }"
     :style="tableStyle"
     :data="tableData"
@@ -140,7 +141,7 @@ export default {
     // 表格自定义样式，默认宽度100%
     tableStyle: {
       type: Object,
-      default: () => ({ width: "100%" ,fontSize:"16px"}),
+      default: () => ({ width: "100%", fontSize: "16px" }),
     },
 
     // 是否显示选择框列，默认不显示
@@ -153,6 +154,12 @@ export default {
     isShowIndex: {
       type: Boolean,
       default: () => false,
+    },
+
+    // 表格大小
+    size: {
+      type: String,
+      default: () => "medium",
     },
   },
 

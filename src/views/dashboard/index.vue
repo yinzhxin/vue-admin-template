@@ -42,7 +42,7 @@
             <div class="access-app" v-for="item in data2" :key="item.num">
               <div>
                 <div>
-                  <img src="@/assets/letter.svg" width="25px" />
+                  <img src="@/assets/icons/letter.svg" width="25px" />
                   {{ item.title }}
                 </div>
               </div>

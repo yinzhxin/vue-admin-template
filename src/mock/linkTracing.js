@@ -1,22 +1,76 @@
-import Mock from 'mockjs'
-import { v4 as uuidv4 } from 'uuid';
-import moment from 'moment';
+import request from '@/utils/request'
+const mockApi = "https://www.fastmock.site/mock/e3785eb81b7de9f9ab57c9cc0811bfed/dev"
+
+/**
+ * 获取全量项目名称
+ * @returns
+ */
+export function getProjectList() {
+  return request({
+    url: mockApi + '/project/list',
+    method: 'get',
+  })
+}
+
+/**
+ * 获取全量实例名称
+ * @returns
+ */
+export function getInstanceList() {
+  return request({
+    url: mockApi + '/instance/list',
+    method: 'get',
+  })
+}
+
+/**
+ * 获取全量应用名称
+ * @returns
+ */
+export function getAppList() {
+  return request({
+    url: mockApi + '/app/list',
+    method: 'get',
+  })
+}
+
+/**
+ * 查询链路分页列表
+ * @returns
+ */
+export function getTraceList(params) {
+  return request({
+    url: mockApi + '/trace/list',
+    method: 'get',
+    params: {
+      projectId: params.projectId,
+      traceId: params.traceId,
+      appId: params.appId,
+      instanceId: params.instanceId,
+      status: params.status,
+      spendTime: params.spendTime,
+      pageNum: params.pageNum,
+      pageSize: params.pageSize
+    }
+  })
+}
+
+/**
+ * 链路详情
+ * @returns
+ */
+export function getTraceInfo(params) {
+  return request({
+    url: mockApi + '/trace/info',
+    method: 'get',
+    params: {
+      traceId: params.traceId
+    }
+  })
+}
 
 
-export const tableData = Mock.mock({
-  'data|10': [{
-    'Endpoint|1': ['cpass-cert-manager-rules', 'cpass-kube-proxy-rules', 'cpass-coredns-rules', 'cpass-prometheus-1-rules'],
-    'server|1': 'shop_user',
-    'namespace|1': ['cert-manager', 'kube-system', 'cpaas-system'],
-    app: ['cert-manager', 'kube-proxy', 'coredns', 'global', '全部节点'],
-    'status|1': ['success', 'fail'],
-    'spendTime|1': ["0ms", "45ms", "30ms", "5ms"],
-    requestTime: () => moment().format('YYYY-MM-DD HH:mm:ss'),
-    traceId: () => uuidv4()
-  }]
-})
-
-export const data = {
+export const traceData = {
   id: "root",
   label: "GET:/demo/{name}",
   subLabel: "shop_user",
@@ -229,30 +283,6 @@ export const data = {
                                             },
                                           ],
                                         },
-                                        {
-                                          id: "root/1/1/2/1/1/1/1/1/1/3",
-                                          label: "connect/api/auth511",
-                                          subLabel: "shop_user",
-                                          chartData: [
-                                            {
-                                              duringTime: 17,
-                                              pendingTime: 33,
-                                              stayingTime: 50,
-                                            },
-                                          ],
-                                        },
-                                        {
-                                          id: "root/1/1/2/1/1/1/1/1/1/4",
-                                          label: "connect/api/auth511",
-                                          subLabel: "shop_user",
-                                          chartData: [
-                                            {
-                                              duringTime: 17,
-                                              pendingTime: 33,
-                                              stayingTime: 50,
-                                            },
-                                          ],
-                                        },
                                       ],
                                     },
                                   ],
@@ -277,70 +307,70 @@ export const data = {
 
 export const tableData2 = [
   {
-    Endpoint: "/api/audit",
+    endpoint: "/api/audit",
     server: "shop_auth",
     spanNum: 2,
     spendTime: "23ms",
     spendTimeSelf: "1"
   },
   {
-    Endpoint: "/api/audit",
+    endpoint: "/api/audit",
     server: "shop_gateway",
     spanNum: 1,
     spendTime: "45ms",
     spendTimeSelf: "1"
   },
   {
-    Endpoint: "/api/crediCard",
+    endpoint: "/api/crediCard",
     server: "bank_parrnet",
     spanNum: 2,
     spendTime: "45ms",
     spendTimeSelf: "2"
   },
   {
-    Endpoint: "/api/crediCard",
+    endpoint: "/api/crediCard",
     server: "bank_crediCard",
     spanNum: 2,
     spendTime: "45ms",
     spendTimeSelf: "2"
   },
   {
-    Endpoint: "/api/order",
+    endpoint: "/api/order",
     server: "bank_user",
     spanNum: 2,
     spendTime: "45ms",
     spendTimeSelf: "2"
   },
   {
-    Endpoint: "/api/pay",
+    endpoint: "/api/pay",
     server: "bank_parrent",
     spanNum: 1,
     spendTime: "45ms",
     spendTimeSelf: "2"
   },
   {
-    Endpoint: "/api/pay",
+    endpoint: "/api/pay",
     server: "bank_parrent",
     spanNum: 1,
     spendTime: "5ms",
     spendTimeSelf: "2"
   },
   {
-    Endpoint: "/api/point",
+    endpoint: "/api/point",
     server: "bank_crediCard",
     spanNum: 1,
     spendTime: "23ms",
     spendTimeSelf: "2"
   },
   {
-    Endpoint: "/api/point",
+    endpoint: "/api/point",
     server: "bank_crediCard",
     spanNum: 1,
     spendTime: "23ms",
     spendTimeSelf: "2"
   },
   {
-    Endpoint: "/api/user",
+    endpoint: "/api/user",
     server: "shop_auth",
     spanNum: 1,
     spendTime: "12ms",
@@ -393,4 +423,3 @@ export const treeData = {
     },
   ]
 }
-

@@ -17,12 +17,7 @@
       </el-form-item>
       <!-- 所属应用 -->
       <el-form-item label="">
-        <el-select
-          v-model="form.app"
-          placeholder="所属应用"
-          multiple
-          clearable
-        >
+        <el-select v-model="form.app" placeholder="所属应用" multiple clearable>
           <el-option label="app1" value="app1"></el-option>
           <el-option label="app2" value="app2"></el-option>
         </el-select>
@@ -50,10 +45,8 @@
       </el-form-item>
     </el-form>
 
-    <div v-if="!isTotalTopo&&form.radio == 'topo'" class="back-div">
-      <i class="el-icon-back toTotalTopo" @click="handleBack">
-        返回总拓扑图
-      </i>
+    <div v-if="!isTotalTopo && form.radio == 'topo'" class="back-div">
+      <i class="el-icon-back toTotalTopo" @click="handleBack"> 返回总拓扑图 </i>
       <el-select v-model="toTotalTopo" @click="handleChangeserverId">
         <el-option
           v-for="item in serverIdOption"
@@ -149,7 +142,7 @@ export default {
         page: {
           current: 1, // 当前页数--handleCurrentChange
           size: 20, // 每页条数--handleSizeChange
-          count: 1, // 总页数
+          total: 1, // 总页数
         },
       },
     };
@@ -283,7 +276,7 @@ export default {
       // 隐藏 返回总拓扑的按钮
       this.isTotalTopo = true;
       if (value == "topo") {
-        this.isTotalTopo = true
+        this.isTotalTopo = true;
         // 切换到topo，因切换到list时，实例被销毁，要重新初始化
         this.initGraph();
         // 实例被销毁，不用下面的方法
@@ -927,14 +920,13 @@ export default {
           }),
           linkDistance: 600, // 布局时边的距离长度，指定两个连接的节点之间的期望距离。值越大，节点之间的距离越远。
           nodeStrength: 500, // 节点的力量，用于决定节点受到的引力和斥力的强度。值越大，节点之间相互排斥的力量越强。
-
+          center: [300, 300], // 可选，默认为图的中心
           // type: "comboForce", // comboForce力导向布局，用于对包含组合的图进行布局，默认为random布局
           // preventOverlap: true, // 防止节点重叠
           // preventNodeOverlap: true,
           // collideStrength: 1,
           // nodeSize: 100, // 节点大小，用于算法中防止节点重叠时的碰撞检测。由于已经在上一节的元素配置中设置了每个节点的 size 属性，则不需要在此设置 nodeSize
           // nodeSpacing: (d) => 20, // 指定节点之间的最小空间距离为 8
-          center: [300, 300], // 可选，默认为图的中心
           // linkDistance: 450, // 布局时边的距离长度，指定两个连接的节点之间的期望距离。值越大，节点之间的距离越远。
           // nodeStrength: 200, // 节点的力量，用于决定节点受到的引力和斥力的强度。值越大，节点之间相互排斥的力量越强。
           // edgeStrength: 1, // 边的力量，用于决定边的长度对布局的影响程度。值越小，边在布局中的长度越紧凑。
@@ -1133,14 +1125,15 @@ export default {
 
       // 渲染画布
       this.renderGraph();
+      this.graph.zoom(1);
 
       // 图实例监听--graph.on("元素类型:事件名", (e) => {})--主要是节点的动态样式变化
       // 鼠标进入节点
       this.graph.on("node:mouseenter", (e) => {
-        const nodeItem = e.item; // 获取鼠标进入的节点元素对象
-        console.log(nodeItem);
-        this.graph.setItemState(nodeItem, "hover", true); // 设置当前节点的 hover 状态为 true
-
+        // 获取鼠标进入的节点元素对象
+        const nodeItem = e.item;
+        // 设置当前节点的 hover 状态为 true
+        this.graph.setItemState(nodeItem, "hover", true);
         // 获取与节点相关联的所有边
         const edges = nodeItem.getEdges();
         // 设置边的样式
@@ -1154,12 +1147,9 @@ export default {
 
       // 鼠标离开节点
       this.graph.on("node:mouseleave", (e) => {
-        const nodeItem = e.item; // 获取鼠标离开的节点元素对象
-        this.graph.setItemState(nodeItem, "hover", false); // 设置当前节点的 hover 状态为 false
-
-        // 获取与节点相关联的所有边
+        const nodeItem = e.item;
+        this.graph.setItemState(nodeItem, "hover", false);
         const edges = nodeItem.getEdges();
-        // 清除特效样式
         edges.forEach((edge) => {
           const group = edge.getContainer(); // 获取边所在的容器
           const shape = edge.getKeyShape(); // 获取边的图形
@@ -1175,11 +1165,11 @@ export default {
 <style lang="scss" scoped>
 .topo {
   min-height: 700px;
-  .el-pagination{
-    margin-top:10px;
+  .el-pagination {
+    margin-top: 10px;
   }
 }
-.back-div{
+.back-div {
   display: flex;
   align-items: center;
   .toTotalTopo {
