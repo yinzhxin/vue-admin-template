@@ -69,6 +69,20 @@ export function getTraceInfo(params) {
   })
 }
 
+/**
+ * span详情
+ * @returns
+ */
+export function getSpanInfo(params) {
+  return request({
+    url: mockApi + '/span/info',
+    method: 'get',
+    params: {
+      spanId: params.spanId
+    }
+  })
+}
+
 
 export const traceData = {
   id: "root",
@@ -301,6 +315,30 @@ export const traceData = {
         },
       ],
     },
+    {
+      id: "root/2",
+      label: "balance/api/authbbb",
+      subLabel: "shop_user",
+      chartData: [
+        {
+          duringTime: 4,
+          pendingTime: 34,
+          stayingTime: 62,
+        },
+      ],
+    },
+    {
+      id: "root/3",
+      label: "balance/api/lll",
+      subLabel: "shop_user",
+      chartData: [
+        {
+          duringTime: 6,
+          pendingTime: 32,
+          stayingTime: 62,
+        },
+      ],
+    }
   ],
 }
 

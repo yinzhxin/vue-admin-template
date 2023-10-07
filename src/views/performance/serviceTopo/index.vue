@@ -18,8 +18,13 @@
       <!-- 所属应用 -->
       <el-form-item label="">
         <el-select v-model="form.app" placeholder="所属应用" multiple clearable>
-          <el-option label="app1" value="app1"></el-option>
-          <el-option label="app2" value="app2"></el-option>
+          <el-option
+            v-for="item in appOption"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
         </el-select>
       </el-form-item>
       <!-- 所属服务 -->
@@ -30,8 +35,13 @@
           multiple
           clearable
         >
-          <el-option label="server1" value="server1"></el-option>
-          <el-option label="server1" value="server1"></el-option>
+          <el-option
+            v-for="item in serviceOption"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
         </el-select>
       </el-form-item>
       <!-- 按钮 -->
@@ -102,6 +112,24 @@ export default {
         server: "", // 所属服务
       },
 
+      // 所属应用
+      appOption: [
+        { label: "app1", value: "app1" },
+        { label: "app2", value: "app2" },
+        { label: "app3", value: "app3" },
+        { label: "app4", value: "app4" },
+        { label: "app5", value: "app5" },
+      ],
+
+      // 所属服务
+      serviceOption: [
+        { label: "service1", value: "service1" },
+        { label: "service2", value: "service2" },
+        { label: "service3", value: "service3" },
+        { label: "service4", value: "service4" },
+        { label: "service5", value: "service5" },
+      ],
+
       toTotalTopo: "", // 返回总拓扑图右边的选框
       serverIdOption: "", // 返回总拓扑图右边的选框的选项数组
       isTotalTopo: true, // 是否是总拓扑图
@@ -164,60 +192,7 @@ export default {
   },
 
   mounted() {
-    getTopo({
-      startTime: 0,
-      endTime: 0,
-      systemName: "eoitek-shoping",
-    })
-      .then((res) => {
-        this.table.tableData = tableData;
-
-        // 边
-        this.edgesArray = res.access.map((item) => {
-          const newItem = { ...item };
-          // 起始id
-          newItem.source = newItem["source_id"];
-          // 目的id
-          newItem.target = newItem["target_id"];
-          // 边的文本文字
-          newItem.label = `${item["request_num"]}req ${item["average_time"]}ms`;
-
-          delete newItem["source_id"];
-          delete newItem["target_id"];
-          delete newItem["request_num"];
-
-          return newItem;
-        });
-
-        // 节点
-        this.nodesArray = res.nodes.map((item) => {
-          const newItem = { ...item };
-          newItem.id = newItem["serverId"]; // "serverId" / "serverName"
-          newItem.label = newItem["serverId"];
-          newItem.comboId = newItem["serverSystem"]; // "eoitek-shoping"
-          newItem.imgType = newItem["serverType"]; // "web"
-
-          return newItem;
-        });
-
-        // 分组，目前默认一个，是节点对象的serverSystem属性
-        this.combosArray = [
-          {
-            id: "eoitek-shoping", // 唯一的标志符，标识不同分组
-            label: "eoitek-shoping", // 分组的标签
-            collapsed: false, // 默认不折叠
-          },
-        ];
-
-        // 初始化服务选项数组
-        this.serverIdOption = this.nodesArray.map((item) => {
-          return { label: item.label, value: item.label };
-        });
-
-        // 初始化总拓扑图
-        this.initGraph();
-      })
-      .catch(() => {});
+    this.getTopoGraph();
   },
 
   beforeDestroy() {
@@ -232,8 +207,73 @@ export default {
 
   methods: {
     // 分页器
-    handleSizeChange() {},
-    handleCurrentChange() {},
+    handleSizeChange(val) {
+      this.table.page.size = val;
+      this.getTopoGraph();
+    },
+
+    handleCurrentChange(val) {
+      this.table.page.current = val;
+      this.getTopoGraph();
+    },
+
+    // 获取topo图
+    getTopoGraph() {
+      getTopo({
+        startTime: 0,
+        endTime: 0,
+        systemName: "eoitek-shoping",
+      })
+        .then((res) => {
+          this.table.tableData = tableData;
+
+          // 边
+          this.edgesArray = res.access.map((item) => {
+            const newItem = { ...item };
+            // 起始id
+            newItem.source = newItem["source_id"];
+            // 目的id
+            newItem.target = newItem["target_id"];
+            // 边的文本文字
+            newItem.label = `${item["request_num"]}req ${item["average_time"]}ms`;
+
+            delete newItem["source_id"];
+            delete newItem["target_id"];
+            delete newItem["request_num"];
+
+            return newItem;
+          });
+
+          // 节点
+          this.nodesArray = res.nodes.map((item) => {
+            const newItem = { ...item };
+            newItem.id = newItem["serverId"]; // "serverId" / "serverName"
+            newItem.label = newItem["serverId"];
+            newItem.comboId = newItem["serverSystem"]; // "eoitek-shoping"
+            newItem.imgType = newItem["serverType"]; // "web"
+
+            return newItem;
+          });
+
+          // 分组，目前默认一个，是节点对象的serverSystem属性
+          this.combosArray = [
+            {
+              id: "eoitek-shoping", // 唯一的标志符，标识不同分组
+              label: "eoitek-shoping", // 分组的标签
+              collapsed: false, // 默认不折叠
+            },
+          ];
+
+          // 初始化服务选项数组
+          this.serverIdOption = this.nodesArray.map((item) => {
+            return { label: item.label, value: item.label };
+          });
+
+          // 初始化总拓扑图
+          this.initGraph();
+        })
+        .catch(() => {});
+    },
 
     // 搜索
     handleSearch(ruleForm) {
@@ -275,8 +315,8 @@ export default {
     handleChange(value) {
       // 隐藏 返回总拓扑的按钮
       this.isTotalTopo = true;
+
       if (value == "topo") {
-        this.isTotalTopo = true;
         // 切换到topo，因切换到list时，实例被销毁，要重新初始化
         this.initGraph();
         // 实例被销毁，不用下面的方法
@@ -762,9 +802,9 @@ export default {
         },
       });
 
-      // 工具栏
+      // 工具栏，固定在左上角
       const toolbar = new G6.ToolBar({
-        position: { x: 10, y: 0 },
+        position: { x: 20, y: 80 },
       });
 
       // 分组标记，折叠
@@ -1167,8 +1207,8 @@ export default {
   min-height: 700px;
   background: #fff;
   padding: 20px;
-  .el-pagination{
-    margin-top:10px;
+  .el-pagination {
+    margin-top: 10px;
   }
 }
 .back-div {

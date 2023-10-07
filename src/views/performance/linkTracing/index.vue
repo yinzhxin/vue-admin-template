@@ -96,9 +96,9 @@
             <el-button type="primary" @click="handleSearch('form')">
               搜索
             </el-button>
-            <el-button class="clearBtn" @click="handleClear('form')"
-              >清空</el-button
-            >
+            <el-button class="clearBtn" @click="handleClear('form')">
+              清空
+            </el-button>
           </el-form-item>
           <!-- 提示问号 -->
           <el-tooltip effect="dark" placement="top" class="tooltip">
@@ -161,8 +161,13 @@
 
       <div class="traceId">
         <el-tag style="font-size: 18px; color: #409eff">TraceID</el-tag>
-        <span data-clipboard-text>{{ rowObj.traceId }}</span>
-        <i class="el-icon-document-copy"></i>
+        <span>{{ rowObj.traceId }}</span>
+        <i
+          class="el-icon-document-copy"
+          style="cursor: pointer"
+          :data-clipboard-text="rowObj.traceId"
+          @click="handleCopy"
+        ></i>
       </div>
 
       <div class="traceContent">
@@ -192,12 +197,13 @@
         <el-tab-pane label="树形" name="1">
           <div class="drawer-content">
             <!-- 树状图表 -->
-            <div style="width: 50%; height: 100%">
+            <div style="width: 45%; height: 100%">
               <div id="container" ref="container" />
             </div>
 
             <!-- 柱状图 -->
             <BarYChart
+              id="bar"
               :height="'100%'"
               :width="'100%'"
               :duringTime="duringTime"
@@ -233,49 +239,79 @@
       </el-tabs>
     </el-drawer>
 
+    <!-- 节点的抽屉 -->
     <el-drawer
+      :show-close="false"
       :append-to-body="true"
       :visible.sync="nodeDrawerVisible"
-      custom-class="my-drawer"
+      :before-close="closeNodeDrawer"
+      custom-class="drawer-style"
       size="70%"
     >
-      <template v-slot:title>
-        <h3>TraceId: 根节点 label</h3>
-      </template>
       <el-tabs
         v-model="activeName2"
         @tab-click="handleClick2"
-        style="margin-left: 10px"
+        class="tab-style"
       >
         <el-tab-pane label="基本信息" name="1">
           <div class="baseInfo">
-            <div>Span 名称：XXXXXXXXXXXXX-YYYYYYY</div>
-            <div>状态：<el-tag size="small" type="danger">失败</el-tag></div>
-            <div>自身耗时：100 ms</div>
-            <div>耗时：30 ms</div>
+            <div>
+              <strong>Span 名称：</strong>
+              <span>{{ "XXXXXXXXXXXXX-YYYYYYY" }}</span>
+            </div>
+
+            <div style="display: flex; align-items: center">
+              <strong>状态：</strong>
+              <el-tag size="small" type="danger">失败</el-tag>
+            </div>
+
+            <div>
+              <strong>自身耗时：</strong>
+              <span>{{ "100" }} ms</span>
+            </div>
+            <div>
+              <strong>耗时：</strong>
+              <span>{{ "30" }} ms</span>
+            </div>
           </div>
+
           <el-card style="margin: 20px; margin-left: 10px">
             <div slot="header">
-              <span>
-                执行情况
-                <el-tag type="success" size="small">status</el-tag>
-              </span>
+              执行情况
+              <el-tag type="success" size="small">status</el-tag>
             </div>
             <div v-for="(o, index) in statusList" :key="index" class="imple">
-              <div>{{ o.title }}</div>
+              <div style="width: 50%">{{ o.title }}</div>
               <div>
                 <strong> {{ o.value }}</strong>
+                <i
+                  v-if="o.title == 'db_statement'"
+                  class="el-icon-document-copy"
+                  style="cursor: pointer; color: #409eff; margin-left: 10px"
+                  :data-clipboard-text="o.value"
+                  @click="handleCopy"
+                ></i>
               </div>
             </div>
           </el-card>
         </el-tab-pane>
         <el-tab-pane label="日志详情" name="2">
           <div class="baseInfo">
-            <div>异常堆栈</div>
+            <div>
+              <strong>异常堆栈</strong>
+              <el-tooltip effect="dark" placement="top">
+                <template slot="content">
+                  <div style="max-width: 350px">
+                    {{ "异常堆栈" }}
+                  </div>
+                </template>
+                <i class="el-icon-question" />
+              </el-tooltip>
+            </div>
           </div>
-          <el-card class="log" shadow="never">
+          <el-card class="logInfo" shadow="never">
             <div slot="header">
-              <span> 2023-10-10 13:34:08 </span>
+              <strong> 2023-10-10 13:34:08 </strong>
             </div>
             <div v-for="(o, index) in stackList" :key="index">
               <div>
@@ -304,6 +340,7 @@ import {
   getInstanceList,
   getTraceList,
   getTraceInfo,
+  getSpanInfo,
   traceData,
   tableData2,
   treeData,
@@ -519,15 +556,22 @@ export default {
     this.serverId = this.$route.query.serverId;
     // this.form.serverId.push(this.serverId);
 
+    // 项目
     getProjectList().then((res) => {
       // console.log(res);
     });
+
+    // 应用
     getAppList().then((res) => {
       this.appList = res;
     });
+
+    // 实例
     getInstanceList().then((res) => {
       this.instanceList = res;
     });
+
+    // 链路列表
     this.queryList();
   },
 
@@ -600,6 +644,19 @@ export default {
       }
     },
 
+    // 复制
+    handleCopy(evt) {
+      let clipboard = new Clipboard(".el-icon-document-copy");
+      clipboard.on("success", (e) => {
+        this.$message.success("复制成功"); // 利用Element组件给予成功提示
+        clipboard.destroy(); // 释放内存
+      });
+      clipboard.on("error", (e) => {
+        this.$message.error("该浏览器不支持自动复制"); // 给予错误提示信息
+        clipboard.destroy(); // 释放内存
+      });
+    },
+
     // 点击表格行
     handleRowClick(row) {
       this.rowObj = row;
@@ -622,6 +679,7 @@ export default {
 
     // 关闭抽屉
     closeDrawer(done) {
+      this.activeName = "1";
       this.drawerVisible = false;
 
       this.duringTime = [];
@@ -640,9 +698,12 @@ export default {
         this.$nextTick(() => {
           this.initGraph_tree();
         });
+      } else if (tab.label == "树形") {
       } else {
-        this.graphTree.destroy();
-        this.graphTree = null;
+        if (this.graphTree) {
+          this.graphTree.destroy();
+          this.graphTree = null;
+        }
       }
     },
 
@@ -653,7 +714,14 @@ export default {
 
     // 打开内部的抽屉组件
     openNodeDrawer() {
+      // getSpanInfo({ spanId: "fsdgfehndgjnrn" });
       this.nodeDrawerVisible = true;
+    },
+
+    // 关闭内部的抽屉组件
+    closeNodeDrawer() {
+      this.activeName2 = "1";
+      this.nodeDrawerVisible = false;
     },
 
     // 搜索
@@ -698,8 +766,8 @@ export default {
         // todo 浏览器窗口发生变化时
         window.onresize = function () {
           // todo 获取div parentContent 的宽度和高度
-          this.canvasWidth = self.$refs.containerWrapper.clientWidth;
-          this.canvasHeight = self.$refs.containerWrapper.clientHeight;
+          this.canvasWidth = self.$refs.container.clientWidth;
+          this.canvasHeight = self.$refs.container.clientHeight;
           // todo 修改画布的大小
           self.graph.changeSize(this.canvasWidth, this.canvasHeight);
           // todo 将图移动到画布中心位置
@@ -716,25 +784,75 @@ export default {
       });
 
       const container = document.getElementById("container");
+      const a = document.getElementById("bar").scrollHeight;
+      console.log(document.getElementById("bar").scrollHeight);
       const width = container.scrollWidth || 350;
-      const height = container.scrollHeight * 3 || 1000;
-
+      const height = container.scrollHeight * 3 || a;
       console.log(width, height);
+
+      // G6.registerBehavior("hoverNode", {
+      //   getEvents: function () {
+      //     return {
+      //       "node:mouseenter": "onMouseEnter",
+      //       "node:mouseleave": "onMouseLeave",
+      //     };
+      //   },
+      //   onMouseEnter: function (evt) {
+      //     const node = evt.item;
+      //     this.updateNodeStyle(node, true);
+      //   },
+      //   onMouseLeave: function (evt) {
+      //     const node = evt.item;
+      //     this.updateNodeStyle(node, false);
+      //   },
+      //   updateNodeStyle: function (node, isHover) {
+      //     const style = node.getModel().style;
+      //     if (isHover) {
+      //       style.fill = "#f5f5f5";
+      //       style.textBackground = {
+      //         fill: "#f5f5f5",
+      //         radius: 2,
+      //         padding: [2, 4],
+      //       };
+      //     } else {
+      //       style.fill = "#fff";
+      //       style.textBackground = null;
+      //     }
+      //     this.graph.updateItem(node, node.getModel());
+      //   },
+      // });
 
       this.graph = new G6.TreeGraph({
         container: "container",
         width,
         height,
+        fitView: true,
         modes: {
-          default: ["behaviorName", "zoom-canvas"],
+          default: ["behaviorName"],
         },
         defaultNode: {
           size: 10,
+
           anchorPoints: [
             [0.5, 0],
             [0.5, 1],
           ],
-          style: {},
+          style: {
+            cursor: "pointer",
+          },
+          labelCfg: {
+            style: {
+              // fill: "#1890ff",
+              fontSize: 14,
+              background: {
+                fill: "#ffffff",
+                // stroke: "#9EC9FF",
+                // padding: [2, 2, 2, 2],
+                // radius: 2,
+              },
+            },
+            position: "bottom",
+          },
         },
         defaultEdge: {
           type: "polyline",
@@ -749,12 +867,13 @@ export default {
           direction: "H",
           indent: 20,
           getHeight: () => {
-            return 14;
+            return 15;
           },
           getWidth: () => {
-            return 9;
+            return 5;
           },
           getSide: (d) => {
+            // console.log(d)
             return "right";
           },
         },
@@ -766,6 +885,12 @@ export default {
           fill: "#fff",
           stroke: node.color,
           lineWidth: 3,
+          cursor: "pointer",
+        };
+        node.stateStyles = {
+          hover: {
+            background: "#1890ff",
+          },
         };
 
         return {
@@ -778,16 +903,25 @@ export default {
 
       this.updateData(this.graphData);
       this.renderGraph();
-      this.graph.translate(0, 45);
-      graph.fitView();
+      // this.graph.translate(0, 45);
+      // this.graph.fitView();
 
-      if (typeof window !== "undefined")
-        window.onresize = () => {
-          if (!graph || graph.get("destroyed")) return;
-          if (!container || !container.scrollWidth || !container.scrollHeight)
-            return;
-          graph.changeSize(container.scrollWidth, container.scrollHeight);
-        };
+      // this.graph.layout(true);
+
+      // 图实例监听--graph.on("元素类型:事件名", (e) => {})--主要是节点的动态样式变化
+      // 鼠标进入节点
+      this.graph.on("node:mouseenter", (e) => {
+        // 获取鼠标进入的节点元素对象
+        const nodeItem = e.item;
+        // 设置当前节点的 hover 状态为 true
+        this.graph.setItemState(nodeItem, "hover", true);
+      });
+
+      // 鼠标离开节点
+      this.graph.on("node:mouseleave", (e) => {
+        const nodeItem = e.item;
+        this.graph.setItemState(nodeItem, "hover", false);
+      });
     },
 
     // 初始化画布
@@ -906,6 +1040,7 @@ export default {
   color: #409eff;
 }
 
+/* trace 详情样式 */
 .traceId {
   font-size: 18px;
   margin-left: 13px;
@@ -916,7 +1051,6 @@ export default {
     margin: 0 10px;
   }
 }
-
 .traceContent {
   display: flex;
   justify-content: space-between;
@@ -944,29 +1078,48 @@ export default {
 }
 
 /* 抽屉的抽屉的相关样式 */
-.log {
+.drawer-style {
+  .el-drawer__body {
+    padding: 0 20px;
+  }
+}
+
+/* 树状图的样式 */
+.tree-style {
+  width: 200px;
+  margin-right: 20px;
+  overflow: auto;
+  height: calc(100vh - 0px);
+}
+
+/* 日志详情 */
+.logInfo {
   background-color: #eaeaea;
   color: black;
   margin: 20px;
   margin-left: 10px;
-  font-size: 20px;
+  // font-size: 20px;
 }
+
+/* 基本信息 */
 .baseInfo {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  margin: 10px 20px -20px 20px;
+  margin: 10px 20px -20px 10px;
   div {
     margin-right: 80px;
     margin-bottom: 20px;
   }
 }
+
 .imple {
   display: flex;
-  justify-content: space-between;
+  // justify-content: space-between;
+  justify-content: flex-start;
   margin-bottom: 15px;
-  font-size: 20px;
-  width: 50%;
+  width: 70%;
+  // font-size: 20px;
 }
 </style>
 

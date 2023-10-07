@@ -95,20 +95,31 @@ export default {
 
       const option = {
         tooltip: {
+          showContent: false,
           trigger: "axis",
           axisPointer: {
             type: "shadow",
+            axis: "y",
+            appendToBody: true,
+            label: {
+              padding: [
+                5, // 上
+                10, // 右
+                5, // 下
+                10, // 左
+              ],
+            },
           },
-          formatter: (params) => {
-            let seriesName = params[0].seriesName;
-            let dataName = params[0].name;
-            let value = params[0].value;
-            if (seriesName === "pendingTime") {
-              return dataName + ": " + value;
-            } else {
-              return;
-            }
-          },
+          // formatter: (params) => {
+          //   let seriesName = params[0].seriesName;
+          //   let dataName = params[0].name;
+          //   let value = params[0].value;
+          //   if (seriesName === "pendingTime") {
+          //     return dataName + ": " + value;
+          //   } else {
+          //     return;
+          //   }
+          // },
         },
 
         grid: {
