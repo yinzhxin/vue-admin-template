@@ -86,7 +86,7 @@ export function getSpanInfo(params) {
 
 export const traceData = {
   id: "root",
-  label: "GET:/demo/{name}",
+  topLabel: "GET:/demo/{name}",
   subLabel: "shop_user",
   chartData: [
     {
@@ -98,7 +98,7 @@ export const traceData = {
   children: [
     {
       id: "root/1",
-      label: "balance/api/auth",
+      topLabel: "balance/api/auth",
       subLabel: "shop_user",
       chartData: [
         {
@@ -110,7 +110,7 @@ export const traceData = {
       children: [
         {
           id: "root/1/1",
-          label: "/api/auth",
+          topLabel: "/api/auth",
           subLabel: "shop_user",
           chartData: [
             {
@@ -122,7 +122,7 @@ export const traceData = {
           children: [
             {
               id: "root/1/1/1",
-              label: "POST/api/auth22",
+              topLabel: "POST/api/auth22",
               subLabel: "shop_user",
               status: "error",
               chartData: [
@@ -135,7 +135,7 @@ export const traceData = {
               children: [
                 {
                   id: "root/1/1/1/1",
-                  label: "balance/api/auth11",
+                  topLabel: "balance/api/auth11",
                   subLabel: "shop_user",
                   chartData: [
                     {
@@ -147,7 +147,7 @@ export const traceData = {
                   children: [
                     {
                       id: "root/1/1/1/1/1",
-                      label: "/api/auth33",
+                      topLabel: "/api/auth33",
                       subLabel: "shop_user",
                       chartData: [
                         {
@@ -159,7 +159,7 @@ export const traceData = {
                       children: [
                         {
                           id: "root/1/1/1/1/1/1",
-                          label: "POST/api/auth55",
+                          topLabel: "POST/api/auth55",
                           subLabel: "shop_user",
                           chartData: [
                             {
@@ -171,7 +171,7 @@ export const traceData = {
                           children: [
                             {
                               id: "root/1/1/1/1/1/1/1",
-                              label: "Kafka/api/auth0",
+                              topLabel: "Kafka/api/auth0",
                               subLabel: "shop_user",
                               chartData: [
                                 {
@@ -191,7 +191,7 @@ export const traceData = {
             },
             {
               id: "root/1/1/2",
-              label: "balance/api/auth9",
+              topLabel: "balance/api/auth9",
               subLabel: "shop_user",
               chartData: [
                 {
@@ -203,7 +203,7 @@ export const traceData = {
               children: [
                 {
                   id: "root/1/1/2/1",
-                  label: "/api/auth8",
+                  topLabel: "/api/auth8",
                   subLabel: "shop_user",
                   chartData: [
                     {
@@ -215,7 +215,7 @@ export const traceData = {
                   children: [
                     {
                       id: "root/1/1/2/1/1",
-                      label: "POST/api/auth7",
+                      topLabel: "POST/api/auth7",
                       subLabel: "shop_user",
                       chartData: [
                         {
@@ -227,7 +227,7 @@ export const traceData = {
                       children: [
                         {
                           id: "root/1/1/2/1/1/1",
-                          label: "balance/api/auth6",
+                          topLabel: "balance/api/auth6",
                           subLabel: "shop_user",
                           chartData: [
                             {
@@ -239,7 +239,7 @@ export const traceData = {
                           children: [
                             {
                               id: "root/1/1/2/1/1/1/1",
-                              label: "/api/auth1",
+                              topLabel: "/api/auth1",
                               subLabel: "shop_user",
                               chartData: [
                                 {
@@ -251,7 +251,7 @@ export const traceData = {
                               children: [
                                 {
                                   id: "root/1/1/2/1/1/1/1/1",
-                                  label: "POST/api/auth2",
+                                  topLabel: "POST/api/auth2",
                                   subLabel: "shop_user",
                                   chartData: [
                                     {
@@ -263,7 +263,7 @@ export const traceData = {
                                   children: [
                                     {
                                       id: "root/1/1/2/1/1/1/1/1/1",
-                                      label: "com/api/auth3",
+                                      topLabel: "com/api/auth3",
                                       subLabel: "shop_user",
                                       chartData: [
                                         {
@@ -275,7 +275,7 @@ export const traceData = {
                                       children: [
                                         {
                                           id: "root/1/1/2/1/1/1/1/1/1/1",
-                                          label: "letter/api/auth4",
+                                          topLabel: "letter/api/auth4",
                                           subLabel: "shop_user",
                                           chartData: [
                                             {
@@ -287,7 +287,7 @@ export const traceData = {
                                         },
                                         {
                                           id: "root/1/1/2/1/1/1/1/1/1/2",
-                                          label: "connect/api/auth5",
+                                          topLabel: "connect/api/auth5",
                                           subLabel: "shop_user",
                                           chartData: [
                                             {
@@ -317,7 +317,7 @@ export const traceData = {
     },
     {
       id: "root/2",
-      label: "balance/api/authbbb",
+      topLabel: "balance/api/authbbb",
       subLabel: "shop_user",
       chartData: [
         {
@@ -329,7 +329,7 @@ export const traceData = {
     },
     {
       id: "root/3",
-      label: "balance/api/lll",
+      topLabel: "balance/api/lll",
       subLabel: "shop_user",
       chartData: [
         {

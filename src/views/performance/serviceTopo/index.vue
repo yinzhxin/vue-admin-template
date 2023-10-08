@@ -371,6 +371,10 @@ export default {
         const edgesInfo = this.getEdgesInfoByIds(edgeIds);
         // console.log(edgesInfo);
 
+        const container = document.getElementById("container");
+        const width = container.scrollWidth;
+        const height = 600;
+
         // 更新图表数据
         this.graphStreamData = {
           nodes: resNodes,
@@ -381,6 +385,8 @@ export default {
         this.updateData(this.graphStreamData);
         // 渲染
         this.renderGraph();
+        // 重新绘制画布大小，比总拓扑图的高少100px
+        this.graph.changeSize(width, height);
         // 显示返回总拓扑的标志
         this.isTotalTopo = false;
       } else if (target.innerHTML == "查看告警") {
@@ -524,21 +530,21 @@ export default {
                 <span style="font-size: 14px"> ${comboTitle} </span>
 
                 <div style="display: flex; align-items: center; flex-direction: row; justify-content:space-between">
-                    <div> 请求数：${node.requestNum} </div>
+                    <div style="font-size: 15px"> 请求数：${node.requestNum} </div>
                     <div class="chart-requestGraph" style="width: 300px; height: 80px;"></div>
                 </div>
 
                 <div style="display: flex; align-items: center; flex-direction: row; justify-content:space-between">
-                    <div> 错误率：${node.errorRate} </div>
+                    <div style="font-size: 15px"> 错误率：${node.errorRate} </div>
                     <div class="chart-errorGraph" style="width: 300px; height: 80px;"></div>
                 </div>
 
                 <div style="display: flex; align-items: center; flex-direction: row; justify-content:space-between">
-                    <div> 平均响应时间：${node.responseTime} </div>
+                    <div style="font-size: 15px"> 平均响应时间：${node.responseTime} </div>
                     <div class='chart-responseGraph' style="width: 300px; height: 80px;"></div>
                 </div>
 
-                <div>
+                <div style="font-size: 15px">
                     告警数：
                     紧急:
                     <span style="color:red"> ${node.urgentAlarmNum} </span>
@@ -568,6 +574,10 @@ export default {
                 //   left: 30,
                 //   right: 20,
                 // },
+                grid: {
+                  containLabel: true,
+                  scale: 0.5, // 设置放缩比例，小于 1 缩小，大于 1 放大
+                },
                 xAxis: [
                   {
                     type: "category",
@@ -804,7 +814,7 @@ export default {
 
       // 工具栏，固定在左上角
       const toolbar = new G6.ToolBar({
-        position: { x: 20, y: 80 },
+        position: { x: 1250, y: 80 },
       });
 
       // 分组标记，折叠

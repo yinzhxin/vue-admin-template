@@ -194,7 +194,7 @@
       </div>
 
       <el-tabs v-model="activeName" @tab-click="handleClick" class="tab-style">
-        <el-tab-pane label="树形" name="1">
+        <el-tab-pane label="树形" name="1" :lazy="true">
           <div class="drawer-content">
             <!-- 树状图表 -->
             <div style="width: 45%; height: 100%">
@@ -250,7 +250,7 @@
     >
       <el-tabs
         v-model="activeName2"
-        @tab-click="handleClick2"
+        @tab-click="handleNodeClick"
         class="tab-style"
       >
         <el-tab-pane label="基本信息" name="1">
@@ -477,7 +477,7 @@ export default {
         "#3F48CC",
         "#0094D4",
         "#00A2E8",
-        "#00ABF5",
+        "#00ABF6",
         "#99D9EA",
         "#22B14C",
         "#B5E61D",
@@ -549,6 +549,7 @@ export default {
   //       console.log("newV ==> ", newV, "oldV ==> ", oldV);
   //     },
   //     deep: true,
+  //     immediate: true,
   //   },
   // },
 
@@ -631,9 +632,9 @@ export default {
       const color = this.colorList[level];
       obj.color = color;
 
-      if (obj.hasOwnProperty("chartData") || obj.hasOwnProperty("label")) {
-        result.labelList.push({ label: obj.label, color: obj.color });
-        result.label.push(obj.label);
+      if (obj.hasOwnProperty("chartData") || obj.hasOwnProperty("topLabel")) {
+        result.labelList.push({ label: obj.topLabel, color: obj.color });
+        result.label.push(obj.topLabel);
         result.chartData.push(obj.chartData);
       }
 
@@ -648,11 +649,11 @@ export default {
     handleCopy(evt) {
       let clipboard = new Clipboard(".el-icon-document-copy");
       clipboard.on("success", (e) => {
-        this.$message.success("复制成功"); // 利用Element组件给予成功提示
+        this.$message.success("复制成功");
         clipboard.destroy(); // 释放内存
       });
       clipboard.on("error", (e) => {
-        this.$message.error("该浏览器不支持自动复制"); // 给予错误提示信息
+        this.$message.error("Error!");
         clipboard.destroy(); // 释放内存
       });
     },
@@ -679,6 +680,7 @@ export default {
 
     // 关闭抽屉
     closeDrawer(done) {
+      console.log("!!!");
       this.activeName = "1";
       this.drawerVisible = false;
 
@@ -690,6 +692,7 @@ export default {
 
       this.graph.destroy(); // 销毁图形实体
       this.graph = null;
+      this.graphData = "";
     },
 
     // tab组件的切换函数
@@ -698,22 +701,29 @@ export default {
         this.$nextTick(() => {
           this.initGraph_tree();
         });
-      } else if (tab.label == "树形") {
       } else {
         if (this.graphTree) {
           this.graphTree.destroy();
           this.graphTree = null;
         }
       }
-    },
-
-    // tab组件的切换函数2
-    handleClick2(tab, event) {
-      // console.log(tab, event);
+      // else if (tab.label == "树形") {
+      //   if (this.graphTree) {
+      //     this.graphTree.destroy();
+      //     this.graphTree = null;
+      //   }
+      // }
+      // else if (tab.label == "表格") {
+      //   if (this.graphTree) {
+      //     this.graphTree.destroy();
+      //     this.graphTree = null;
+      //   }
+      // }
     },
 
     // 打开内部的抽屉组件
     openNodeDrawer() {
+      // 请求span详情
       // getSpanInfo({ spanId: "fsdgfehndgjnrn" });
       this.nodeDrawerVisible = true;
     },
@@ -722,6 +732,11 @@ export default {
     closeNodeDrawer() {
       this.activeName2 = "1";
       this.nodeDrawerVisible = false;
+    },
+
+    // 节点的tab组件的切换函数
+    handleNodeClick(tab, event) {
+      // console.log(tab, event);
     },
 
     // 搜索
@@ -784,75 +799,27 @@ export default {
       });
 
       const container = document.getElementById("container");
-      const a = document.getElementById("bar").scrollHeight;
-      console.log(document.getElementById("bar").scrollHeight);
+      // 获取柱状图的高，让树状图的高度等于柱状图的高度
+      const barHeight = document.getElementById("bar").scrollHeight;
       const width = container.scrollWidth || 350;
-      const height = container.scrollHeight * 3 || a;
-      console.log(width, height);
-
-      // G6.registerBehavior("hoverNode", {
-      //   getEvents: function () {
-      //     return {
-      //       "node:mouseenter": "onMouseEnter",
-      //       "node:mouseleave": "onMouseLeave",
-      //     };
-      //   },
-      //   onMouseEnter: function (evt) {
-      //     const node = evt.item;
-      //     this.updateNodeStyle(node, true);
-      //   },
-      //   onMouseLeave: function (evt) {
-      //     const node = evt.item;
-      //     this.updateNodeStyle(node, false);
-      //   },
-      //   updateNodeStyle: function (node, isHover) {
-      //     const style = node.getModel().style;
-      //     if (isHover) {
-      //       style.fill = "#f5f5f5";
-      //       style.textBackground = {
-      //         fill: "#f5f5f5",
-      //         radius: 2,
-      //         padding: [2, 4],
-      //       };
-      //     } else {
-      //       style.fill = "#fff";
-      //       style.textBackground = null;
-      //     }
-      //     this.graph.updateItem(node, node.getModel());
-      //   },
-      // });
+      const height = container.scrollHeight || barHeight;
+      console.log("bar ==>", document.getElementById("bar").scrollHeight);
+      console.log("画布的宽高 ==>", width, height);
 
       this.graph = new G6.TreeGraph({
         container: "container",
         width,
         height,
-        fitView: true,
+        fitView: true, // 开启后图自动适配画布大小
         modes: {
           default: ["behaviorName"],
         },
         defaultNode: {
           size: 10,
-
           anchorPoints: [
             [0.5, 0],
             [0.5, 1],
           ],
-          style: {
-            cursor: "pointer",
-          },
-          labelCfg: {
-            style: {
-              // fill: "#1890ff",
-              fontSize: 14,
-              background: {
-                fill: "#ffffff",
-                // stroke: "#9EC9FF",
-                // padding: [2, 2, 2, 2],
-                // radius: 2,
-              },
-            },
-            position: "bottom",
-          },
         },
         defaultEdge: {
           type: "polyline",
@@ -867,15 +834,20 @@ export default {
           direction: "H",
           indent: 20,
           getHeight: () => {
-            return 15;
+            return 30;
           },
           getWidth: () => {
             return 5;
           },
           getSide: (d) => {
-            // console.log(d)
-            return "right";
+            return "right"; // 子节点在当前节点的哪一侧，"left" 或 "right"
           },
+          // getVGap: function getVGap() {
+          //   return 10;
+          // },
+          // getHGap: function getHGap() {
+          //   return 10;
+          // },
         },
       });
 
@@ -892,10 +864,16 @@ export default {
             background: "#1890ff",
           },
         };
-
+        // let res = `${node.topLabel} \n <span class="nodeStyle">${node.subLabel}</span>`;
+        let res = `${node.topLabel} \n ${node.subLabel}`;
         return {
-          label: node.label,
+          // label: node.topLabel + "\n" + node.subLabel,
+          label: res,
           labelCfg: {
+            style: {
+              fontSize: 20,
+              fill: "gray",
+            },
             position: "right",
           },
         };
@@ -942,6 +920,7 @@ export default {
         width,
         height,
         zoom: 0.2,
+        fitView: true,
         modes: {
           default: ["collapse-expand", "zoom-canvas"],
         },
@@ -981,7 +960,6 @@ export default {
             return G6.Util.getTextSize(d.id, 25)[0] + 120;
           },
         },
-        fitView: true,
       });
 
       // 动态配置节点
@@ -1120,6 +1098,9 @@ export default {
   margin-bottom: 15px;
   width: 70%;
   // font-size: 20px;
+}
+.nodeStyle {
+  color: gray;
 }
 </style>
 

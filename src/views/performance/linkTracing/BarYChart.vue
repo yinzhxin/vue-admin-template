@@ -85,6 +85,7 @@ export default {
     if (!this.chart) {
       return;
     }
+    // console.log("charts is destroyed!!!");
     this.chart.dispose();
     this.chart = null;
   },
@@ -96,45 +97,62 @@ export default {
       const option = {
         tooltip: {
           showContent: false,
-          trigger: "axis",
+          trigger: "axis", // 坐标轴触发
           axisPointer: {
-            type: "shadow",
-            axis: "y",
-            appendToBody: true,
-            label: {
-              padding: [
-                5, // 上
-                10, // 右
-                5, // 下
-                10, // 左
-              ],
+            shadow: true,
+            // 坐标轴指示器配置项
+            type: "cross",
+            crossStyle: {
+              color: "#F56C6C",
+              type: "solid",
             },
+
+            axis: "y", // 指示器的坐标轴
+            appendToBody: true,
+            extraCssText: "box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);",
+            label: {
+              // show:false
+              // backgroundColor: "transparent",
+              // color: "black",
+              // textShadowOffsetX: -20,
+              // textShadowOffsetY: -20,
+              // shadowColor: "red",
+            },
+            link: [],
           },
-          // formatter: (params) => {
-          //   let seriesName = params[0].seriesName;
-          //   let dataName = params[0].name;
-          //   let value = params[0].value;
-          //   if (seriesName === "pendingTime") {
-          //     return dataName + ": " + value;
-          //   } else {
-          //     return;
-          //   }
-          // },
         },
 
         grid: {
           left: "-14%",
           right: "5%",
           bottom: 30,
-          top: 5,
+          top: 10,
           containLabel: true,
-          backgroundColor: "gray", // 设置柱子占据的背景色
         },
 
         xAxis: {
           type: "value",
+          // type: "category",
+          // data: ["25", "36", "43", "56", "67"], // 指定每个刻度对应的值
           position: "top",
           splitNumber: 9,
+          // boundaryGap: false,
+          // axisPointer: {
+          //   show: true,
+          //   snap: false,
+          //   type: "line",
+          // },
+          axisLabel: {
+            formatter: (value, index) => {
+              if (index === 0) {
+                return ""; // 隐藏首尾的标签文字
+              } else {
+                return value + "ms"; // 显示其他标签文字
+              }
+            },
+            fontSize: 16,
+            showMaxLabel: false, // 隐藏最大值标签
+          },
         },
 
         yAxis: {
@@ -143,12 +161,18 @@ export default {
           axisTick: {
             show: true,
             lineStyle: {
-              width: 2, // 设置刻度线的粗细
+              width: 10, // 设置刻度线的粗细
             },
           },
-
+          axisPointer: {
+            show: true,
+            snap: false,
+            type: "shadow",
+          },
+          shadowStyle: {
+            color: "#C0C4CC",
+          },
           data: this.label,
-
           inverse: true, // 反转 Y 轴坐标轴的顺序
         },
 
@@ -159,10 +183,10 @@ export default {
             type: "bar",
             stack: "total",
             label: { show: false },
-            emphasis: { focus: "series" },
+            emphasis: { focus: "none" },
             showBackground: true,
             itemStyle: {
-              normal: { color: "rgba(0,0,0,0)" },
+              color: "rgba(0,0,0,0)",
             },
           },
           {
@@ -170,41 +194,51 @@ export default {
             name: "pendingTime",
             type: "bar",
             stack: "total",
+            opacity: 0.5,
             barWidth: 10, // 设置柱子的粗细
-            label: {
-              show: true,
-              position: "top",
-            },
             emphasis: {
               focus: "series",
             },
             showBackground: true,
+            backgroundStyle: {},
+            label: {
+              show: true,
+              position: ["0%", "50%"],
+              offset: [0, -20],
+              fontSize: 16,
+              color: "gray",
+              formatter: (params) => {
+                return params.data + "ms";
+              },
+            },
+            labelLine: {
+              show: true,
+            },
             itemStyle: {
-              borderRadius: 5, // 统一设置四个角的圆角大小
-              normal: {
-                color: (item) => {
-                  let res = this.labelList.filter((elem) => {
-                    return item.name == elem.label;
-                  });
-                  return res[0].color; // 返回第一个匹配项的颜色
-                },
+              borderRadius: 10, // 统一设置四个角的圆角大小
+              color: (item) => {
+                let res = this.labelList.filter(
+                  (elem) => item.name == elem.label
+                );
+                return res[0].color; // 返回第一个匹配项的颜色
               },
             },
           },
-          // {
-          //   data: this.stayingTime,
-          //   name: "stayingTime",
-          //   type: "bar",
-          //   stack: "total",
-          //   label: { show: false },
-          //   emphasis: { focus: "series" },
-          //   showBackground: true,
-          //   itemStyle: {
-          //     normal: { color: "rgba(0,0,0,0)" },
-          //   },
-          // },
+          {
+            data: this.stayingTime,
+            name: "stayingTime",
+            type: "bar",
+            stack: "total",
+            label: { show: false },
+            emphasis: { focus: "none" },
+            showBackground: true,
+            itemStyle: {
+              color: "rgba(0,0,0,0)",
+            },
+          },
         ],
-        barGap: 1, // 减小数值以缩小柱状图之间的间距
+
+        barGap: 20, // 减小数值以缩小柱状图之间的间距
       };
 
       this.chart.setOption(option);
