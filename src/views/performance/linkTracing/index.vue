@@ -198,6 +198,8 @@
           <div class="drawer-content">
             <!-- 树状图表 -->
             <div style="width: 45%; height: 100%">
+              <span style="font-size: 12px; color: gray">接口名称</span>
+
               <div id="container" ref="container" />
             </div>
 
@@ -217,16 +219,16 @@
         <el-tab-pane label="Span列表" name="2">
           <Table
             size="mini"
-            :table-data="table2.tableData2"
-            :columns="table2.columns"
+            :table-data="tableSpan.tableSpanData"
+            :columns="tableSpan.columns"
           />
           <div style="padding: 20px 0">
             <el-pagination
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
-              :total="table2.page.count"
-              :current-page="table2.page.current"
-              :page-size="table2.page.size"
+              :total="tableSpan.page.count"
+              :current-page="tableSpan.page.current"
+              :page-size="tableSpan.page.size"
               :page-sizes="[10, 20, 30, 40]"
               layout="total, sizes, prev, pager, next, jumper"
             >
@@ -249,7 +251,7 @@
       size="70%"
     >
       <el-tabs
-        v-model="activeName2"
+        v-model="activeNameNode"
         @tab-click="handleNodeClick"
         class="tab-style"
       >
@@ -309,7 +311,7 @@
               </el-tooltip>
             </div>
           </div>
-          <el-card class="logInfo" shadow="never">
+          <el-card class="logInfo" :body-style="{ backgroundColor: '#F2F6FC' }">
             <div slot="header">
               <strong> 2023-10-10 13:34:08 </strong>
             </div>
@@ -342,7 +344,7 @@ import {
   getTraceInfo,
   getSpanInfo,
   traceData,
-  tableData2,
+  tableSpanData,
   treeData,
 } from "@/mock/linkTracing";
 
@@ -383,23 +385,26 @@ export default {
 
       graph: null,
       graphData: "",
-      canvasWidth: 0, // 画布宽度
-      canvasHeight: 0, // 画布高度
 
       graphTree: null,
+
+      canvasWidth: 0, // 画布宽度
+      canvasHeight: 0, // 画布高度
 
       // 柱状图数据
       duringTime: [],
       pendingTime: [],
       stayingTime: [],
-      labelList: [],
-      label: [],
+      labelList: [], // label和其对应颜色
+      label: [], // label
 
       nodeDrawerVisible: false,
       drawerVisible: false,
       activeName: "1",
-      activeName2: "1",
+      activeNameNode: "1",
+
       spanRadio: "all",
+
       rowObj: "", // 表格行数据
       drawerTitle: "", // 点击表格出现的抽屉组件的标题
 
@@ -513,8 +518,8 @@ export default {
         },
       ],
 
-      table2: {
-        tableData2,
+      tableSpan: {
+        tableSpanData,
         columns: [
           { label: "Endpoint", index: "endpoint" },
           { label: "所属服务", index: "server" },
@@ -540,18 +545,10 @@ export default {
           total: 1, // 总页数
         },
       },
+
+      nodeCount: "",
     };
   },
-
-  // watch: {
-  //   graph: {
-  //     handler: function (newV, oldV) {
-  //       console.log("newV ==> ", newV, "oldV ==> ", oldV);
-  //     },
-  //     deep: true,
-  //     immediate: true,
-  //   },
-  // },
 
   mounted() {
     this.serverId = this.$route.query.serverId;
@@ -574,6 +571,15 @@ export default {
 
     // 链路列表
     this.queryList();
+  },
+
+  beforeDestroy() {
+    // 清除数据
+    this.graphData = "";
+    // 销毁画布
+    this.graph.destroy();
+    // 实例销毁
+    this.graph = null;
   },
 
   methods: {
@@ -611,7 +617,7 @@ export default {
 
     // 处理数据
     processData(data) {
-      const result = { label: [], chartData: [], labelList: [] };
+      const result = { label: [], chartData: [], labelList: [], nodeCount: 0 };
 
       this.extractData(data, 0, result);
 
@@ -625,6 +631,10 @@ export default {
           this.stayingTime.push(result.chartData[i][j].stayingTime);
         }
       }
+
+      // console.log(result.chartData)
+      this.nodeCount = result.nodeCount;
+      console.log("节点的总数: ", result.nodeCount);
     },
 
     // 递归遍历树节点并设置颜色和提取数据
@@ -636,6 +646,10 @@ export default {
         result.labelList.push({ label: obj.topLabel, color: obj.color });
         result.label.push(obj.topLabel);
         result.chartData.push(obj.chartData);
+        // console.log(
+        //   `每个节点的信息 ==>Label: ${obj.topLabel}, Level: ${level}`
+        // );
+        result.nodeCount++; // 节点计数加一
       }
 
       if (obj.children && Array.isArray(obj.children)) {
@@ -662,6 +676,7 @@ export default {
     handleRowClick(row) {
       this.rowObj = row;
       this.drawerTitle = row.endpoint;
+      // 获取链路信息
       // getTraceInfo({ traceId: row.traceId }).then((res) => {
       //   console.log(res)
       // });
@@ -680,7 +695,7 @@ export default {
 
     // 关闭抽屉
     closeDrawer(done) {
-      console.log("!!!");
+      // console.log("!!!");
       this.activeName = "1";
       this.drawerVisible = false;
 
@@ -695,7 +710,7 @@ export default {
       this.graphData = "";
     },
 
-    // tab组件的切换函数
+    // tab组件的切换函数,
     handleClick(tab, event) {
       if (tab.label == "拓扑图") {
         this.$nextTick(() => {
@@ -723,20 +738,26 @@ export default {
 
     // 打开内部的抽屉组件
     openNodeDrawer() {
-      // 请求span详情
+      // 请求span详情/基本信息，默认name = "1"
       // getSpanInfo({ spanId: "fsdgfehndgjnrn" });
       this.nodeDrawerVisible = true;
     },
 
     // 关闭内部的抽屉组件
     closeNodeDrawer() {
-      this.activeName2 = "1";
+      this.activeNameNode = "1";
       this.nodeDrawerVisible = false;
     },
 
     // 节点的tab组件的切换函数
     handleNodeClick(tab, event) {
-      // console.log(tab, event);
+      if (tab.label == "日志详情") {
+        // 请求日志详情
+        // getLLogInfo({ spanId: "fsdgfehndgjnrn" });
+      } else if (tab.label == "基本信息") {
+        // 请求span详情/基本信息，默认name = "1"
+        // getSpanInfo({ spanId: "fsdgfehndgjnrn" });
+      }
     },
 
     // 搜索
@@ -793,6 +814,7 @@ export default {
 
     // 初始化画布
     initGraph() {
+      // 点击事件，点击节点打开抽屉组件
       G6.registerBehavior("behaviorName", {
         getEvents: () => ({ "node:click": "onClick" }),
         onClick: (evt) => this.openNodeDrawer(),
@@ -802,7 +824,7 @@ export default {
       // 获取柱状图的高，让树状图的高度等于柱状图的高度
       const barHeight = document.getElementById("bar").scrollHeight;
       const width = container.scrollWidth || 350;
-      const height = container.scrollHeight || barHeight;
+      const height = container.scrollHeight || barHeight - 20;
       console.log("bar ==>", document.getElementById("bar").scrollHeight);
       console.log("画布的宽高 ==>", width, height);
 
@@ -813,13 +835,6 @@ export default {
         fitView: true, // 开启后图自动适配画布大小
         modes: {
           default: ["behaviorName"],
-        },
-        defaultNode: {
-          size: 10,
-          anchorPoints: [
-            [0.5, 0],
-            [0.5, 1],
-          ],
         },
         defaultEdge: {
           type: "polyline",
@@ -834,59 +849,65 @@ export default {
           direction: "H",
           indent: 20,
           getHeight: () => {
-            return 30;
+            return height / this.nodeCount;
           },
           getWidth: () => {
             return 5;
           },
           getSide: (d) => {
-            return "right"; // 子节点在当前节点的哪一侧，"left" 或 "right"
+            return "right"; // 子节点在当前节点的哪侧
           },
-          // getVGap: function getVGap() {
-          //   return 10;
-          // },
-          // getHGap: function getHGap() {
-          //   return 10;
-          // },
         },
       });
 
-      // 动态配置节点
+      // 动态配置节点样式
       this.graph.node((node) => {
+        // 节点大小
+        node.size = 20;
+        // 节点连线
+        node.anchorPoints = [
+          [0.5, 0],
+          [0.5, 1],
+        ];
+        // 节点样式
         node.style = {
           fill: "#fff",
           stroke: node.color,
-          lineWidth: 3,
+          lineWidth: 5,
           cursor: "pointer",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
         };
+        // 节点状态样式
         node.stateStyles = {
           hover: {
-            background: "#1890ff",
+            fill: "#f5f5f5", // 设置hover状态的背景颜色为灰色
+            shadowColor: "#888", // 设置阴影颜色
+            shadowBlur: 0, // 设置阴影模糊程度
           },
         };
-        // let res = `${node.topLabel} \n <span class="nodeStyle">${node.subLabel}</span>`;
-        let res = `${node.topLabel} \n ${node.subLabel}`;
+        let label = `${node.topLabel} \n ${node.subLabel}`;
+
+        // console.log(node);
+
         return {
-          // label: node.topLabel + "\n" + node.subLabel,
-          label: res,
+          label,
           labelCfg: {
             style: {
               fontSize: 20,
-              fill: "gray",
+              fill: node.error ? "red" : "gray",
             },
             position: "right",
           },
         };
       });
 
+      // console.log(this.graphData);
+
       this.updateData(this.graphData);
       this.renderGraph();
       // this.graph.translate(0, 45);
-      // this.graph.fitView();
 
-      // this.graph.layout(true);
-
-      // 图实例监听--graph.on("元素类型:事件名", (e) => {})--主要是节点的动态样式变化
       // 鼠标进入节点
       this.graph.on("node:mouseenter", (e) => {
         // 获取鼠标进入的节点元素对象
@@ -969,6 +990,7 @@ export default {
           fill: "#fff",
           stroke: "#ECF5FF",
           lineWidth: 10,
+          cursor: "pointer",
         };
         node.icon = {
           show: true,
@@ -986,6 +1008,11 @@ export default {
           label: node.id,
           labelCfg: {
             position: "bottom",
+            offset: 30,
+            style: {
+              fontSize: 25,
+            },
+            // maxWidth: 100, // 设置合适的最大宽度
           },
         };
       });
@@ -993,8 +1020,32 @@ export default {
       this.graphTree.data(treeData);
       this.graphTree.render();
       this.graphTree.zoom(1.5);
+
+      // 鼠标进入节点
+      this.graphTree.on("node:mouseenter", (e) => {
+        // 获取鼠标进入的节点元素对象
+        const nodeItem = e.item;
+        // 设置当前节点的 hover 状态为 true
+        this.graphTree.setItemState(nodeItem, "hover", true);
+      });
+
+      // 鼠标离开节点
+      this.graphTree.on("node:mouseleave", (e) => {
+        const nodeItem = e.item;
+        this.graphTree.setItemState(nodeItem, "hover", false);
+      });
     },
   },
+
+  // watch: {
+  //   graph: {
+  //     handler: function (newV, oldV) {
+  //       console.log("newV ==> ", newV, "oldV ==> ", oldV);
+  //     },
+  //     deep: true,
+  //     immediate: true,
+  //   },
+  // },
 };
 </script>
 
@@ -1072,7 +1123,6 @@ export default {
 
 /* 日志详情 */
 .logInfo {
-  background-color: #eaeaea;
   color: black;
   margin: 20px;
   margin-left: 10px;
@@ -1098,9 +1148,6 @@ export default {
   margin-bottom: 15px;
   width: 70%;
   // font-size: 20px;
-}
-.nodeStyle {
-  color: gray;
 }
 </style>
 

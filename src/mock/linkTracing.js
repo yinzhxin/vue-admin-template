@@ -100,6 +100,7 @@ export const traceData = {
       id: "root/1",
       topLabel: "balance/api/auth",
       subLabel: "shop_user",
+      error: true,
       chartData: [
         {
           duringTime: 4,
@@ -137,6 +138,7 @@ export const traceData = {
                   id: "root/1/1/1/1",
                   topLabel: "balance/api/auth11",
                   subLabel: "shop_user",
+                  error: true,
                   chartData: [
                     {
                       duringTime: 25,
@@ -343,7 +345,7 @@ export const traceData = {
 }
 
 
-export const tableData2 = [
+export const tableSpanData = [
   {
     endpoint: "/api/audit",
     server: "shop_auth",

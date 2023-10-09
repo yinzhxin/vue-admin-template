@@ -98,65 +98,49 @@ export default {
         tooltip: {
           showContent: false,
           trigger: "axis", // 坐标轴触发
+          axis: "y", // 指示器的坐标轴
           axisPointer: {
-            shadow: true,
-            // 坐标轴指示器配置项
             type: "cross",
             crossStyle: {
               color: "#F56C6C",
+              // color: "gray",
               type: "solid",
             },
-
-            axis: "y", // 指示器的坐标轴
-            appendToBody: true,
-            extraCssText: "box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);",
-            label: {
-              // show:false
-              // backgroundColor: "transparent",
-              // color: "black",
-              // textShadowOffsetX: -20,
-              // textShadowOffsetY: -20,
-              // shadowColor: "red",
-            },
-            link: [],
           },
         },
 
         grid: {
           left: "-14%",
           right: "5%",
-          bottom: 30,
-          top: 10,
+          top: 0, //拉伸距离顶部高度
+          bottom: 10, //拉伸距离底部高度
           containLabel: true,
         },
 
         xAxis: {
           type: "value",
-          // type: "category",
-          // data: ["25", "36", "43", "56", "67"], // 指定每个刻度对应的值
           position: "top",
-          splitNumber: 9,
+          axisLabel: {
+            formatter: (value, index) => {
+              return value + "ms";
+            },
+            fontSize: 14,
+            showMaxLabel: false, // 隐藏最大值标签
+            showMinLabel: false,
+          },
+          // splitNumber: 9,
           // boundaryGap: false,
           // axisPointer: {
           //   show: true,
           //   snap: false,
           //   type: "line",
           // },
-          axisLabel: {
-            formatter: (value, index) => {
-              if (index === 0) {
-                return ""; // 隐藏首尾的标签文字
-              } else {
-                return value + "ms"; // 显示其他标签文字
-              }
-            },
-            fontSize: 16,
-            showMaxLabel: false, // 隐藏最大值标签
-          },
         },
 
         yAxis: {
           show: false,
+          data: this.label,
+          inverse: true, // 反转 Y 轴坐标轴的顺序
           type: "category",
           axisTick: {
             show: true,
@@ -172,8 +156,6 @@ export default {
           shadowStyle: {
             color: "#C0C4CC",
           },
-          data: this.label,
-          inverse: true, // 反转 Y 轴坐标轴的顺序
         },
 
         series: [
@@ -204,8 +186,8 @@ export default {
             label: {
               show: true,
               position: ["0%", "50%"],
-              offset: [0, -20],
-              fontSize: 16,
+              offset: [0, -18],
+              fontSize: 14,
               color: "gray",
               formatter: (params) => {
                 return params.data + "ms";
@@ -237,8 +219,6 @@ export default {
             },
           },
         ],
-
-        barGap: 20, // 减小数值以缩小柱状图之间的间距
       };
 
       this.chart.setOption(option);

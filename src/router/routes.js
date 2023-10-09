@@ -238,7 +238,13 @@ export default [
         name: 'LinkTracing',
         component: () => import('@/views/performance/linkTracing/index'),
         meta: { title: '链路追踪' }
-      }
+      },
+      {
+        path: 'databaseMonitor',
+        name: 'DatabaseMonitor',
+        component: () => import('@/views/performance/databaseMonitor/index'),
+        meta: { title: '数据库监控' }
+      },
     ]
   },
 

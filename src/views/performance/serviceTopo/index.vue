@@ -57,7 +57,7 @@
 
     <div v-if="!isTotalTopo && form.radio == 'topo'" class="back-div">
       <i class="el-icon-back toTotalTopo" @click="handleBack"> 返回总拓扑图 </i>
-      <el-select v-model="toTotalTopo" @click="handleChangeserverId">
+      <el-select v-model="toTotalTopo" @change="handleChangeserverId">
         <el-option
           v-for="item in serverIdOption"
           :key="item.value"
@@ -137,6 +137,7 @@ export default {
       graph: null, // 图表实例
       graphData: "", // 图表数据
       graphStreamData: "", // 上下游图表数据
+      // graphTotal: null,
 
       edgesArray: "",
       nodesArray: "",
@@ -346,7 +347,7 @@ export default {
 
     // 右键菜单
     handleMenuClick(target, item) {
-      // console.log(target.innerHTML, item);
+      console.log(target.innerHTML, item);
       // 要查询的节点id--应用服务节点
       const nodeId = item._cfg.id;
       if (target.innerHTML == "查看链路") {
@@ -452,7 +453,9 @@ export default {
 
     // 服务名称选择器
     handleChangeserverId(val) {
-      // 待定
+      console.log(val);
+      // const node = this.graphTotal.findById(val);
+      // console.log(node);
     },
 
     // 更新图表数据，初次渲染也调用data方法
@@ -530,24 +533,25 @@ export default {
                 <span style="font-size: 14px"> ${comboTitle} </span>
 
                 <div style="display: flex; align-items: center; flex-direction: row; justify-content:space-between">
-                    <div style="font-size: 15px"> 请求数：${node.requestNum} </div>
-                    <div class="chart-requestGraph" style="width: 300px; height: 80px;"></div>
+                    <div style="font-size: 18px"> 请求数：${node.requestNum} </div>
+                    <div class="chart-requestGraph" style="width: 300px; height: 70px;"></div>
                 </div>
 
                 <div style="display: flex; align-items: center; flex-direction: row; justify-content:space-between">
-                    <div style="font-size: 15px"> 错误率：${node.errorRate} </div>
-                    <div class="chart-errorGraph" style="width: 300px; height: 80px;"></div>
+                    <div style="font-size: 18px"> 错误率：${node.errorRate} </div>
+                    <div class="chart-errorGraph" style="width: 300px; height: 70px;"></div>
                 </div>
 
                 <div style="display: flex; align-items: center; flex-direction: row; justify-content:space-between">
-                    <div style="font-size: 15px"> 平均响应时间：${node.responseTime} </div>
-                    <div class='chart-responseGraph' style="width: 300px; height: 80px;"></div>
+                    <div style="font-size: 18px"> 平均响应时间：${node.responseTime} </div>
+                    <div class='chart-responseGraph' style="width: 300px; height: 70px;"></div>
                 </div>
 
-                <div style="font-size: 15px">
+                <div style="font-size: 18px;margin:20px 0">
                     告警数：
                     紧急:
                     <span style="color:red"> ${node.urgentAlarmNum} </span>
+
                     严重:
                     <span style="color:orange"> ${node.severeAlarmNum} </span>
                 </div>
@@ -568,15 +572,11 @@ export default {
             {
               container: outDiv.querySelector(`.chart-requestGraph`),
               options: {
-                // grid: {
-                //   top: 20,
-                //   bottom: 20,
-                //   left: 30,
-                //   right: 20,
-                // },
                 grid: {
-                  containLabel: true,
-                  scale: 0.5, // 设置放缩比例，小于 1 缩小，大于 1 放大
+                  top: 5,
+                  bottom: 30,
+                  left: 10,
+                  right: 20,
                 },
                 xAxis: [
                   {
@@ -619,7 +619,10 @@ export default {
                     data: valueList,
                     smooth: true,
                     symbol: "none", // 隐藏小圆点
-                    //给折线图下方添加阴影
+                    lineStyle: {
+                      color: "#409EFF",
+                    },
+                    //给折线图下方添加阴影。
                     areaStyle: {
                       normal: {
                         color: new echarts.graphic.LinearGradient(
@@ -634,7 +637,7 @@ export default {
                             },
                             {
                               offset: 1,
-                              color: "rgba(16, 25, 112,0.2)",
+                              color: "rgba(255, 255, 255, 0)",
                             },
                           ],
                           false
@@ -650,12 +653,12 @@ export default {
             {
               container: outDiv.querySelector(`.chart-errorGraph`),
               options: {
-                // grid: {
-                //   top: 20,
-                //   bottom: 20,
-                //   left: 30,
-                //   right: 20,
-                // },
+                grid: {
+                  top: 5,
+                  bottom: 30,
+                  left: 10,
+                  right: 20,
+                },
                 xAxis: [
                   {
                     type: "category",
@@ -697,6 +700,9 @@ export default {
                     data: valueList1,
                     smooth: true,
                     symbol: "none", // 隐藏小圆点
+                    lineStyle: {
+                      color: "#409EFF",
+                    },
                     //给折线图下方添加阴影
                     areaStyle: {
                       normal: {
@@ -712,13 +718,13 @@ export default {
                             },
                             {
                               offset: 1,
-                              color: "rgba(16, 25, 112,0.2)",
+                              color: "rgba(255, 255, 255, 0)",
                             },
                           ],
                           false
                         ),
                         shadowColor: "#409EFF",
-                        shadowBlur: 10,
+                        shadowBlur: 0,
                       },
                     },
                   },
@@ -728,12 +734,12 @@ export default {
             {
               container: outDiv.querySelector(`.chart-responseGraph`),
               options: {
-                // grid: {
-                //   top: 20,
-                //   bottom: 20,
-                //   left: 30,
-                //   right: 20,
-                // },
+                grid: {
+                  top: 5,
+                  bottom: 30,
+                  left: 10,
+                  right: 20,
+                },
                 xAxis: [
                   {
                     type: "category",
@@ -775,6 +781,9 @@ export default {
                     data: valueList2,
                     smooth: true,
                     symbol: "none", // 隐藏小圆点
+                    lineStyle: {
+                      color: "#409EFF",
+                    },
                     //给折线图下方添加阴影
                     areaStyle: {
                       normal: {
@@ -790,13 +799,13 @@ export default {
                             },
                             {
                               offset: 1,
-                              color: "rgba(16, 25, 112,0.2)",
+                              color: "rgba(255, 255, 255, 0)",
                             },
                           ],
                           false
                         ),
                         shadowColor: "#409EFF",
-                        shadowBlur: 10,
+                        shadowBlur: 0,
                       },
                     },
                   },
@@ -1077,6 +1086,8 @@ export default {
         // 开启动画
         animate: true,
       });
+
+      // this.graphTotal = this.graph
 
       // 动态设置节点样式--主要是颜色展示和变化
       this.nodesArray.forEach((node) => {
