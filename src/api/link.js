@@ -26,7 +26,7 @@ export function getInstanceList() {
  * 获取全量应用名称
  * @returns
  */
-export function getAppList() {
+export function getAppList2() {
   return request({
     url: '/app/list',
     method: 'get',
@@ -50,6 +50,20 @@ export function getTraceList(params) {
       spendTime: params.spendTime,
       pageNum: params.pageNum,
       pageSize: params.pageSize
+    }
+  })
+}
+
+/**
+ * span详情
+ * @returns
+ */
+export function getSpanInfo2(params) {
+  return request({
+    url: '/span/info',
+    method: 'get',
+    params: {
+      spanId: 'dkfjgh2378ysdjkhb23768ys'
     }
   })
 }

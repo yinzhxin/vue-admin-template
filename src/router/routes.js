@@ -19,7 +19,7 @@ export default [
     hidden: true
   },
 
-  // 概览
+  // 个人主页
   {
     path: '/',
     component: Layout,
@@ -29,221 +29,141 @@ export default [
         path: 'dashboard',
         name: 'Dashboard',
         component: () => import('@/views/dashboard/index'),
-        meta: { title: '概览', icon: 'dashboard' }
-      }
-    ]
-  },
-  // 告警中心
-  {
-    path: '/alarmCenter',
-    component: Layout,
-    children: [
-      {
-        path: 'alarmCenter',
-        name: 'AlarmCenter',
-        component: () => import('@/views/alarmCenter/index'),
-        meta: { title: '告警中心', icon: 'el-icon-message-solid' }
+        meta: { title: '个人主页', icon: 'el-icon-user' }
       }
     ]
   },
 
-  // 运维提升
+  // 服务治理
   {
-    path: '/operImprove',
-    name: 'OperImprove',
+    path: '/serviceGovern',
+    // name: 'ServiceGovern',
     component: Layout,
-    redirect: '/operImprove/business/overview',
-    meta: { title: '运维提升', icon: 'el-icon-message' },
+    redirect: '/serviceGovern/serviceTopo',
+    meta: { title: '服务治理', icon: 'el-icon-connection' },
     children: [
-      // 业务运维
-      {
-        path: 'business',
-        name: 'Business',
-        component: () => import('@/views/operImprove/business/index'),
-        redirect: '/operImprove/business/overview',
-        meta: { title: '业务运维' },
-        children: [
-          {
-            path: 'overview',
-            name: 'BusOverview',
-            component: () => import('@/views/operImprove/business/overview'),
-            meta: { title: '业务总览' }
-          },
-          {
-            path: 'business1',
-            name: 'Business1',
-            component: () => import('@/views/operImprove/business/business1'),
-            meta: { title: '业务运维1' },
-          },
-          {
-            path: 'business2',
-            name: 'Business2',
-            component: () => import('@/views/operImprove/business/business2'),
-            meta: { title: '业务运维2' }
-          }
-        ]
-      },
-
-      // 应用运维
-      {
-        path: 'application',
-        name: 'Application',
-        component: () => import('@/views/operImprove/application/index'),
-        redirect: '/operImprove/application/overview',
-        meta: { title: '应用运维' },
-        children: [
-          {
-            path: 'overview',
-            name: 'AppOverview',
-            component: () => import('@/views/operImprove/application/overview'),
-            meta: { title: '应用总览' }
-          },
-          {
-            path: 'application1',
-            name: 'Application1',
-            component: () => import('@/views/operImprove/application/application1'),
-            meta: { title: '应用运维1' },
-          },
-          {
-            path: 'application2',
-            name: 'Application2',
-            component: () => import('@/views/operImprove/application/application2'),
-            meta: { title: '应用运维2' }
-          }
-        ]
-      },
-
-      // 基础设施运维
-      {
-        path: 'structure',
-        name: 'Structure',
-        component: () => import('@/views/operImprove/structure/index'),
-        redirect: '/operImprove/structure/overview',
-        meta: { title: '基础设施运维' },
-        children: [
-          {
-            path: 'overview',
-            name: 'StrutOverview',
-            component: () => import('@/views/operImprove/structure/overview'),
-            meta: { title: '基础设施总览' }
-          },
-          {
-            path: 'structure1',
-            name: 'Structure1',
-            component: () => import('@/views/operImprove/structure/structure1'),
-            meta: { title: '基础设施运维1' },
-          },
-          {
-            path: 'structure2',
-            name: 'Structure2',
-            component: () => import('@/views/operImprove/structure/structure2'),
-            meta: { title: '基础设施运维2' }
-          }
-        ]
-      },
-
-      // 系统资源运维
-      {
-        path: 'resource',
-        name: 'Resource',
-        component: () => import('@/views/operImprove/resource/index'),
-        redirect: '/operImprove/resource/overview',
-        meta: { title: '系统资源运维' },
-        children: [
-          {
-            path: 'overview',
-            name: 'ResOverview',
-            component: () => import('@/views/operImprove/resource/overview'),
-            meta: { title: '系统资源总览' }
-          },
-          {
-            path: 'resource1',
-            name: 'Resource1',
-            component: () => import('@/views/operImprove/resource/resource1'),
-            meta: { title: '系统资源运维1' },
-          },
-          {
-            path: 'resource2',
-            name: 'Resoucre2',
-            component: () => import('@/views/operImprove/resource/resource2'),
-            meta: { title: '系统资源运维2' }
-          }
-        ]
-      },
-    ]
-  },
-
-  // 提升处置
-  {
-    path: '/handImprove',
-    name: 'HandImprove',
-    component: Layout,
-    redirect: '/handImprove/manager1',
-    meta: { title: '处置提升', icon: 'el-icon-user' },
-    children: [
-      {
-        path: 'manager1',
-        name: 'Manager1',
-        component: () => import('@/views/handImprove/manager1/index'),
-        meta: { title: '融合运维管理1' }
-      },
-      {
-        path: 'manager2',
-        name: 'Manager2',
-        component: () => import('@/views/handImprove/manager2/index'),
-        meta: { title: '融合运维管理2' }
-      }
-    ]
-  },
-
-  // 服务拓扑
-  // {
-  //   path: '/serviceTopology',
-  //   name: 'Topology',
-  //   component: Layout,
-  //   redirect: '/serviceTopology/topology1',
-  //   meta: { title: '服务拓扑', icon: 'el-icon-connection' },
-  //   children: [
-  //     {
-  //       path: 'topology1',
-  //       name: 'Topology1',
-  //       component: () => import('@/views/serviceTopology/topology1/index'),
-  //       meta: { title: '拓扑图1' }
-  //     },
-  //     {
-  //       path: 'topology2',
-  //       name: 'Topology2',
-  //       component: () => import('@/views/serviceTopology/topology2/index'),
-  //       meta: { title: '拓扑图2' }
-  //     }
-  //   ]
-  // },
-
-  // 应用性能管理
-  {
-    path: '/performance',
-    name: 'performance',
-    component: Layout,
-    redirect: '/performance/serviceTopo',
-    meta: { title: '应用性能管理', icon: 'el-icon-connection' },
-    children: [
+      // {
+      //   path: 'systemList',
+      //   name: 'SystemList',
+      //   component: () => import('@/views/serviceGovern/systemList/index'),
+      //   meta: { title: '系统列表' }
+      // },
+      // {
+      //   path: 'systemOverview',
+      //   name: 'SystemOverview',
+      //   component: () => import('@/views/serviceGovern/systemOverview/index'),
+      //   meta: { title: '系统概览' }
+      // },
       {
         path: 'serviceTopo',
         name: 'ServiceTopo',
-        component: () => import('@/views/performance/serviceTopo/index'),
+        component: () => import('@/views/serviceGovern/serviceTopo/index'),
         meta: { title: '服务拓扑' }
       },
       {
         path: 'linkTracing',
         name: 'LinkTracing',
-        component: () => import('@/views/performance/linkTracing/index'),
+        component: () => import('@/views/serviceGovern/linkTracing/index'),
         meta: { title: '链路追踪' }
       },
       {
-        path: 'databaseMonitor',
-        name: 'DatabaseMonitor',
-        component: () => import('@/views/performance/databaseMonitor/index'),
-        meta: { title: '数据库监控' }
+        path: 'instanceMonitor',
+        name: 'InstanceMonitor',
+        component: () => import('@/views/serviceGovern/instanceMonitor/index'),
+        meta: { title: '实例监控' }
+      }
+    ]
+  },
+
+  // 监控和大屏展示
+  {
+    path: '/monitor',
+    // name: 'Monitor',
+    component: Layout,
+    redirect: '/monitor/containerResource',
+    meta: { title: '监控和大屏展示', icon: 'el-icon-menu' },
+    children: [
+      // 容器资源总览
+      {
+        path: 'containerResource',
+        name: 'ContainerResource',
+        component: () => import('@/views/monitor/containerResource/index'),
+        meta: { title: '容器资源总览' }
+      },
+
+      // 其他资源总览
+      {
+        path: 'otherResource',
+        // name: 'OtherResource',
+        component: () => import('@/views/monitor/otherResource/index'),
+        redirect: '/monitor/otherResource/resourceOverview',
+        meta: { title: '其他资源总览' },
+        children: [
+          {
+            path: 'resourceOverview',
+            name: 'ResourceOverview',
+            component: () => import('@/views/monitor/otherResource/resourceOverview'),
+            meta: { title: '资源总览' }
+          },
+          {
+            path: 'baseResource',
+            name: 'BaseResource',
+            component: () => import('@/views/monitor/otherResource/baseResource'),
+            meta: { title: '基础资源' },
+          },
+          {
+            path: 'registerCenter',
+            name: 'RegisterCenter',
+            component: () => import('@/views/monitor/otherResource/registerCenter'),
+            meta: { title: '注册中心' }
+          },
+          {
+            path: 'redis',
+            name: 'Redis',
+            component: () => import('@/views/monitor/otherResource/redis'),
+            meta: { title: 'Redis' }
+          },
+          {
+            path: 'database',
+            // name: 'Database',
+            component: () => import('@/views/monitor/otherResource/database/index'),
+            redirect: '/monitor/otherResource/database/instanceMonitor',
+            meta: { title: '数据库' },
+            alwaysShow: true,
+            children: [
+              {
+                path: 'instanceMonitor',
+                name: 'InstanceMonitorDatabase',
+                component: () => import('@/views/monitor/otherResource/database/instanceMonitor'),
+                meta: { title: '数据库实例监控' }
+              },
+            ]
+          },
+        ]
+      },
+
+    ]
+  },
+
+  // 事件应急处置
+  {
+    path: '/emergency',
+    name: 'Emergency',
+    component: Layout,
+    redirect: '/emergency/eventOverview',
+    meta: { title: '事件应急处置', icon: 'el-icon-bell' },
+    children: [
+      {
+        path: 'eventOverview',
+        name: 'EventOverview',
+        component: () => import('@/views/emergency/eventOverview/index'),
+        meta: { title: '事件总览' }
+      },
+      {
+        path: 'alarmCenter',
+        name: 'AlarmCenter',
+        component: () => import('@/views/emergency/alarmCenter/index'),
+        meta: { title: '告警中心' }
       },
     ]
   },

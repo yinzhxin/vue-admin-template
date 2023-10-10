@@ -348,6 +348,8 @@ import {
   treeData,
 } from "@/mock/linkTracing";
 
+import { getAppList2, getSpanInfo2 } from "@/api/link";
+
 export default {
   name: "LinkTracing",
   components: { Table, BarYChart },
@@ -551,6 +553,9 @@ export default {
   },
 
   mounted() {
+    // getAppList2();
+    // getSpanInfo2();
+
     this.serverId = this.$route.query.serverId;
     // this.form.serverId.push(this.serverId);
 

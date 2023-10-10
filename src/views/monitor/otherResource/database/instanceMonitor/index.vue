@@ -7,10 +7,15 @@
           <el-form-item label="">
             <el-select
               v-model="form.type"
-              placeholder="类型"
+              placeholder=""
               multiple
               clearable
+              class="selsectbox"
             >
+              <template slot="prefix">
+                <div class="pl-10px">类型：</div>
+              </template>
+
               <el-option
                 v-for="item in typeList"
                 :key="item.appId"
@@ -23,10 +28,13 @@
           <el-form-item label="">
             <el-select
               v-model="form.instance"
-              placeholder="数据库实例"
+              placeholder=""
               multiple
               clearable
             >
+              <template slot="prefix">
+                <div class="pl-10px">数据库实例：</div>
+              </template>
               <el-option
                 v-for="item in instanceList"
                 :key="item.label"
@@ -73,7 +81,7 @@
           <BarChart
             :width="'100%'"
             :height="'110%'"
-            :title="title"
+            :title="title1"
             :chartData="chartData.data"
             :xAxisData="chartData.xAxisData"
             :color="chartData.color"
@@ -115,7 +123,14 @@
           @tab-click="handleClick"
           type="border-card"
         >
-          <el-tab-pane label="慢 SQL 分析" name="1">
+          <el-tab-pane name="1">
+            <template slot="label">
+              <div style="">
+                慢 SQL 分析
+                <el-tag size="mini" type="success">Top 50</el-tag>
+              </div>
+            </template>
+
             <el-form :inline="true" :model="formSql" ref="formSql">
               <el-form-item label="">
                 <el-input
@@ -139,7 +154,14 @@
               @row-click="handleRowClick"
             />
           </el-tab-pane>
-          <el-tab-pane label="慢 SQL 记录" name="2"> </el-tab-pane>
+          <el-tab-pane name="2">
+            <template slot="label">
+              <div style="">
+                慢 SQL 记录
+                <!-- <el-tag size="mini" type="success">Top 50</el-tag> -->
+              </div>
+            </template>
+          </el-tab-pane>
         </el-tabs>
       </el-col>
     </el-row>
@@ -229,26 +251,10 @@
             <BarChart
               :width="'100%'"
               :height="'110%'"
-              :title="title"
-              :chartData="chartData.data"
-              :xAxisData="chartData.xAxisData"
-              :color="chartData.color"
-            />
-          </div>
-        </el-col>
-
-        <el-col :span="8">
-          <div
-            class="grid-content"
-            style="height: 310px; border: 1px solid #c0c4cc"
-          >
-            <BarChart
-              :width="'100%'"
-              :height="'110%'"
-              :title="title2"
-              :chartData="chartData2.data"
-              :xAxisData="chartData2.xAxisData"
-              :color="chartData2.color"
+              :title="title4"
+              :chartData="chartData4.data"
+              :xAxisData="chartData4.xAxisData"
+              :color="chartData4.color"
             />
           </div>
         </el-col>
@@ -261,10 +267,28 @@
             <LineChart
               :width="'100%'"
               :height="'110%'"
-              :title="title3"
-              :chartData="chartData3.data"
-              :xAxisData="chartData3.xAxisData"
-              :color="chartData3.color"
+              :title="title5"
+              :chartData="chartData5.data"
+              :xAxisData="chartData5.xAxisData"
+              :color="chartData5.color"
+            />
+          </div>
+        </el-col>
+
+        <el-col :span="8">
+          <div
+            class="grid-content"
+            style="height: 310px; border: 1px solid #c0c4cc"
+          >
+            <RadiusPieChart
+              :width="'100%'"
+              :height="'110%'"
+              :title="title6"
+              :chart-data="chartData6.data"
+              :color="chartData6.color"
+              :radius="chartData6.radius"
+              :center="chartData6.center"
+              :isShowLegend="chartData6.isShowLegend"
             />
           </div>
         </el-col>
@@ -322,19 +346,26 @@
 <script>
 import BarChart from "./BarChart.vue";
 import LineChart from "./LineChart.vue";
+import RadiusPieChart from "@/views/echarts/RadiusPieChart.vue";
 import Table from "@/views/components/Table.vue";
 
 export default {
   name: "DatabaseMonitor",
-  components: { BarChart, LineChart, Table },
+  components: { BarChart, LineChart, RadiusPieChart, Table },
   data() {
     return {
-      title: "SQL 执行数",
+      title1: "SQL 执行数",
       title2: "SQL 执行错误数",
       title3: "SQL 执行平均耗时",
+      title4: "慢执行统计",
+      title5: "慢执行平均耗时",
+      title6: "来源服务",
+
       form: {},
+
       typeList: [],
       instanceList: [],
+
       // 表格数据
       table: {
         tableData: [],
@@ -477,6 +508,75 @@ export default {
         color: ["#409EFF"],
       },
 
+      chartData4: {
+        data: [
+          120, 200, 150, 80, 70, 110, 90, 160, 220, 100, 130, 180, 140, 190,
+          210, 200,
+        ],
+        xAxisData: [
+          "00:00",
+          "00:04",
+          "00:08",
+          "00:12",
+          "00:16",
+          "00:20",
+          "00:24",
+          "00:28",
+          "00:32",
+          "00:36",
+          "00:40",
+          "00:44",
+          "00:48",
+          "00:52",
+          "00:56",
+          "01:00",
+        ],
+        color: ["#E6A23C"],
+      },
+
+      chartData5: {
+        data: [
+          120, 200, 150, 80, 70, 110, 90, 160, 220, 100, 130, 180, 140, 190,
+          210, 200,
+        ],
+        xAxisData: [
+          "00:00",
+          "00:04",
+          "00:08",
+          "00:12",
+          "00:16",
+          "00:20",
+          "00:24",
+          "00:28",
+          "00:32",
+          "00:36",
+          "00:40",
+          "00:44",
+          "00:48",
+          "00:52",
+          "00:56",
+          "01:00",
+        ],
+        color: ["#E6A23C"],
+      },
+
+      chartData6: {
+        data: [
+          {
+            label: "正常",
+            value: 60,
+          },
+          {
+            label: "异常",
+            value: 1,
+          },
+        ],
+        color: ["#94D2F4", "#BD3026"],
+        radius: ["45%", "65%"],
+        center: ["50%", "45%"],
+        isShowLegend: true,
+      },
+
       activeName: "1",
       formSql: {},
 
@@ -513,11 +613,7 @@ export default {
             label: "SQL 语句",
             index: "sql",
             render(h, data) {
-              return (
-                <div style="cursor:pointer;">
-                  {data.row.sql}
-                </div>
-              );
+              return <div style="cursor:pointer;">{data.row.sql}</div>;
             },
           },
           { label: "总执行错误率", index: "errorRate" },
@@ -662,5 +758,11 @@ export default {
   color: #409eff;
   margin: 0 10px;
   line-height: 10px;
+}
+.selsectbox {
+  width: 230px;
+  ::v-deep .el-input__inner {
+    padding-left: 70px;
+  }
 }
 </style>

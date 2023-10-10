@@ -345,6 +345,20 @@ export default {
       });
     },
 
+    handleToAlarm(id) {
+      this.$router.push({
+        name: "AlarmCenter",
+        query: { serverId: id }, // 应用服务节点的'名称/id'
+      });
+    },
+
+    handleToDetail(id) {
+      this.$router.push({
+        name: "instanceMonitor",
+        query: { serverId: id }, // 应用服务节点的'名称/id'
+      });
+    },
+
     // 右键菜单
     handleMenuClick(target, item) {
       console.log(target.innerHTML, item);
@@ -391,9 +405,10 @@ export default {
         // 显示返回总拓扑的标志
         this.isTotalTopo = false;
       } else if (target.innerHTML == "查看告警") {
-        alert("查看告警");
+        this.handleToAlarm(item._cfg.model.label);
       } else if (target.innerHTML == "查看服务详情") {
-        alert("查看服务详情");
+        // alert("查看服务详情");
+        this.handleToDetail(item._cfg.model.label);
       }
     },
 
