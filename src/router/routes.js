@@ -102,12 +102,6 @@ export default [
                 component: () => import('@/views/monitor/otherResource/database/instanceMonitor'),
                 meta: { title: '数据库实例监控' }
               },
-              {
-                path: 'instanceMonitor2',
-                name: 'InstanceMonitorDatabase',
-                component: () => import('@/views/monitor/otherResource/database/instanceMonitor2'),
-                meta: { title: '数据库实例监控2' }
-              },
             ]
           },
         ]
