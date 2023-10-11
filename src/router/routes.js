@@ -129,13 +129,19 @@ export default [
             component: () => import('@/views/monitor/otherResource/database/index'),
             redirect: '/monitor/otherResource/database/instanceMonitor',
             meta: { title: '数据库' },
-            alwaysShow: true,
+            alwaysShow: true, // 只有一个子路由
             children: [
               {
                 path: 'instanceMonitor',
                 name: 'InstanceMonitorDatabase',
                 component: () => import('@/views/monitor/otherResource/database/instanceMonitor'),
                 meta: { title: '数据库实例监控' }
+              },
+              {
+                path: 'instanceMonitor2',
+                name: 'InstanceMonitorDatabase',
+                component: () => import('@/views/monitor/otherResource/database/instanceMonitor2'),
+                meta: { title: '数据库实例监控2' }
               },
             ]
           },

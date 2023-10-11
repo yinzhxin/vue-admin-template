@@ -4,7 +4,7 @@
 
 <script>
 import * as echarts from "echarts";
-import resize from "./mixins/resize";
+import resize from "@/views/echarts/mixins/resize";
 
 export default {
   name: "LineChart",
@@ -122,8 +122,8 @@ export default {
         ],
         series: [
           {
-            name: this.title,
             type: "line",
+            name: this.title,
             data: this.chartData,
             color: this.color,
           },
