@@ -34,47 +34,6 @@ export default [
     ]
   },
 
-  // 服务治理
-  {
-    path: '/serviceGovern',
-    // name: 'ServiceGovern',
-    component: Layout,
-    redirect: '/serviceGovern/serviceTopo',
-    meta: { title: '服务治理', icon: 'el-icon-connection' },
-    children: [
-      // {
-      //   path: 'systemList',
-      //   name: 'SystemList',
-      //   component: () => import('@/views/serviceGovern/systemList/index'),
-      //   meta: { title: '系统列表' }
-      // },
-      // {
-      //   path: 'systemOverview',
-      //   name: 'SystemOverview',
-      //   component: () => import('@/views/serviceGovern/systemOverview/index'),
-      //   meta: { title: '系统概览' }
-      // },
-      {
-        path: 'serviceTopo',
-        name: 'ServiceTopo',
-        component: () => import('@/views/serviceGovern/serviceTopo/index'),
-        meta: { title: '服务拓扑' }
-      },
-      {
-        path: 'linkTracing',
-        name: 'LinkTracing',
-        component: () => import('@/views/serviceGovern/linkTracing/index'),
-        meta: { title: '链路追踪' }
-      },
-      {
-        path: 'instanceMonitor',
-        name: 'InstanceMonitor',
-        component: () => import('@/views/serviceGovern/instanceMonitor/index'),
-        meta: { title: '实例监控' }
-      }
-    ]
-  },
-
   // 监控和大屏展示
   {
     path: '/monitor',
@@ -141,6 +100,13 @@ export default [
           },
         ]
       },
+      // Prometheus
+      {
+        path: 'prometheusResource',
+        name: 'PrometheusResource',
+        component: () => import('@/views/monitor/prometheus/index'),
+        meta: { title: 'Prometheus' }
+      },
 
     ]
   },
@@ -160,6 +126,18 @@ export default [
         meta: { title: '事件总览' }
       },
       {
+        path: 'eventHandling',
+        name: 'EventHandling',
+        component: () => import('@/views/emergency/eventHandling/index'),
+        meta: { title: '事件处置' }
+      },
+      {
+        path: 'faultReport',
+        name: 'FaultReport',
+        component: () => import('@/views/emergency/faultReport/index'),
+        meta: { title: '故障报告' }
+      },
+      {
         path: 'alarmCenter',
         name: 'AlarmCenter',
         component: () => import('@/views/emergency/alarmCenter/index'),
@@ -168,6 +146,191 @@ export default [
     ]
   },
 
+  // 服务治理
+  {
+    path: '/serviceGovern',
+    // name: 'ServiceGovern',
+    component: Layout,
+    redirect: '/serviceGovern/serviceTopo',
+    meta: { title: '服务治理', icon: 'el-icon-connection' },
+    children: [
+      // {
+      //   path: 'systemList',
+      //   name: 'SystemList',
+      //   component: () => import('@/views/serviceGovern/systemList/index'),
+      //   meta: { title: '系统列表' }
+      // },
+      {
+        path: 'systemOverview',
+        name: 'SystemOverview',
+        component: () => import('@/views/serviceGovern/systemOverview/index'),
+        meta: { title: '应用总览' }
+      },
+      {
+        path: 'applicationPanorama',
+        name: 'applicationPanorama',
+        component: () => import('@/views/serviceGovern/applicationPanorama/index'),
+        meta: { title: '应用全景图' }
+      },
+      {
+        path: 'serviceTopo',
+        name: 'ServiceTopo',
+        component: () => import('@/views/serviceGovern/serviceTopo/index'),
+        meta: { title: '服务链路' }
+      },
+      {
+        path: 'linkTracing',
+        name: 'LinkTracing',
+        component: () => import('@/views/serviceGovern/linkTracing/index'),
+        meta: { title: '链路追踪',activeMenu:'/serviceGovern/serviceTopo' },
+        hidden:true
+      },
+      {
+        path: 'currentLimitingDegradation',
+        name: 'CurrentLimitingDegradation',
+        component: () => import('@/views/serviceGovern/currentLimitingDegradation/index'),
+        meta: { title: '限流降级' }
+      },
+      {
+        path: 'instanceMonitor',
+        name: 'InstanceMonitor',
+        component: () => import('@/views/serviceGovern/instanceMonitor/index'),
+        meta: { title: '实例监控' }
+      }
+    ]
+  },
+
+  // 运维管理
+  {
+    path: '/operationManagement',
+    name: 'OperationManagement',
+    component: Layout,
+    redirect: '/operationManagement/progressManagement',
+    meta: { title: '运维管理', icon: 'el-icon-menu' },
+    children: [
+      // 进度管理
+      {
+        path: 'progressManagement',
+        name: 'ProgressManagement',
+        component: () => import('@/views/operationManagement/progressManagement/index'),
+        meta: { title: '进度管理' }
+      },
+      // 资源汇总
+      {
+        path: 'resourceSummary',
+        name: 'ResourceSummary',
+        component: () => import('@/views/operationManagement/resourceSummary/index'),
+        meta: { title: '资源汇总' },
+      },
+      // 流量控制
+      {
+        path: 'flowControl',
+        // name: 'FlowControl',
+        component: () => import('@/views/operationManagement/flowControl/index'),
+        redirect: '/operationManagement/flowControl/escapeObservation',
+        meta: { title: '流量控制' },
+        alwaysShow: true,
+        children: [
+          {
+            path: 'escapeObservation',
+            name: 'EscapeObservation',
+            component: () => import('@/views/operationManagement/flowControl/escapeObservation/index'),
+            meta: { title: '流量逃逸观测' },
+          },
+        ]
+      },
+      // 部署-单批发布
+      {
+        path: 'deploymentSingleBatchRelease',
+        name: 'DeploymentSingleBatchRelease',
+        component: () => import('@/views/operationManagement/deploymentSingleBatchRelease/index'),
+        meta: { title: '部署-单批发布' }
+      },
+      // 部署-灰度发布
+      {
+        path: 'deploymentGrayscalePublishing',
+        name: 'DeploymentGrayscalePublishing',
+        component: () => import('@/views/operationManagement/deploymentGrayscalePublishing/index'),
+        meta: { title: '部署-灰度发布' }
+      },
+      {
+        path: 'deploymentGrayscalePublishingAfter',
+        name: 'DeploymentGrayscalePublishingAfter',
+        component: () => import('@/views/operationManagement/deploymentGrayscalePublishing/afterPublication'),
+        meta: { title: '发布后',activeMenu:'/operationManagement/deploymentGrayscalePublishing' },
+        hidden:true
+      },
+      // API快速访问
+      {
+        path: 'apiQuickAccess',
+        name: 'ApiQuickAccess',
+        component: () => import('@/views/operationManagement/apiQuickAccess/index'),
+        meta: { title: 'API快速访问' }
+      },
+      // 批量运维
+      {
+        path: 'batchOperationMaintenance',
+        name: 'PrometheusResource',
+        component: () => import('@/views/operationManagement/batchOperationMaintenance/index'),
+        meta: { title: '批量运维' }
+      },
+    ]
+  },
+  // 融合场景
+  {
+    path: '/fusionScene',
+    name: 'FusionScene',
+    component: Layout,
+    redirect: '/fusionScene/unitTrafficSwitching',
+    meta: { title: '融合场景', icon: 'el-icon-bell' },
+    children: [
+      // 单元流量切换
+      {
+        path: 'unitTrafficSwitching',
+        name: 'UnitTrafficSwitching',
+        component: () => import('@/views/fusionScene/unitTrafficSwitching/index'),
+        meta: { title: '单元流量切换' }
+      },
+      // 单元发布
+      {
+        path: 'unitRelease',
+        name: 'UnitRelease',
+        component: () => import('@/views/fusionScene/unitRelease/index'),
+        meta: { title: '单元发布' }
+      },
+    ]
+  },
+  // 系统管理
+  {
+    path: '/systemManagement',
+    name: 'FusionScene',
+    component: Layout,
+    redirect: '/systemManagement/operationLog',
+    meta: { title: '系统管理', icon: 'el-icon-bell' },
+    children: [
+      // 操作日志
+      {
+        path: 'operationLog',
+        name: 'OperationLog',
+        component: () => import('@/views/systemManagement/operationLog/index'),
+        meta: { title: '操作日志' }
+      },
+      // 权限助手
+      {
+        path: 'permissionAssistant',
+        name: 'PermissionAssistant',
+        component: () => import('@/views/systemManagement/permissionAssistant/index'),
+        meta: { title: '权限助手' }
+      },
+      // 角色
+      {
+        path: 'role',
+        name: 'Role',
+        component: () => import('@/views/systemManagement/role/index'),
+        meta: { title: '角色' }
+      },
+    ]
+  },
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
