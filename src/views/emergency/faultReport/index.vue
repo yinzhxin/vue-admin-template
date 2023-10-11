@@ -38,7 +38,7 @@
        <div>
          <div class="font_size14 margin-bottom">检测目的：检测不同主机RT分布是否均匀，检测结果：主机<span class="span_color">{{desc.host}}</span>RT相比其他过大</div>
          <div class='flex-box'>
-          <bar-chart height='300px' title="主机prod-ldx82sksa9se0的rt分布" :chartData="chartData2"/>
+          <bar-chart height='300px' title="主机prod-ldx82sksa9se0的rt分布" :chartData="chartData2" legend="1"/>
           <line-chart height='300px' title="主机prod-ldx82sksa9se0的rt走势图" :chartData="chartData1"/>
          </div>
        </div>
@@ -70,7 +70,7 @@
          <div class="font_size14 margin-bottom">检测目的：检测在<span class="span_color">{{desc.host}}</span>上对本次RT突增影响最大的服务，检测结果：服务<span class="span_color">/demo-caculator/test</span>的影响最大，且主要由于其RT变化引起</div>
          <div class='flex-box'>
           <bar-chart height='300px' title="主机prod-ldx82sksa9se0上的各服务对此次rt突增的影响占比" :chartData="chartData2"/>
-          <line-chart height='300px' title="服务/demo-caculator/test的RT/QPS走势图" :chartData="chartData3"/>
+          <line-chart height='300px' title="服务/demo-caculator/test的RT/QPS走势图" :chartData="chartData3" />
          </div>
        </div>
      </div>

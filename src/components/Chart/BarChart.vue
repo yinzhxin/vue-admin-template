@@ -32,6 +32,10 @@ export default {
       type: String,
       default: "",
     },
+    legend:{
+      type: String,
+      default: '',
+    }
   },
 
   data() {
@@ -76,7 +80,14 @@ export default {
           left:40,
           top:5
         },
-       
+       legend:{
+          show:this.legend?false:true,
+          orient: 'vertical',
+          right: 30,
+          top:70,
+
+       },
+
         tooltip: {
           trigger: "axis", // 触发方式为坐标轴（'axis'）
           confine: true, // 设定限制在图标内（'confine:true'）
