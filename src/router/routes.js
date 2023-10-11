@@ -86,10 +86,16 @@ export default [
             path: 'database',
             // name: 'Database',
             component: () => import('@/views/monitor/otherResource/database/index'),
-            redirect: '/monitor/otherResource/database/instanceMonitor',
+            redirect: '/monitor/otherResource/database/instanceMonitorMain',
             meta: { title: '数据库' },
             alwaysShow: true,
             children: [
+              {
+                path: 'instanceMonitorMain',
+                name: 'InstanceMonitorMain',
+                component: () => import('@/views/monitor/otherResource/database/instanceMonitorMain'),
+                meta: { title: '数据库' }
+              },
               {
                 path: 'instanceMonitor',
                 name: 'InstanceMonitorDatabase',
@@ -227,10 +233,16 @@ export default [
         path: 'flowControl',
         // name: 'FlowControl',
         component: () => import('@/views/operationManagement/flowControl/index'),
-        redirect: '/operationManagement/flowControl/escapeObservation',
+        redirect: '/operationManagement/flowControl/escapeObservationMain',
         meta: { title: '流量控制' },
         alwaysShow: true,
         children: [
+          {
+            path: 'escapeObservationMain',
+            name: 'EscapeObservationMain',
+            component: () => import('@/views/operationManagement/flowControl/escapeObservationMain/index'),
+            meta: { title: '流量控制' },
+          },
           {
             path: 'escapeObservation',
             name: 'EscapeObservation',
