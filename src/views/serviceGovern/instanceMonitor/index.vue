@@ -1,25 +1,39 @@
 <template>
   <div class="dashboard-container">
-    <el-row :gutter="20" style="margin-bottom: 0px">
+    <el-row :gutter="20" style="margin-bottom: 10px">
       <el-col :span="24" style="display: flex; align-items: center">
-        <h2>Provider-demo</h2>
-        <el-tooltip effect="dark" placement="top" class="tooltip">
+        <!-- Provider-demo -->
+        <h2 style="margin: 0">Provider-demo</h2>
+        <!-- 问号 -->
+        <el-tooltip effect="dark" placement="top" style="margin: 0 10px">
           <template slot="content">
-            <div style="max-width: 350px">!</div>
+            <div style="max-width: 350px">Provider-demo</div>
           </template>
-          <i class="el-icon-question" style="font-size:25px"/>
+          <i class="el-icon-question" style="font-size: 25px" />
         </el-tooltip>
+        <!-- t -->
+        <el-button style="font-size: 15px" type="text">{{ text }}</el-button>
       </el-col>
     </el-row>
 
     <el-row :gutter="20">
       <el-col :span="6">
-        <el-card class="box-card" shadow="hover">
-          <div slot="header">
-            <strong>响应时间/请求数/错误数/异常数</strong>
-            <i class="el-icon-s-fold"></i>
+        <el-card class="box-card" shadow="nerver">
+          <!-- 头部 -->
+          <div slot="header" class="box-card-header">
+            <el-tooltip effect="dark" placement="top" style="">
+              <template slot="content">
+                <div style="max-width: 350px">Provider-demo</div>
+              </template>
+              <i class="el-icon-question" style="font-size: 18px" />
+            </el-tooltip>
+            <div>
+              <span>响应时间/请求数/错误数/异常数</span>
+              <i class="el-icon-s-fold"></i>
+            </div>
           </div>
-          <el-select v-model="value" placeholder="请选择">
+          <!-- 内容 -->
+          <el-select v-model="value" placeholder="请选择" class="selectbox">
             <el-option
               v-for="item in options"
               :key="item.value"
@@ -30,6 +44,7 @@
           </el-select>
 
           <h3>Provider-demo</h3>
+
           <ul>
             <li v-for="item in data3" :key="item.name">
               <div>
@@ -127,35 +142,31 @@
 import LineChart from "./LineChart.vue";
 
 export default {
-  name: "SystemOverview",
+  name: "InstanceMonitor",
   components: { LineChart },
   data() {
     return {
+      text: "概览",
       data3: [
         {
-          name: "shop_user1",
+          name: "provider-demo-group-1",
           module: "UPM",
-          // content: "5月迭代",
         },
         {
-          name: "shop_user2",
+          name: "provider-demo-group-2",
           module: "UPM",
-          // content: "5月迭代",
         },
         {
-          name: "shop_user3",
+          name: "provider-demo-group-3",
           module: "UPM",
-          // content: "5月迭代",
         },
         {
-          name: "shop_user4",
+          name: "provider-demo-group-4",
           module: "UPM",
-          // content: "5月迭代",
         },
         {
-          name: "shop_user5",
+          name: "provider-demo-group-5",
           module: "UPM",
-          // content: "5月迭代",
         },
       ],
 
@@ -340,126 +351,6 @@ export default {
       activeName: "1",
       formSql: {},
 
-      // 表格数据
-      table: {
-        tableData: [
-          {
-            sql: "SELECT * FROM table1",
-            errorRate: 0.02,
-            exeTimes: 5,
-            spendTime: 200,
-            maxExeTime: 500,
-            time: "2023-10-01 10:30:00",
-          },
-          {
-            sql: "SELECT * FROM table2",
-            errorRate: 0.01,
-            exeTimes: 8,
-            spendTime: 180,
-            maxExeTime: 400,
-            time: "2023-10-02 11:00:00",
-          },
-          {
-            sql: "SELECT * FROM table10",
-            errorRate: 0.03,
-            exeTimes: 3,
-            spendTime: 220,
-            maxExeTime: 600,
-            time: "2023-10-09 09:00:00",
-          },
-        ],
-        columns: [
-          {
-            label: "SQL 语句",
-            index: "sql",
-            render(h, data) {
-              return <div style="cursor:pointer;">{data.row.sql}</div>;
-            },
-          },
-          { label: "总执行错误率", index: "errorRate" },
-          { label: "慢执行次数", index: "exeTimes" },
-          { label: "慢执行平均耗时", index: "spendTime" },
-          { label: "最大执行时间", index: "maxExeTime" },
-          { label: "最近慢执行时间", index: "time" },
-        ],
-        page: {
-          current: 1, // 当前页数--handleCurrentChange
-          size: 10, // 每页条数--handleSizeChange
-          total: 1, // 总页数
-        },
-      },
-
-      // 表格数据
-      table2: {
-        tableData: [
-          {
-            startTime: "2023-10-01 10:00:00",
-            service: "Service A",
-            status: "1",
-            spendTime: 100,
-            traceId: "123456789",
-          },
-          {
-            startTime: "2023-10-02 11:30:00",
-            service: "Service B",
-            status: "0",
-            spendTime: 150,
-            traceId: "987654321",
-          },
-          {
-            startTime: "2023-10-09 09:15:00",
-            service: "Service C",
-            status: "1",
-            spendTime: 200,
-            traceId: "567890123",
-          },
-        ],
-        columns: [
-          { label: "开始时间", index: "startTime" },
-          { label: "来源服务", index: "service" },
-          {
-            label: "状态",
-            index: "status",
-            render: (h, data) => {
-              return (
-                <div>
-                  {data.row.status == "1" ? (
-                    <span style="font-size:16px">
-                      <i class="el-icon-success" style="color:#67C23A" />
-                      <span />
-                      成功
-                    </span>
-                  ) : (
-                    <span style="font-size:16px">
-                      <i class="el-icon-error" style="color:#F56C6C" />
-                      <span />
-                      失败
-                    </span>
-                  )}
-                </div>
-              );
-            },
-          },
-          { label: "耗时", index: "spendTime" },
-          {
-            label: "TraceID",
-            index: "traceId",
-            render(h, data) {
-              return (
-                <div style="cursor:pointer;color:#409EFF">
-                  {data.row.traceId}
-                </div>
-              );
-            },
-          },
-        ],
-        page: {
-          current: 1, // 当前页数--handleCurrentChange
-          size: 10, // 每页条数--handleSizeChange
-          total: 1, // 总页数
-        },
-      },
-
       rowObj: "", // 表格行数据
       drawerTitle: "", // 点击表格出现的抽屉组件的标题
       drawerVisible: false,
@@ -471,42 +362,8 @@ export default {
   mounted() {},
 
   methods: {
-    handleTo() {
-      this.$router.push({
-        name: "LinkTracing",
-        // query: { serverId: id }, // 应用服务节点的'名称/id'
-      });
-    },
-
-    handleRowClick(row) {
-      this.rowObj = row;
-      this.drawerTitle = row.sql;
-      this.openDrawer();
-    },
-
-    // 打开抽屉
-    openDrawer() {
-      this.drawerVisible = true;
-    },
-
-    // 关闭抽屉
-    closeDrawer(done) {
-      // console.log("!!!");
-      this.activeName = "1";
-      this.drawerVisible = false;
-    },
-
     // tab组件的切换函数,
     handleClick(tab, event) {},
-
-    handleRefresh() {},
-
-    handleRowClick2(row) {
-      this.$router.push({
-        name: "LinkTracing",
-        // query: { serverId: id }, // 应用服务节点的'名称/id'
-      });
-    },
   },
 };
 </script>
@@ -518,15 +375,15 @@ export default {
   min-height: 200px;
   overflow: hidden;
 }
-.el-icon-refresh {
-  font-size: 25px;
-  font-weight: 700;
-  cursor: pointer;
-  color: #409eff;
-  margin: 0 10px;
-  line-height: 10px;
-}
 .box-card {
+  ::v-deep .el-card__header {
+    padding: 18px 10px;
+  }
+  .box-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
   cursor: pointer;
   ul {
     display: flex;
@@ -551,5 +408,8 @@ export default {
       }
     }
   }
+}
+.selectbox {
+  width: 100%;
 }
 </style>

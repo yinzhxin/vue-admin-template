@@ -1,37 +1,26 @@
 <template>
   <div class="dashboard-container">
+    <!-- 查询表单 -->
     <el-row :gutter="20" style="margin-bottom: 0px">
       <el-col :span="24">
         <el-form :inline="true" :model="form" ref="form">
           <!-- 类型 -->
           <el-form-item label="">
-            <el-select
-              v-model="form.type"
-              placeholder=""
-              multiple
-              clearable
-              class="selsectbox"
-            >
+            <el-select v-model="form.type" clearable class="selectbox">
               <template slot="prefix">
                 <div class="pl-10px">类型：</div>
               </template>
-
               <el-option
                 v-for="item in typeList"
-                :key="item.appId"
-                :label="item.appName"
-                :value="item.appId"
+                :key="item.label"
+                :label="item.label"
+                :value="item.value"
               />
             </el-select>
           </el-form-item>
           <!-- 数据库实例 -->
           <el-form-item label="">
-            <el-select
-              v-model="form.instance"
-              placeholder=""
-              multiple
-              clearable
-            >
+            <el-select v-model="form.instance" clearable class="selectbox2">
               <template slot="prefix">
                 <div class="pl-10px">数据库实例：</div>
               </template>
@@ -47,40 +36,40 @@
       </el-col>
     </el-row>
 
-    <div class="grid-content" style="min-height: 0; margin-bottom: 20px">
+    <!-- 三个统计数字 -->
+    <div class="grid-content title-num">
       <el-row :gutter="20">
         <el-col :span="4">
           <div>执行总次数</div>
           <div style="margin-top: 10px">
-            <span style="font-size: 35px; font-weight: bold">{{ 1658 }}</span>
+            <span class="num">{{ 1658 }}</span>
             次
           </div>
         </el-col>
         <el-col :span="4">
           <div>执行错误率</div>
           <div style="margin-top: 10px">
-            <span style="font-size: 35px; font-weight: bold; color: red">{{
-              33.66
-            }}</span>
+            <span class="num" style="color: red">{{ 33.66 }}</span>
             %
           </div>
         </el-col>
         <el-col :span="4">
           <div>平均响应时间</div>
           <div style="margin-top: 10px">
-            <span style="font-size: 35px; font-weight: bold">{{ 1.9 }}</span>
+            <span class="num">{{ 1.9 }}</span>
             ms
           </div>
         </el-col>
       </el-row>
     </div>
 
+    <!-- 三个图表 -->
     <el-row :gutter="20">
       <el-col :span="8">
-        <div class="grid-content" style="height: 310px">
+        <div class="grid-content">
           <BarChart
             :width="'100%'"
-            :height="'110%'"
+            :height="'310px'"
             :title="title1"
             :chartData="chartData.data"
             :xAxisData="chartData.xAxisData"
@@ -90,10 +79,10 @@
       </el-col>
 
       <el-col :span="8">
-        <div class="grid-content" style="height: 310px">
+        <div class="grid-content">
           <BarChart
             :width="'100%'"
-            :height="'110%'"
+            :height="'310px'"
             :title="title2"
             :chartData="chartData2.data"
             :xAxisData="chartData2.xAxisData"
@@ -103,10 +92,10 @@
       </el-col>
 
       <el-col :span="8">
-        <div class="grid-content" style="height: 310px">
+        <div class="grid-content">
           <LineChart
             :width="'100%'"
-            :height="'110%'"
+            :height="'310px'"
             :title="title3"
             :chartData="chartData3.data"
             :xAxisData="chartData3.xAxisData"
@@ -116,6 +105,7 @@
       </el-col>
     </el-row>
 
+    <!-- tab组件 -->
     <el-row :gutter="20">
       <el-col :span="24">
         <el-tabs
@@ -125,41 +115,40 @@
         >
           <el-tab-pane name="1">
             <template slot="label">
-              <div style="">
-                慢 SQL 分析
-                <el-tag size="mini" type="success">Top 50</el-tag>
-              </div>
+              慢 SQL 分析
+              <el-tag size="mini" type="success">Top 50</el-tag>
             </template>
-
             <el-form :inline="true" :model="formSql" ref="formSql">
               <el-form-item label="">
                 <el-input
-                  v-model="formSql.traceId"
+                  v-model="formSql.sql"
                   placeholder="请输入 SQL 语句"
                   clearable
                 />
               </el-form-item>
               <el-form-item label="">
                 <el-input
-                  v-model="formSql.traceId"
-                  placeholder="请输入耗时"
+                  v-model="formSql.spendTime"
                   clearable
-                />
+                  class="inputbox"
+                >
+                  <template slot="prefix">
+                    <div class="pl-10px">类型：</div>
+                  </template>
+                </el-input>
               </el-form-item>
             </el-form>
-
             <Table
               :table-data="table.tableData"
               :columns="table.columns"
               @row-click="handleRowClick"
             />
           </el-tab-pane>
+
           <el-tab-pane name="2">
             <template slot="label">
-              <div style="">
-                慢 SQL 记录
-                <!-- <el-tag size="mini" type="success">Top 50</el-tag> -->
-              </div>
+              慢 SQL 记录
+              <!-- <el-tag size="mini" type="success">Top 50</el-tag> -->
             </template>
           </el-tab-pane>
         </el-tabs>
@@ -168,7 +157,7 @@
 
     <!-- 抽屉 -->
     <el-drawer
-      custom-class="drawer-wrapper"
+      class="drawer-wrapper"
       direction="rtl"
       size="70%"
       :visible.sync="drawerVisible"
@@ -179,7 +168,7 @@
         <h3>SQL 详情</h3>
       </template>
 
-      <div style="margin: 0 20px 20px">
+      <div style="margin-bottom: 20px">
         <el-date-picker
           v-model="time"
           type="datetimerange"
@@ -188,10 +177,10 @@
           end-placeholder="结束日期"
         >
         </el-date-picker>
-        <i class="el-icon-refresh" @click="handleRefresh"></i>
+        <el-button class="el-icon-refresh" @click="handleRefresh"></el-button>
       </div>
 
-      <el-collapse accordion style="margin: 0 20px 20px">
+      <el-collapse accordion style="margin-bottom: 20px">
         <el-collapse-item>
           <template slot="title">
             <h2>结构化 SQL {{ drawerTitle }}</h2>
@@ -201,56 +190,40 @@
       </el-collapse>
 
       <div
-        class="grid-content"
-        style="
-          min-height: 100px;
-          margin: 0 20px 20px;
-          border: 1px solid #c0c4cc;
-        "
+        class="grid-content title-num"
+        style="border: 1px solid #c0c4cc;margin"
       >
         <el-row :gutter="20">
           <el-col :span="4">
             <div>慢执行数</div>
             <div style="margin-top: 10px">
-              <span
-                style="font-size: 35px; font-weight: bold; color: #e6a23c"
-                >{{ 127 }}</span
-              >
+              <span class="num" style="color: #e6a23c">{{ 127 }}</span>
               次
             </div>
           </el-col>
           <el-col :span="4">
             <div>慢执行平均耗时</div>
             <div style="margin-top: 10px">
-              <span
-                style="font-size: 35px; font-weight: bold; color: #e6a23c"
-                >{{ 3.2 }}</span
-              >
+              <span class="num" style="color: #e6a23c">{{ 3.2 }}</span>
               ms
             </div>
           </el-col>
           <el-col :span="4">
             <div>总执行错误率</div>
             <div style="margin-top: 10px">
-              <span
-                style="font-size: 35px; font-weight: bold; color: #f56c6c"
-                >{{ 100 }}</span
-              >
+              <span class="num" style="color: #f56c6c">{{ 100 }}</span>
               %
             </div>
           </el-col>
         </el-row>
       </div>
 
-      <el-row :gutter="20" style="margin-left: 10px; margin-right: 10px">
+      <el-row :gutter="20">
         <el-col :span="8">
-          <div
-            class="grid-content"
-            style="height: 310px; border: 1px solid #c0c4cc"
-          >
+          <div class="grid-content" style="border: 1px solid #c0c4cc">
             <BarChart
               :width="'100%'"
-              :height="'110%'"
+              :height="'290px'"
               :title="title4"
               :chartData="chartData4.data"
               :xAxisData="chartData4.xAxisData"
@@ -260,13 +233,10 @@
         </el-col>
 
         <el-col :span="8">
-          <div
-            class="grid-content"
-            style="height: 310px; border: 1px solid #c0c4cc"
-          >
+          <div class="grid-content" style="border: 1px solid #c0c4cc">
             <LineChart
               :width="'100%'"
-              :height="'110%'"
+              :height="'290px'"
               :title="title5"
               :chartData="chartData5.data"
               :xAxisData="chartData5.xAxisData"
@@ -276,13 +246,10 @@
         </el-col>
 
         <el-col :span="8">
-          <div
-            class="grid-content"
-            style="height: 310px; border: 1px solid #c0c4cc"
-          >
+          <div class="grid-content" style="border: 1px solid #c0c4cc">
             <RadiusPieChart
               :width="'100%'"
-              :height="'110%'"
+              :height="'290px'"
               :title="title6"
               :chart-data="chartData6.data"
               :color="chartData6.color"
@@ -294,29 +261,29 @@
         </el-col>
       </el-row>
 
-      <div style="margin: 0 20px">
+      <div>
         <h3>慢执行记录</h3>
-        <el-form :inline="true" :model="form" ref="form">
+        <el-form :inline="true" :model="formRecord" ref="formRecord">
           <!-- 类型 -->
           <el-form-item label="">
             <el-select
-              v-model="form.type"
+              v-model="formRecord.type"
               placeholder="类型"
               multiple
               clearable
             >
               <el-option
                 v-for="item in typeList"
-                :key="item.appId"
-                :label="item.appName"
-                :value="item.appId"
+                :key="item.label"
+                :label="item.label"
+                :value="item.value"
               />
             </el-select>
           </el-form-item>
           <!-- 数据库实例 -->
           <el-form-item label="">
             <el-select
-              v-model="form.instance"
+              v-model="formRecord.instance"
               placeholder="数据库实例"
               multiple
               clearable
@@ -332,11 +299,11 @@
         </el-form>
       </div>
 
-      <div style="margin: 0 20px 20px">
+      <div style="margin-bottom: 20px">
         <Table
-          :table-data="table2.tableData"
-          :columns="table2.columns"
-          @row-click="handleRowClick2"
+          :table-data="tableRecord.tableData"
+          :columns="tableRecord.columns"
+          @row-click="handleRowClickSql"
         />
       </div>
     </el-drawer>
@@ -350,21 +317,20 @@ import RadiusPieChart from "@/views/echarts/RadiusPieChart.vue";
 import Table from "@/views/components/Table.vue";
 
 export default {
-  name: "DatabaseMonitor",
+  name: "InstanceMonitorDatabase",
   components: { BarChart, LineChart, RadiusPieChart, Table },
   data() {
     return {
-      title1: "SQL 执行数",
-      title2: "SQL 执行错误数",
-      title3: "SQL 执行平均耗时",
-      title4: "慢执行统计",
-      title5: "慢执行平均耗时",
-      title6: "来源服务",
+      // 主页查询表单
+      form: {
+        type: "MySql",
+        instance: "123.345.567.789:11",
+      },
 
-      form: {},
-
-      typeList: [],
-      instanceList: [],
+      typeList: [{ label: "MySql", value: "MySql" }],
+      instanceList: [
+        { label: "123.345.567.789:1", value: "123.345.567.789:1" },
+      ],
 
       // 表格数据
       table: {
@@ -430,6 +396,8 @@ export default {
         },
       },
 
+      // SQL 执行数
+      title1: "SQL 执行数",
       chartData: {
         data: [
           120, 200, 150, 80, 70, 110, 90, 160, 220, 100, 130, 180, 140, 190,
@@ -455,7 +423,8 @@ export default {
         ],
         color: ["#0FC7C1"],
       },
-
+      // SQL 执行错误数
+      title2: "SQL 执行错误数",
       chartData2: {
         data: [
           120, 200, 150, 80, 70, 110, 90, 160, 220, 100, 130, 180, 140, 190,
@@ -481,7 +450,8 @@ export default {
         ],
         color: ["#F56C6C"],
       },
-
+      // SQL 执行平均耗时
+      title3: "SQL 执行平均耗时",
       chartData3: {
         data: [
           120, 200, 150, 80, 70, 110, 90, 160, 220, 100, 130, 180, 140, 190,
@@ -508,6 +478,7 @@ export default {
         color: ["#409EFF"],
       },
 
+      title4: "慢执行统计",
       chartData4: {
         data: [
           120, 200, 150, 80, 70, 110, 90, 160, 220, 100, 130, 180, 140, 190,
@@ -534,6 +505,7 @@ export default {
         color: ["#E6A23C"],
       },
 
+      title5: "慢执行平均耗时",
       chartData5: {
         data: [
           120, 200, 150, 80, 70, 110, 90, 160, 220, 100, 130, 180, 140, 190,
@@ -560,6 +532,7 @@ export default {
         color: ["#E6A23C"],
       },
 
+      title6: "来源服务",
       chartData6: {
         data: [
           {
@@ -577,8 +550,14 @@ export default {
         isShowLegend: true,
       },
 
+      // tab切换
       activeName: "1",
-      formSql: {},
+
+      // 慢sql查询
+      formSql: {
+        sql: "",
+        spendTime: "",
+      },
 
       // 表格数据
       table: {
@@ -616,10 +595,28 @@ export default {
               return <div style="cursor:pointer;">{data.row.sql}</div>;
             },
           },
-          { label: "总执行错误率", index: "errorRate" },
+          {
+            label: "总执行错误率",
+            index: "errorRate",
+            render(h, data) {
+              return <div>{data.row.errorRate} %</div>;
+            },
+          },
           { label: "慢执行次数", index: "exeTimes" },
-          { label: "慢执行平均耗时", index: "spendTime" },
-          { label: "最大执行时间", index: "maxExeTime" },
+          {
+            label: "慢执行平均耗时",
+            index: "spendTime",
+            render(h, data) {
+              return <div>{data.row.spendTime} ms</div>;
+            },
+          },
+          {
+            label: "最大执行时间",
+            index: "maxExeTime",
+            render(h, data) {
+              return <div>{data.row.maxExeTime} ms</div>;
+            },
+          },
           { label: "最近慢执行时间", index: "time" },
         ],
         page: {
@@ -629,8 +626,8 @@ export default {
         },
       },
 
-      // 表格数据
-      table2: {
+      // 抽屉 表格数据
+      tableRecord: {
         tableData: [
           {
             startTime: "2023-10-01 10:00:00",
@@ -700,9 +697,15 @@ export default {
         },
       },
 
+      // 抽屉 表单
+      formRecord: {
+        type: "MySql",
+        instance: "123.345.567.789:11",
+      },
+
       rowObj: "", // 表格行数据
       drawerTitle: "", // 点击表格出现的抽屉组件的标题
-      drawerVisible: false,
+      drawerVisible: false, // 抽屉组件是否显示
 
       time: "",
     };
@@ -734,7 +737,7 @@ export default {
 
     handleRefresh() {},
 
-    handleRowClick2(row) {
+    handleRowClickSql(row) {
       this.$router.push({
         name: "LinkTracing",
         // query: { serverId: id }, // 应用服务节点的'名称/id'
@@ -751,18 +754,46 @@ export default {
   min-height: 200px;
   overflow: hidden;
 }
+.title-num {
+  min-height: 0;
+  margin-bottom: 20px;
+  .num {
+    font-size: 35px;
+    font-weight: bold;
+  }
+}
 .el-icon-refresh {
-  font-size: 25px;
+  font-size: 20px;
   font-weight: 700;
   cursor: pointer;
   color: #409eff;
   margin: 0 10px;
-  line-height: 10px;
+  line-height: 15px;
 }
-.selsectbox {
-  width: 230px;
+.selectbox {
+  width: 250px;
   ::v-deep .el-input__inner {
-    padding-left: 70px;
+    padding-left: 50px;
+  }
+}
+.selectbox2 {
+  width: 300px;
+  ::v-deep .el-input__inner {
+    padding-left: 90px;
+  }
+}
+.inputbox {
+  ::v-deep .el-input__inner {
+    padding-left: 40px;
+  }
+}
+.drawer-wrapper {
+  ::v-deep .el-drawer__header {
+    margin-bottom: 0px;
+    padding: 0 20px 0;
+  }
+  ::v-deep .el-drawer__body {
+    padding: 0 20px 0;
   }
 }
 </style>
