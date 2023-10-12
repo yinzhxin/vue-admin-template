@@ -40,7 +40,7 @@ export default [
     // name: 'Monitor',
     component: Layout,
     redirect: '/monitor/containerResource',
-    meta: { title: '监控和大屏展示', icon: 'el-icon-menu' },
+    meta: { title: '监控和大屏展示', icon: 'el-icon-monitor' },
     children: [
       // 容器资源总览
       {
@@ -88,7 +88,7 @@ export default [
             component: () => import('@/views/monitor/otherResource/database/index'),
             redirect: '/monitor/otherResource/database/instanceMonitorMain',
             meta: { title: '数据库' },
-            alwaysShow: true,
+            alwaysShow: true, // 只有一个子路由
             children: [
               {
                 path: 'instanceMonitorMain',
@@ -212,7 +212,7 @@ export default [
     name: 'OperationManagement',
     component: Layout,
     redirect: '/operationManagement/progressManagement',
-    meta: { title: '运维管理', icon: 'el-icon-menu' },
+    meta: { title: '运维管理', icon: 'el-icon-s-operation' },
     children: [
       // 进度管理
       {
@@ -294,7 +294,7 @@ export default [
     name: 'FusionScene',
     component: Layout,
     redirect: '/fusionScene/unitTrafficSwitching',
-    meta: { title: '融合场景', icon: 'el-icon-bell' },
+    meta: { title: '融合场景', icon: 'el-icon-help' },
     children: [
       // 单元流量切换
       {
@@ -318,7 +318,7 @@ export default [
     name: 'FusionScene',
     component: Layout,
     redirect: '/systemManagement/operationLog',
-    meta: { title: '系统管理', icon: 'el-icon-bell' },
+    meta: { title: '系统管理', icon: 'el-icon-setting' },
     children: [
       // 操作日志
       {

@@ -4,7 +4,7 @@
 
 <script>
 import * as echarts from "echarts";
-import resize from "./mixins/resize";
+import resize from "@/views/echarts/mixins/resize";
 
 export default {
   name: "LineChart",
@@ -118,6 +118,9 @@ export default {
         yAxis: [
           {
             type: "value",
+            axisLabel: {
+              formatter: "{value} ms",
+            },
           },
         ],
         series: [
