@@ -11,17 +11,21 @@
     <div class="right-menu">
       <div class="select">
         <el-select
-          v-model="form.project"
+          v-model="form.system"
+          @change="handleChange"
           clearable
           size="small"
-          style="margin-right:10px;width:300px;"
+          class="selectbox"
         >
-          <span slot="prefix">系统</span>
+          <!-- <span slot="prefix">系统</span> -->
+          <template slot="prefix">
+            <div class="pl-10px">系统：</div>
+          </template>
           <el-option
-            v-for="item in projectOption"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+            v-for="item in systemOptions"
+            :key="item.systemId"
+            :label="item.systemName"
+            :value="item.systemId"
           >
           </el-option>
         </el-select>
@@ -42,7 +46,7 @@
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <el-avatar :size="30" :src="circleUrl"></el-avatar>
-          <el-button type="text" style="margin:0 15px 0 10px;">Admin</el-button>
+          <el-button type="text" style="margin: 0 15px 0 10px">Admin</el-button>
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/">
@@ -58,33 +62,40 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import Breadcrumb from "@/components/Breadcrumb";
 import Hamburger from "@/components/Hamburger";
+import { getAllSystem, getAllService } from "@/api/link";
 
 export default {
   components: {
     Breadcrumb,
     Hamburger,
   },
+  mounted() {
+    getAllSystem().then((res) => {
+      this.systemOptions = res;
+    });
+    if (this.form.system) {
+      getAllService({ system: this.form.system }).then((res) => {
+        this.serviceOptions = res;
+        // this.serviceOptions = [
+        //   { serviceId: "test-init", serviceName: "test-init" },
+        // ];
+        this.setServiceOptions(this.serviceOptions);
+      });
+    }
+  },
   data() {
     return {
       circleUrl:
         "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
       form: {
-        project: "animeter101/eoitek-shopping (5)",
+        system: "eoitek-shoping", // 目前默认是 eoitek-shoping
         time: "",
       },
-      projectOption: [
-        {
-          value: "animeter101/eoitek-shopping (5)",
-          label: "animeter101/eoitek-shopping (5)",
-        },
-        {
-          value: "animeter101/eoitek-shopping (0)",
-          label: "animeter101/eoitek-shopping (0)",
-        },
-      ],
+      systemOptions: [],
+      serviceOptions: [],
     };
   },
   computed: {
@@ -98,9 +109,35 @@ export default {
       await this.$store.dispatch("user/logout");
       this.$router.push(`/login?redirect=${this.$route.fullPath}`);
     },
+    // 刷新按钮
     handleRefresh() {
-      alert("刷新");
+      // alert("刷新");
     },
+    // 选择器
+    handleChange(val) {
+      getAllSystem({ system: val }).then((res) => {
+        getAllService({ system: val }).then((res) => {
+          this.serviceOptions = res;
+          
+          // if (val == "eoitek-shoping") {
+          //   this.serviceOptions = [
+          //     { serviceId: "eoitek-shoping", serviceName: "eoitek-shoping" },
+          //   ];
+          // } else if (val == "eoitek-bank") {
+          //   this.serviceOptions = [
+          //     { serviceId: "eoitek-bank", serviceName: "eoitek-bank" },
+          //   ];
+          // } else {
+          //   this.serviceOptions = [
+          //     { serviceId: "eoitek-dd", serviceName: "eoitek-dd" },
+          //   ];
+          // }
+
+          this.setServiceOptions(this.serviceOptions);
+        });
+      });
+    },
+    ...mapActions({ setServiceOptions: "link/setServiceOptions" }),
   },
 };
 </script>
@@ -143,7 +180,7 @@ export default {
     &:focus {
       outline: none;
     }
-    .select{
+    .select {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -186,9 +223,16 @@ export default {
       font-size: 25px;
       font-weight: 700;
       cursor: pointer;
-      color: #409EFF;
+      color: #409eff;
       margin: 0 10px;
     }
+  }
+}
+.selectbox {
+  margin-right: 10px;
+  width: 300px;
+  ::v-deep .el-input__inner {
+    padding-left: 38px;
   }
 }
 </style>

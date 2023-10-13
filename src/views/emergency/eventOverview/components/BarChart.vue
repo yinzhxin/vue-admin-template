@@ -4,7 +4,7 @@
 
 <script>
 import * as echarts from "echarts";
-import resize from "./mixins/resize";
+import resize from "@/views/echarts/mixins/resize.js";
 
 export default {
   name: "BarChart",

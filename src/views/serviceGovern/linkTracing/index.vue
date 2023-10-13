@@ -13,7 +13,12 @@
           </el-form-item>
           <!-- appId -->
           <el-form-item label="">
-            <el-select
+            <el-input
+              v-model="form.appId"
+              placeholder="请输入所属应用"
+              clearable
+            />
+            <!-- <el-select
               v-model="form.appId"
               placeholder="所属应用"
               multiple
@@ -25,27 +30,27 @@
                 :label="item.appName"
                 :value="item.appId"
               />
-            </el-select>
+            </el-select> -->
           </el-form-item>
           <!-- 所属服务 -->
           <el-form-item label="">
-            <el-select
-              v-model="form.serverId"
-              placeholder="所属服务"
-              multiple
-              clearable
-            >
+            <el-select v-model="form.serverId" placeholder="所属服务" clearable>
               <el-option
                 v-for="item in serviceList"
-                :key="item.label"
-                :label="item.label"
-                :value="item.value"
+                :key="item.serviceId"
+                :label="item.serviceName"
+                :value="item.serviceId"
               />
             </el-select>
           </el-form-item>
           <!-- Endpoint 名称 -->
           <el-form-item label="">
-            <el-select
+            <el-input
+              v-model="form.Endpoint"
+              placeholder="请输入Endpoint 名称"
+              clearable
+            />
+            <!-- <el-select
               v-model="form.Endpoint"
               value-key="label"
               placeholder="Endpoint 名称"
@@ -58,11 +63,16 @@
                 :label="item.label"
                 :value="item.value"
               />
-            </el-select>
+            </el-select> -->
           </el-form-item>
           <!-- instanceId -->
           <el-form-item label="">
-            <el-select
+            <el-input
+              v-model="form.instanceId"
+              placeholder="请输入实例名称"
+              clearable
+            />
+            <!-- <el-select
               v-model="form.instanceId"
               placeholder="实例名称"
               multiple
@@ -74,11 +84,16 @@
                 :label="item.instanceName"
                 :value="item.instanceId"
               />
-            </el-select>
+            </el-select> -->
           </el-form-item>
           <!-- status：成功1/失败0 -->
           <el-form-item label="">
-            <el-select v-model="form.status" placeholder="请求状态" clearable>
+            <el-select
+              v-model="form.status"
+              placeholder="请求状态"
+              clearable
+              @change="handleStatus"
+            >
               <el-option label="成功" value="1"></el-option>
               <el-option label="失败" value="0"></el-option>
             </el-select>
@@ -175,20 +190,26 @@
           <div style="margin-bottom: 20px">
             请求时间：{{ rowObj.requestTime }}
           </div>
-          <div>Span 数：{{ "30" }}</div>
+          <div>Span 数：{{ rowObj.spanSum }}</div>
         </div>
         <div>
           <div style="margin-bottom: 20px">
             状态：
-            <el-tag style="font-size: 18px" type="danger">
-              失败
-              <!-- {{ rowObj.status == "fail" ? "失败" : "成功" }} -->
+            <el-tag
+              style="font-size: 18px"
+              type="success"
+              v-if="rowObj.status == 1"
+            >
+              成功
             </el-tag>
+            <el-tag style="font-size: 18px" type="danger" v-else> 失败 </el-tag>
           </div>
-          <div>深度：{{ "17" }}</div>
+          <div>深度：{{ rowObj.deep }}</div>
         </div>
         <div>
-          <div style="margin-bottom: 20px">总耗时：{{ rowObj.spendTime }}</div>
+          <div style="margin-bottom: 20px">
+            总耗时：{{ rowObj.totalTime }} ms
+          </div>
           <div style="height: 30px"></div>
         </div>
       </div>
@@ -207,7 +228,7 @@
             <BarYChart
               id="bar"
               :height="'100%'"
-              :width="'100%'"
+              :width="'95%'"
               :duringTime="duringTime"
               :pendingTime="pendingTime"
               :stayingTime="stayingTime"
@@ -259,21 +280,30 @@
           <div class="baseInfo">
             <div>
               <strong>Span 名称：</strong>
-              <span>{{ "XXXXXXXXXXXXX-YYYYYYY" }}</span>
+              <span>{{ spanInfo.spanName }}</span>
             </div>
 
             <div style="display: flex; align-items: center">
               <strong>状态：</strong>
-              <el-tag size="small" type="danger">失败</el-tag>
+              <el-tag
+                style="font-size: 18px"
+                type="success"
+                v-if="spanInfo.status == 1"
+              >
+                成功
+              </el-tag>
+              <el-tag style="font-size: 18px" type="danger" v-else>
+                失败
+              </el-tag>
             </div>
 
             <div>
               <strong>自身耗时：</strong>
-              <span>{{ "100" }} ms</span>
+              <span>{{ spanInfo.spendTime }} ms</span>
             </div>
             <div>
               <strong>耗时：</strong>
-              <span>{{ "30" }} ms</span>
+              <span>{{ spanInfo.spendTime }} ms</span>
             </div>
           </div>
 
@@ -282,12 +312,16 @@
               执行情况
               <el-tag type="success" size="small">status</el-tag>
             </div>
-            <div v-for="(o, index) in statusList" :key="index" class="imple">
+            <div
+              v-for="(o, index) in spanStatusList"
+              :key="index"
+              class="imple"
+            >
               <div style="width: 50%">{{ o.title }}</div>
               <div>
                 <strong> {{ o.value }}</strong>
                 <i
-                  v-if="o.title == 'db_statement'"
+                  v-if="o.title == 'db_statement' && o.value"
                   class="el-icon-document-copy"
                   style="cursor: pointer; color: #409eff; margin-left: 10px"
                   :data-clipboard-text="o.value"
@@ -336,34 +370,33 @@ import G6 from "@antv/g6";
 import Clipboard from "clipboard";
 import Table from "@/views/components/Table.vue";
 import BarYChart from "./BarYChart";
+import { traceData, tableSpanData, treeData } from "@/mock/linkTracing";
+
 import {
-  getProjectList,
-  getAppList,
-  getInstanceList,
   getTraceList,
   getTraceInfo,
   getSpanInfo,
-  traceData,
-  tableSpanData,
-  treeData,
-} from "@/mock/linkTracing";
-
-import { getAppList2, getSpanInfo2 } from "@/api/link";
+  getLogInfo,
+} from "@/api/link";
 
 export default {
   name: "LinkTracing",
   components: { Table, BarYChart },
+  computed: {
+    ser() {
+      return this.$store.state.link.serviceOptions;
+    },
+  },
   data() {
     return {
       serverId: "", // query参数
-      projectId: "",
-      projectList: [],
+
       form: {
         traceId: "",
-        appId: [],
-        instanceId: [],
-        serverId: [],
-        Endpoint: [],
+        appId: "",
+        instanceId: "",
+        serverId: "",
+        Endpoint: "",
         status: "",
         spendTime: "",
       },
@@ -372,18 +405,9 @@ export default {
       // !实例名称
       instanceList: [],
       // !所属服务
-      serviceList: [
-        { label: "shop_aaa", value: "shop_aaa" },
-        { label: "shop_xxx", value: "shop_xxx" },
-        { label: "shop_yyy", value: "shop_yyy" },
-      ],
+      serviceList: [],
       // !Endpoint 名称
-      endpointList: [
-        { label: "aaa", value: "aaa" },
-        { label: "bbb", value: "bbb" },
-        { label: "ccc", value: "ccc" },
-        { label: "ddd", value: "ddd" },
-      ],
+      endpointList: [],
 
       graph: null,
       graphData: "",
@@ -409,6 +433,10 @@ export default {
 
       rowObj: "", // 表格行数据
       drawerTitle: "", // 点击表格出现的抽屉组件的标题
+      spanInfo: "",
+      spanStatusList: [],
+      spanArray: [],
+      logInfo: "",
 
       // 表格数据
       table: {
@@ -416,7 +444,7 @@ export default {
         columns: [
           {
             label: "Endpoint 名称",
-            index: "endpoint",
+            index: "endPoint",
             render(h, data) {
               return (
                 <div style="cursor:pointer">
@@ -425,14 +453,14 @@ export default {
                   ) : (
                     <span> </span>
                   )}
-                  {data.row.endpoint}
+                  {data.row.endPoint}
                 </div>
               );
             },
             width: "300px",
           },
-          { label: "所属服务", index: "server" },
-          { label: "所属应用", index: "appName" },
+          { label: "所属服务", index: "appName" },
+          { label: "所属应用", index: "appSystemGroup" },
           {
             label: "状态",
             index: "status",
@@ -464,15 +492,17 @@ export default {
               return <div>{data.row.spendTime} ms</div>;
             },
           },
-          { label: "请求时间", index: "executeTime", sortable: true },
+          { label: "请求时间", index: "requestTime", sortable: true },
           { label: "TraceID", index: "traceId" },
         ],
         page: {
           current: 1, // 当前页数--handleCurrentChange
-          size: 10, // 每页条数--handleSizeChange
+          size: 20, // 每页条数--handleSizeChange
           total: 1, // 总页数
         },
       },
+
+      linkList: [],
 
       // 颜色数组--12种
       colorList: [
@@ -488,54 +518,75 @@ export default {
         "#99D9EA",
         "#22B14C",
         "#B5E61D",
-      ],
-
-      statusList: [
-        { title: "db_Instance", value: "upuser_dev" },
-        { title: "db_Type", value: "sql" },
-        { title: "apm_component", value: "Mysql" },
-        { title: "db_statement", value: "INSERT INFO tb_name VALUES" },
-        { title: "apm_layer", value: "Database" },
-        { title: "apm_addr", value: "123.234.4456:3304" },
-        { title: "apm_custom_application", value: "未分组" },
+        "#9A60B5",
+        "#BE76D6",
+        "#CF81F7",
+        "#EA7CC8",
+        "#EE8AF9",
+        "#3F48C1",
+        "#0094D2",
+        "#00A2E3",
+        "#00ABF4",
+        "#99D9E5",
+        "#22B146",
+        "#B5E617",
+        "#9A60B1",
+        "#BE76D2",
+        "#CF81F3",
+        "#EA7CC4",
+        "#EE8AF5",
+        "#3F48C6",
+        "#0094D7",
+        "#00A2E9",
+        "#00ABFA",
+        "#99D9E1",
+        "#22B14E",
+        "#B5E610",
       ],
 
       stackList: [
         { title: "event", value: "error" },
-        { title: "errorkind", value: "java.sql.SQLSyntaxErrorException" },
+        { title: "kind", value: "java.sql.SQLSyntaxErrorException" },
         { title: "massage", value: "Tbale 'urgent_dev_tb_user does not exist" },
         {
           title: "stack",
           value: `
-  Exception in thread "main" java.lang.NullPointerException: Attempt to invoke virtual method "int java.lang.String.length()" on a null object reference
-	at com.example.MyClass.myMethod(MyClass.java:15)
-	at com.example.Main.main(Main.java:8)
-  Exception in thread "main" java.lang.NullPointerException: Attempt to invoke virtual method "int java.lang.String.length()" on a null object reference
-	at com.example.MyClass.myMethod(MyClass.java:15)
-	at com.example.Main.main(Main.java:8)
-  Exception in thread "main" java.lang.NullPointerException: Attempt to invoke virtual method "int java.lang.String.length()" on a null object reference
-	at com.example.MyClass.myMethod(MyClass.java:15)
-	at com.example.Main.main(Main.java:8)
-`,
+        Exception in thread "main" java.lang.NullPointerException: Attempt to invoke virtual method "int java.lang.String.length()" on a null object reference
+      	at com.example.MyClass.myMethod(MyClass.java:15)
+      	at com.example.Main.main(Main.java:8)
+        Exception in thread "main" java.lang.NullPointerException: Attempt to invoke virtual method "int java.lang.String.length()" on a null object reference
+      	at com.example.MyClass.myMethod(MyClass.java:15)
+      	at com.example.Main.main(Main.java:8)
+        Exception in thread "main" java.lang.NullPointerException: Attempt to invoke virtual method "int java.lang.String.length()" on a null object reference
+      	at com.example.MyClass.myMethod(MyClass.java:15)
+      	at com.example.Main.main(Main.java:8)
+      `,
         },
       ],
 
       tableSpan: {
         tableSpanData,
         columns: [
-          { label: "Endpoint", index: "endpoint" },
-          { label: "所属服务", index: "server" },
+          { label: "Endpoint", index: "spanName" },
+          { label: "所属服务", index: "appId" },
           { label: "Span 数量", index: "spanNum" },
-          { label: "耗时", index: "spendTime", sortable: true },
+          {
+            label: "耗时",
+            index: "spendTime",
+            sortable: true,
+            render(h, data) {
+              return <div style="cursor:pointer">{data.row.spendTime} ms</div>;
+            },
+          },
           {
             label: "平均自身耗时",
-            index: "spendTimeSelf",
+            index: "averageTime",
             sortable: true,
             render(h, data) {
               return (
                 <div style="cursor:pointer">
-                  {data.row.spendTimeSelf}ms
-                  <el-progress percentage={data.row.spendTimeSelf * 10} />
+                  {data.row.averageTime} ms
+                  <el-progress percentage={data.row.averageTime} />
                 </div>
               );
             },
@@ -553,29 +604,9 @@ export default {
   },
 
   mounted() {
-    // getAppList2();
-    // getSpanInfo2();
-
     this.serverId = this.$route.query.serverId;
-    // this.form.serverId.push(this.serverId);
-
-    // 项目
-    getProjectList().then((res) => {
-      // console.log(res);
-    });
-
-    // 应用
-    getAppList().then((res) => {
-      this.appList = res;
-    });
-
-    // 实例
-    getInstanceList().then((res) => {
-      this.instanceList = res;
-    });
-
-    // 链路列表
     this.queryList();
+    this.serviceList = this.$store.state.link.serviceOptions;
   },
 
   beforeDestroy() {
@@ -591,22 +622,28 @@ export default {
     // 链路列表
     queryList() {
       getTraceList({
-        projectId: this.projectId,
-        traceId: this.form.traceId,
-        appId: this.form.appId,
-        instanceId: this.form.instanceId,
-        status: this.form.status,
-        spendTime: this.form.spendTime,
-        pageNum: this.table.page.current,
-        pageSize: this.table.page.size,
+        traceId: "",
+        status: "",
+        appName: "",
+        appSystemGroup: "",
+        // [traceId] 链路id，可选筛选条件
+        // [appName] 所属服务，可选筛选条件
+        // [status] 状态，可选条件 1成功 0失败
+        // [appSystemGroup] 所属应用，可选条件
+        // 以上四个条件均不传默认查询全部
       })
         .then((res) => {
+          // console.log(res);
+          this.linkList = res;
           this.table.tableData = res;
-          this.table.page.current = 1;
-          this.table.page.size = 10;
-          this.table.page.total = 10;
+          this.table.page.total = res.length;
+          // this.table.page.current = 1;
+          // this.table.page.size = 10;
+          // this.table.page.total = 10;
         })
-        .catch(() => {});
+        .catch((err) => {
+          console.log(err);
+        });
     },
 
     // 分页器
@@ -620,6 +657,32 @@ export default {
       this.queryList();
     },
 
+    buildTree(array) {
+      const nodeMap = {};
+      const tree = [];
+
+      array.forEach((item) => {
+        nodeMap[item.spanId] = item;
+      });
+
+      array.forEach((item) => {
+        const parentId = item.parentId;
+        if (parentId) {
+          const parent = nodeMap[parentId];
+          if (!parent.children) {
+            parent.children = [];
+          }
+          parent.children.push(item);
+        } else {
+          tree.push(item);
+        }
+      });
+
+      console.log("tree-----", tree);
+
+      return tree;
+    },
+
     // 处理数据
     processData(data) {
       const result = { label: [], chartData: [], labelList: [], nodeCount: 0 };
@@ -629,11 +692,14 @@ export default {
       this.labelList = result.labelList;
       this.label = result.label;
 
+      console.log(this.label);
+      console.log(this.labelList);
+
       for (let i = 0; i < result.chartData.length; i++) {
         for (let j = 0; j < result.chartData[i].length; j++) {
-          this.duringTime.push(result.chartData[i][j].duringTime);
-          this.pendingTime.push(result.chartData[i][j].pendingTime);
-          this.stayingTime.push(result.chartData[i][j].stayingTime);
+          this.duringTime.push(result.chartData[i][j].time1);
+          this.pendingTime.push(result.chartData[i][j].time2);
+          this.stayingTime.push(result.chartData[i][j].time3);
         }
       }
 
@@ -646,14 +712,18 @@ export default {
     extractData(obj, level, result) {
       const color = this.colorList[level];
       obj.color = color;
+      // console.log(obj);
 
-      if (obj.hasOwnProperty("chartData") || obj.hasOwnProperty("topLabel")) {
-        result.labelList.push({ label: obj.topLabel, color: obj.color });
-        result.label.push(obj.topLabel);
-        result.chartData.push(obj.chartData);
-        // console.log(
-        //   `每个节点的信息 ==>Label: ${obj.topLabel}, Level: ${level}`
-        // );
+      if (obj.hasOwnProperty("spanTime") || obj.hasOwnProperty("spanName")) {
+        result.labelList.push({ label: obj.spanName, color: obj.color });
+        result.label.push(obj.spanName);
+        // result.labelList.push({
+        //   id: obj.spanId,
+        //   color: obj.color,
+        // });
+        // result.label.push(obj.spanId);
+        result.chartData.push(obj.spanTime);
+        // console.log(`每个节点 ==>Label: ${obj.spanName}, Level: ${level}`);
         result.nodeCount++; // 节点计数加一
       }
 
@@ -677,21 +747,46 @@ export default {
       });
     },
 
-    // 点击表格行
+    // 点击表格行，获取链路详情
     handleRowClick(row) {
       this.rowObj = row;
-      this.drawerTitle = row.endpoint;
+      this.drawerTitle = row.endPoint;
       // 获取链路信息
-      // getTraceInfo({ traceId: row.traceId }).then((res) => {
-      //   console.log(res)
-      // });
-      this.openDrawer();
+      getTraceInfo({ traceId: row.traceId })
+        .then((res) => {
+          // console.log(res);
+          if (res.spans) {
+            this.spanArray = res.spans;
+            this.tableSpan.tableSpanData = this.spanArray;
+            this.graphData = this.buildTree(this.spanArray);
+            this.processData(this.graphData[0]);
+            this.openDrawer();
+          } else {
+            this.tableSpan.tableSpanData = [];
+            this.drawerVisible = true;
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+
+    handleStatus(val) {
+      if (val == "1") {
+        this.table.tableData = this.linkList.filter((item) => {
+          return item.status == 1;
+        });
+      } else if (val == "0") {
+        this.table.tableData = this.linkList.filter((item) => {
+          return item.status == 0;
+        });
+      } else {
+        this.table.tableData = this.linkList;
+      }
     },
 
     // 打开抽屉
     openDrawer() {
-      this.graphData = traceData;
-      this.processData(this.graphData);
       this.$nextTick(() => {
         this.initGraph();
       });
@@ -743,8 +838,25 @@ export default {
 
     // 打开内部的抽屉组件
     openNodeDrawer() {
-      // 请求span详情/基本信息，默认name = "1"
-      // getSpanInfo({ spanId: "fsdgfehndgjnrn" });
+      // 请求span详情/基本信息
+      getSpanInfo({ spanId: "span10" })
+        .then((res) => {
+          console.log(res);
+          this.spanInfo = res;
+          this.spanStatusList = [
+            { title: "db_Instance", value: res.dbInstance },
+            { title: "db_Type", value: res.dbType },
+            { title: "apm_component", value: "Mysql" },
+            { title: "db_statement", value: res.statement },
+            { title: "apm_layer", value: res.layer },
+            { title: "apm_addr", value: res.addr },
+            { title: "apm_custom_application", value: "未分组" },
+          ];
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
       this.nodeDrawerVisible = true;
     },
 
@@ -758,10 +870,33 @@ export default {
     handleNodeClick(tab, event) {
       if (tab.label == "日志详情") {
         // 请求日志详情
-        // getLLogInfo({ spanId: "fsdgfehndgjnrn" });
+        getLogInfo({ logId: this.spanInfo.logId })
+          .then((res) => {
+            console.log(res);
+            this.logInfo = res;
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       } else if (tab.label == "基本信息") {
-        // 请求span详情/基本信息，默认name = "1"
-        // getSpanInfo({ spanId: "fsdgfehndgjnrn" });
+        // 请求span详情/基本信息
+        getSpanInfo({ spanId: "span10" })
+          .then((res) => {
+            console.log(res);
+            this.spanInfo = res;
+            this.spanStatusList = [
+              { title: "db_Instance", value: res.dbInstance },
+              { title: "db_Type", value: res.dbType },
+              { title: "apm_component", value: "Mysql" },
+              { title: "db_statement", value: res.statement },
+              { title: "apm_layer", value: res.layer },
+              { title: "apm_addr", value: res.addr },
+              { title: "apm_custom_application", value: "未分组" },
+            ];
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       }
     },
 
@@ -828,7 +963,7 @@ export default {
       const container = document.getElementById("container");
       // 获取柱状图的高，让树状图的高度等于柱状图的高度
       const barHeight = document.getElementById("bar").scrollHeight;
-      const width = container.scrollWidth || 350;
+      const width = container.scrollWidth || 340;
       const height = container.scrollHeight || barHeight - 20;
       console.log("bar ==>", document.getElementById("bar").scrollHeight);
       console.log("画布的宽高 ==>", width, height);
@@ -891,7 +1026,7 @@ export default {
             shadowBlur: 0, // 设置阴影模糊程度
           },
         };
-        let label = `${node.topLabel} \n ${node.subLabel}`;
+        let label = `${node.spanName} \n ${node.appId}`;
 
         // console.log(node);
 
@@ -900,7 +1035,7 @@ export default {
           labelCfg: {
             style: {
               fontSize: 20,
-              fill: node.error ? "red" : "gray",
+              fill: node.status == 0 ? "red" : "gray",
             },
             position: "right",
           },
@@ -909,7 +1044,7 @@ export default {
 
       // console.log(this.graphData);
 
-      this.updateData(this.graphData);
+      this.updateData(this.graphData[0]);
       this.renderGraph();
       // this.graph.translate(0, 45);
 
@@ -1042,15 +1177,23 @@ export default {
     },
   },
 
-  // watch: {
-  //   graph: {
-  //     handler: function (newV, oldV) {
-  //       console.log("newV ==> ", newV, "oldV ==> ", oldV);
-  //     },
-  //     deep: true,
-  //     immediate: true,
-  //   },
-  // },
+  watch: {
+    ser: {
+      handler: function (newV, oldV) {
+        console.log("serviceOptions 改变了");
+        this.serviceList = newV;
+      },
+      deep: true,
+      immediate: true,
+    },
+    // graph: {
+    //   handler: function (newV, oldV) {
+    //     console.log("newV ==> ", newV, "oldV ==> ", oldV);
+    //   },
+    //   deep: true,
+    //   immediate: true,
+    // },
+  },
 };
 </script>
 

@@ -125,7 +125,7 @@
 </template>
 <script>
 import RadiusPieChart from "@/views/echarts/RadiusPieChart.vue";
-import BarChart from "@/views/echarts/BarChart_application.vue";
+import BarChart from "./components/BarChart.vue";
 import Table from "@/views/components/Table.vue";
 import { Divider } from "element-ui";
 

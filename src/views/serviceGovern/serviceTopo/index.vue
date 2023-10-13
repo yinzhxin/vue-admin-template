@@ -36,7 +36,7 @@
           clearable
         >
           <el-option
-            v-for="item in serviceOption"
+            v-for="item in serviceList"
             :key="item.value"
             :label="item.label"
             :value="item.value"
@@ -103,6 +103,11 @@ import Table from "@/views/components/Table";
 export default {
   name: "ServiceTopo",
   components: { Table },
+  computed: {
+    ser() {
+      return this.$store.state.link.serviceOptions;
+    },
+  },
 
   data() {
     return {
@@ -122,13 +127,7 @@ export default {
       ],
 
       // 所属服务
-      serviceOption: [
-        { label: "service1", value: "service1" },
-        { label: "service2", value: "service2" },
-        { label: "service3", value: "service3" },
-        { label: "service4", value: "service4" },
-        { label: "service5", value: "service5" },
-      ],
+      serviceList: [],
 
       toTotalTopo: "", // 返回总拓扑图右边的选框
       serverIdOption: "", // 返回总拓扑图右边的选框的选项数组
@@ -178,6 +177,14 @@ export default {
   },
 
   watch: {
+    ser: {
+      handler: function (newV, oldV) {
+        console.log("serviceOptions 改变了");
+        this.serviceList = newV;
+      },
+      deep: true,
+      immediate: true,
+    },
     // graphData: {
     //   handler: function (newV, oldV) {
     //     console.log("总拓扑图 ==> newV ==>", newV, "oldV ==>", oldV);
@@ -194,6 +201,7 @@ export default {
 
   mounted() {
     this.getTopoGraph();
+    this.serviceList = this.$store.state.link.serviceOptions;
   },
 
   beforeDestroy() {
