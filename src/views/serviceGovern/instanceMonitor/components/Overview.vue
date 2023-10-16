@@ -1,47 +1,53 @@
 <template>
   <div>
     <div>
-      <div id="container" style="background: pink"></div>
+      <!-- <div id="container" style="background: pink"></div> -->
     </div>
 
     <div style="display: flex; margin-top: 20px">
       <LineChart
         :width="'50%'"
-        :height="'250px'"
+        :height="'280px'"
         :title="title1"
-        :chartData="chartData.data"
-        :xAxisData="chartData.xAxisData"
-        :color="chartData.color"
+        :chartData="chartData1.data"
+        :xAxisData="chartData1.xAxisData"
+        :color="color"
+        :legend="legend"
+        :isAreaStyle="false"
       />
       <LineChart
         :width="'50%'"
-        :height="'250px'"
+        :height="'280px'"
         :title="title2"
         :chartData="chartData2.data"
         :xAxisData="chartData2.xAxisData"
         :yAxisFormatter="chartData2.yAxisFormatter"
-        :color="chartData2.color"
+        :color="color"
+        :legend="legend"
+        :isAreaStyle="false"
       />
     </div>
 
     <div style="display: flex; margin-top: 20px">
       <LineChart
         :width="'50%'"
-        :height="'250px'"
+        :height="'280px'"
         :title="title3"
         :chartData="chartData3.data"
         :xAxisData="chartData3.xAxisData"
-        :color="chartData3.color"
+        :color="color"
+        :legend="legend"
+        :isAreaStyle="false"
       />
       <LineChart
         :width="'50%'"
-        :height="'250px'"
+        :height="'280px'"
         :title="title4"
-        :toolbox="toolbox"
         :chartData="chartData4.data"
         :xAxisData="chartData4.xAxisData"
-        :legend="chartData4.legend"
-        :color="chartData4.color"
+        :color="color"
+        :legend="legend"
+        :isAreaStyle="false"
       />
     </div>
   </div>
@@ -71,8 +77,16 @@ export default {
         },
       },
 
+      // 主题颜色
+      color: ["#409EFF", "#68BBC4", "#58A55C", "#F2BD42"],
+
+      // 图表图例
+      legend: {
+        top: 10,
+      },
+
       title1: "请求数/每分钟",
-      chartData: {
+      chartData1: {
         data: [
           {
             data: [0, 1, 0, 0],
@@ -80,7 +94,6 @@ export default {
           },
         ],
         xAxisData: ["09:54", "09:55", "09:56", "09:57"],
-        color: ["#409EFF"],
       },
 
       title2: "响应时间/每分钟",
@@ -137,16 +150,16 @@ export default {
     };
   },
 
-  mounted() {
-    this.initGraph();
-  },
+  // mounted() {
+  //   this.initGraph();
+  // },
 
-  beforeDestroy() {
-    // 销毁画布
-    this.graph.destroy();
-    // 实例销毁
-    this.graph = null;
-  },
+  // beforeDestroy() {
+  //   // 销毁画布
+  //   this.graph.destroy();
+  //   // 实例销毁
+  //   this.graph = null;
+  // },
 
   methods: {
     // 更新图表数据，初次渲染也调用data方法

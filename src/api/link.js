@@ -40,7 +40,7 @@ export function getLogInfo(params) {
     url: '/log/getLogInfoById',
     method: 'get',
     params: {
-      logId: params.traceId,
+      logId: params.logId,
     }
   })
 }

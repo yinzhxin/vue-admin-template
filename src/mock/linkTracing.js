@@ -84,6 +84,52 @@ export function getSpanInfo(params) {
 }
 
 
+export const treeData = {
+  id: "shop_kafka",
+  children: [
+    {
+      id: "shop_gateway",
+      children: [
+        {
+          id: "shop_auth",
+          children: [
+            {
+              id: "shop_audit",
+              children: [
+                { id: "192.168.110.105:9092" }
+              ]
+            },
+            {
+              id: "shop_user",
+              children: [
+                {
+                  id: "shop_order",
+                  children: [
+                    { id: "192.168.2.105:3306" },
+                    {
+                      id: "bank_pament",
+                      children: [
+                        {
+                          id: "bank_creditCard",
+                          children: [
+                            { id: "bank_rewardPoints" }
+                          ]
+                        },
+                      ]
+                    },
+                    { id: "192.168.6.105:6379" }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+      ]
+    },
+  ]
+}
+
+
 export const traceData = {
   id: "root",
   topLabel: "GET:/demo/{name}",
@@ -417,49 +463,3 @@ export const tableSpanData = [
     spendTimeSelf: "2"
   },
 ]
-
-
-export const treeData = {
-  id: "auth",
-  children: [
-    {
-      id: "shop_gateway",
-      children: [
-        {
-          id: "shop_auth",
-          children: [
-            {
-              id: "shop_audit",
-              children: [
-                { id: "123.234.555.45:2203" }
-              ]
-            },
-            {
-              id: "shop_user",
-              children: [
-                {
-                  id: "shop_order",
-                  children: [
-                    { id: "123.445.567.78:34" },
-                    {
-                      id: "bank_parrent",
-                      children: [
-                        {
-                          id: "bank_crediCard",
-                          children: [
-                            { id: "bank_point" }
-                          ]
-                        },
-                      ]
-                    },
-                    { id: "100.900.234.34:3304" }
-                  ]
-                }
-              ]
-            }
-          ]
-        },
-      ]
-    },
-  ]
-}

@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div style="display: flex; margin-top: 0">
+    <div style="display: flex; margin-top: 20px">
       <LineChart
         :width="'50%'"
-        :height="'250px'"
+        :height="'280px'"
         :title="title1"
         :chartData="chartData1.data"
         :xAxisData="chartData1.xAxisData"
@@ -13,13 +13,13 @@
       />
       <LineChart
         :width="'50%'"
-        :height="'250px'"
+        :height="'280px'"
         :title="title2"
         :chartData="chartData2.data"
         :xAxisData="chartData2.xAxisData"
         :yAxisFormatter="chartData2.yAxisFormatter"
         :color="color"
-        :legend="chartData2.legend"
+        :legend="legend"
         :isAreaStyle="false"
       />
     </div>
@@ -27,23 +27,23 @@
     <div style="display: flex; margin-top: 20px">
       <LineChart
         :width="'50%'"
-        :height="'250px'"
+        :height="'280px'"
         :title="title3"
         :chartData="chartData3.data"
         :xAxisData="chartData3.xAxisData"
+        :yAxisFormatter="chartData3.yAxisFormatter"
         :color="color"
-        :legend="chartData3.legend"
+        :legend="legend"
         :isAreaStyle="false"
       />
       <LineChart
         :width="'50%'"
-        :height="'250px'"
+        :height="'280px'"
         :title="title4"
-        :toolbox="toolbox"
         :chartData="chartData4.data"
         :xAxisData="chartData4.xAxisData"
         :color="color"
-        :legend="chartData4.legend"
+        :legend="legend"
         :isAreaStyle="false"
       />
     </div>
@@ -51,23 +51,24 @@
     <div style="display: flex; margin-top: 20px">
       <LineChart
         :width="'50%'"
-        :height="'250px'"
+        :height="'280px'"
         :title="title5"
         :chartData="chartData5.data"
         :xAxisData="chartData5.xAxisData"
+        :yAxisFormatter="chartData5.yAxisFormatter"
         :color="color"
-        :legend="chartData5.legend"
+        :legend="legend"
         :isAreaStyle="false"
       />
       <LineChart
         :width="'50%'"
-        :height="'250px'"
+        :height="'280px'"
         :title="title6"
-        :toolbox="toolbox"
         :chartData="chartData6.data"
         :xAxisData="chartData6.xAxisData"
+        :yAxisFormatter="chartData6.yAxisFormatter"
         :color="color"
-        :legend="chartData6.legend"
+        :legend="legend"
         :isAreaStyle="false"
       />
     </div>
@@ -75,12 +76,12 @@
     <div style="display: flex; margin-top: 20px">
       <LineChart
         :width="'100%'"
-        :height="'250px'"
-        :title="title5"
-        :chartData="chartData5.data"
-        :xAxisData="chartData5.xAxisData"
+        :height="'280px'"
+        :title="title7"
+        :chartData="chartData7.data"
+        :xAxisData="chartData7.xAxisData"
         :color="color"
-        :legend="chartData5.legend"
+        :legend="legend"
         :isAreaStyle="false"
       />
     </div>
@@ -145,10 +146,6 @@ export default {
         ],
         xAxisData: ["09:54", "09:55", "09:56", "09:57"],
         yAxisFormatter: "{value} ms",
-        color: ["#409EFF", "#68BBC4"],
-        legend: {
-          top: 10,
-        },
       },
 
       title3: "堆内存详情/每分钟",
@@ -173,10 +170,6 @@ export default {
         ],
         xAxisData: ["09:54", "09:55", "09:56", "09:57"],
         yAxisFormatter: "{value} M",
-        color: ["#409EFF", "#68BBC4", "#58A55C", "#F2BD42"],
-        legend: {
-          top: 10,
-        },
       },
 
       title4: "元空间详情/每分钟",
@@ -188,10 +181,6 @@ export default {
           },
         ],
         xAxisData: ["09:54", "09:55", "09:56", "09:57"],
-        color: ["#409EFF"],
-        legend: {
-          top: 10,
-        },
       },
 
       title5: "非堆内存/每分钟",
@@ -202,7 +191,7 @@ export default {
             name: "最初字节数",
           },
           {
-            data: [50, 50, 50, 50],
+            data: [110, 110, 110, 110],
             name: "提交字节数",
           },
           {
@@ -212,10 +201,6 @@ export default {
         ],
         xAxisData: ["09:54", "09:55", "09:56", "09:57"],
         yAxisFormatter: "{value} M",
-        color: ["#409EFF", "#68BBC4", "#58A55C", "#F2BD42"],
-        legend: {
-          top: 10,
-        },
       },
 
       title6: "直接缓冲区/每分钟",
@@ -231,18 +216,21 @@ export default {
           },
         ],
         yAxisFormatter: "{value} K",
-        legend: {
-          show: true,
-          top: 10,
-          left: "30%",
-        },
         xAxisData: ["09:54", "09:55", "09:56", "09:57"],
-        color: ["#409EFF", "#68BBC4", "#58A55C", "#F2BD42"],
+      },
+
+      title7: "JVM线程数/每分钟",
+      chartData7: {
+        data: [
+          {
+            data: [130, 130, 130, 130],
+            name: "初始字节数",
+          },
+        ],
+        xAxisData: ["09:54", "09:55", "09:56", "09:57"],
       },
     };
   },
-
-  mounted() {},
 
   methods: {},
 };

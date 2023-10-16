@@ -93,13 +93,30 @@
 </template>
 
 <script>
-import LineChart from "@/views/echarts/LineChart.vue";
+// import LineChart from "@/views/echarts/LineChart.vue";
+//概览
 import Overview from "./components/Overview.vue";
+// JVM监控
 import JvmMonitor from "./components/JvmMonitor.vue";
+// 主机监控
+import HostMonitor from "./components/HostMonitor.vue";
+// Pod监控
+import PodMonitor from "./components/PodMonitor.vue";
+// SQL调用分析
+import SqlAnalysis from "./components/SqlAnalysis.vue";
+
+
 
 export default {
   name: "InstanceMonitor",
-  components: { LineChart, Overview, JvmMonitor },
+  components: {
+    // LineChart,
+    Overview,
+    JvmMonitor,
+    HostMonitor,
+    PodMonitor,
+    SqlAnalysis
+  },
   data() {
     return {
       text: "概览",

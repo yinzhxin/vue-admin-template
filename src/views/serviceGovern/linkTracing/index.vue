@@ -228,7 +228,7 @@
             <BarYChart
               id="bar"
               :height="'100%'"
-              :width="'95%'"
+              :width="'100%'"
               :duringTime="duringTime"
               :pendingTime="pendingTime"
               :stayingTime="stayingTime"
@@ -347,9 +347,9 @@
           </div>
           <el-card class="logInfo" :body-style="{ backgroundColor: '#F2F6FC' }">
             <div slot="header">
-              <strong> 2023-10-10 13:34:08 </strong>
+              <strong> {{ logInfoTime }}</strong>
             </div>
-            <div v-for="(o, index) in stackList" :key="index">
+            <div v-for="(o, index) in logInfo" :key="index">
               <div>
                 <strong> {{ o.title }}</strong>
               </div>
@@ -358,8 +358,8 @@
             </div>
           </el-card>
         </el-tab-pane>
-        <el-tab-pane label="基础信息" name="3"></el-tab-pane>
-        <el-tab-pane label="服务监管" name="4"></el-tab-pane>
+        <!-- <el-tab-pane label="基础信息" name="3"></el-tab-pane>
+        <el-tab-pane label="服务监管" name="4"></el-tab-pane> -->
       </el-tabs>
     </el-drawer>
   </div>
@@ -370,8 +370,7 @@ import G6 from "@antv/g6";
 import Clipboard from "clipboard";
 import Table from "@/views/components/Table.vue";
 import BarYChart from "./BarYChart";
-import { traceData, tableSpanData, treeData } from "@/mock/linkTracing";
-
+import { treeData } from "@/mock/linkTracing";
 import {
   getTraceList,
   getTraceInfo,
@@ -433,10 +432,12 @@ export default {
 
       rowObj: "", // 表格行数据
       drawerTitle: "", // 点击表格出现的抽屉组件的标题
+
+      spanId: "",
       spanInfo: "",
       spanStatusList: [],
-      spanArray: [],
-      logInfo: "",
+      logInfo: [],
+      logInfoTime: "",
 
       // 表格数据
       table: {
@@ -505,67 +506,70 @@ export default {
       linkList: [],
 
       // 颜色数组--12种
-      colorList: [
-        "#9A60B4",
-        "#BE76DE",
-        "#CF81F2",
-        "#EA7CCC",
-        "#EE8AF8",
-        "#3F48CC",
-        "#0094D4",
-        "#00A2E8",
-        "#00ABF6",
-        "#99D9EA",
-        "#22B14C",
-        "#B5E61D",
-        "#9A60B5",
-        "#BE76D6",
-        "#CF81F7",
-        "#EA7CC8",
-        "#EE8AF9",
-        "#3F48C1",
-        "#0094D2",
-        "#00A2E3",
-        "#00ABF4",
-        "#99D9E5",
-        "#22B146",
-        "#B5E617",
-        "#9A60B1",
-        "#BE76D2",
-        "#CF81F3",
-        "#EA7CC4",
-        "#EE8AF5",
-        "#3F48C6",
-        "#0094D7",
-        "#00A2E9",
-        "#00ABFA",
-        "#99D9E1",
-        "#22B14E",
-        "#B5E610",
-      ],
+      // colorList: [
+      //   "#9A60B4",
+      //   "#BE76DE",
+      //   "#CF81F2",
+      //   "#EA7CCC",
+      //   "#EE8AF8",
+      //   "#3F48CC",
+      //   "#0094D4",
+      //   "#00A2E8",
+      //   "#00ABF6",
+      //   "#99D9EA",
+      //   "#22B14C",
+      //   "#B5E61D",
+      //   "#9A60B5",
+      //   "#BE76D6",
+      //   "#CF81F7",
+      //   "#EA7CC8",
+      //   "#EE8AF9",
+      //   "#3F48C1",
+      //   "#0094D2",
+      //   "#00A2E3",
+      //   "#00ABF4",
+      //   "#99D9E5",
+      //   "#22B146",
+      //   "#B5E617",
+      //   "#9A60B1",
+      //   "#BE76D2",
+      //   "#CF81F3",
+      //   "#EA7CC4",
+      //   "#EE8AF5",
+      //   "#3F48C6",
+      //   "#0094D7",
+      //   "#00A2E9",
+      //   "#00ABFA",
+      //   "#99D9E1",
+      //   "#22B14E",
+      //   "#B5E610",
+      // ],
 
-      stackList: [
-        { title: "event", value: "error" },
-        { title: "kind", value: "java.sql.SQLSyntaxErrorException" },
-        { title: "massage", value: "Tbale 'urgent_dev_tb_user does not exist" },
-        {
-          title: "stack",
-          value: `
-        Exception in thread "main" java.lang.NullPointerException: Attempt to invoke virtual method "int java.lang.String.length()" on a null object reference
-      	at com.example.MyClass.myMethod(MyClass.java:15)
-      	at com.example.Main.main(Main.java:8)
-        Exception in thread "main" java.lang.NullPointerException: Attempt to invoke virtual method "int java.lang.String.length()" on a null object reference
-      	at com.example.MyClass.myMethod(MyClass.java:15)
-      	at com.example.Main.main(Main.java:8)
-        Exception in thread "main" java.lang.NullPointerException: Attempt to invoke virtual method "int java.lang.String.length()" on a null object reference
-      	at com.example.MyClass.myMethod(MyClass.java:15)
-      	at com.example.Main.main(Main.java:8)
-      `,
-        },
+      colorList: [
+        "#8560b5",
+        "#9360b5",
+        // "#9a60b5",
+        "#a860b5",
+        "#af60b5",
+        "#573fc1",
+        "#413fc1",
+        // "#3f48c1",
+        "#3f5ec1",
+        "#3f69c1",
+        "#0097f4",
+        "#00abf4",
+        // "#00bff4",
+        "#00d4f4",
+        "#00e8f4",
+        "#83e61d",
+        "#a4e61d",
+        // "#b5e61d",
+        "#d7e61d",
+        "#e6e51d",
       ],
 
       tableSpan: {
-        tableSpanData,
+        tableSpanData: [],
         columns: [
           { label: "Endpoint", index: "spanName" },
           { label: "所属服务", index: "appId" },
@@ -676,6 +680,9 @@ export default {
         } else {
           tree.push(item);
         }
+
+        // 添加id属性
+        item.id = item.spanId;
       });
 
       console.log("tree-----", tree);
@@ -692,8 +699,8 @@ export default {
       this.labelList = result.labelList;
       this.label = result.label;
 
-      console.log(this.label);
-      console.log(this.labelList);
+      // console.log(this.label);
+      // console.log(this.labelList);
 
       for (let i = 0; i < result.chartData.length; i++) {
         for (let j = 0; j < result.chartData[i].length; j++) {
@@ -715,8 +722,11 @@ export default {
       // console.log(obj);
 
       if (obj.hasOwnProperty("spanTime") || obj.hasOwnProperty("spanName")) {
-        result.labelList.push({ label: obj.spanName, color: obj.color });
-        result.label.push(obj.spanName);
+        result.labelList.push({
+          label: obj.spanName + " - " + obj.appId,
+          color: obj.color,
+        });
+        result.label.push(obj.spanName + " - " + obj.appId);
         // result.labelList.push({
         //   id: obj.spanId,
         //   color: obj.color,
@@ -750,15 +760,15 @@ export default {
     // 点击表格行，获取链路详情
     handleRowClick(row) {
       this.rowObj = row;
+      console.log(row);
       this.drawerTitle = row.endPoint;
       // 获取链路信息
       getTraceInfo({ traceId: row.traceId })
         .then((res) => {
           // console.log(res);
           if (res.spans) {
-            this.spanArray = res.spans;
-            this.tableSpan.tableSpanData = this.spanArray;
-            this.graphData = this.buildTree(this.spanArray);
+            this.tableSpan.tableSpanData = res.spans;
+            this.graphData = this.buildTree(res.spans);
             this.processData(this.graphData[0]);
             this.openDrawer();
           } else {
@@ -837,31 +847,36 @@ export default {
     },
 
     // 打开内部的抽屉组件
-    openNodeDrawer() {
+    openNodeDrawer(id) {
       // 请求span详情/基本信息
-      getSpanInfo({ spanId: "span10" })
+      this.spanId = id;
+      getSpanInfo({ spanId: id })
         .then((res) => {
           console.log(res);
           this.spanInfo = res;
           this.spanStatusList = [
             { title: "db_Instance", value: res.dbInstance },
             { title: "db_Type", value: res.dbType },
-            { title: "apm_component", value: "Mysql" },
+            // { title: "apm_component", value: "" },
             { title: "db_statement", value: res.statement },
             { title: "apm_layer", value: res.layer },
             { title: "apm_addr", value: res.addr },
-            { title: "apm_custom_application", value: "未分组" },
+            // { title: "apm_custom_application", value: "" },
           ];
+          this.nodeDrawerVisible = true;
         })
         .catch((err) => {
           console.log(err);
         });
-
-      this.nodeDrawerVisible = true;
     },
 
     // 关闭内部的抽屉组件
     closeNodeDrawer() {
+      this.spanId = "";
+      this.spanInfo = "";
+      this.spanStatusList = [];
+      this.logInfo = [];
+      this.logInfoTime = "";
       this.activeNameNode = "1";
       this.nodeDrawerVisible = false;
     },
@@ -872,26 +887,44 @@ export default {
         // 请求日志详情
         getLogInfo({ logId: this.spanInfo.logId })
           .then((res) => {
-            console.log(res);
-            this.logInfo = res;
+            // console.log(res);
+            this.logInfoTime = res.date;
+            this.logInfo = [
+              {
+                title: "event",
+                value: res.event,
+              },
+              {
+                title: "kind",
+                value: res.kind,
+              },
+              {
+                title: "massage",
+                value: res.message,
+              },
+              {
+                title: "stack",
+                value: res.stack,
+              },
+            ];
           })
           .catch((err) => {
             console.log(err);
           });
       } else if (tab.label == "基本信息") {
         // 请求span详情/基本信息
-        getSpanInfo({ spanId: "span10" })
+        getSpanInfo({ spanId: this.spanId })
           .then((res) => {
             console.log(res);
             this.spanInfo = res;
             this.spanStatusList = [
               { title: "db_Instance", value: res.dbInstance },
               { title: "db_Type", value: res.dbType },
-              { title: "apm_component", value: "Mysql" },
+              { title: "apm_component", value: "" },
               { title: "db_statement", value: res.statement },
               { title: "apm_layer", value: res.layer },
               { title: "apm_addr", value: res.addr },
-              { title: "apm_custom_application", value: "未分组" },
+              { title: "apm_custom_application", value: "" },
             ];
           })
           .catch((err) => {
@@ -957,13 +990,16 @@ export default {
       // 点击事件，点击节点打开抽屉组件
       G6.registerBehavior("behaviorName", {
         getEvents: () => ({ "node:click": "onClick" }),
-        onClick: (evt) => this.openNodeDrawer(),
+        onClick: (evt) => {
+          console.log(evt.item._cfg.id);
+          this.openNodeDrawer(evt.item._cfg.id);
+        },
       });
 
       const container = document.getElementById("container");
       // 获取柱状图的高，让树状图的高度等于柱状图的高度
       const barHeight = document.getElementById("bar").scrollHeight;
-      const width = container.scrollWidth || 340;
+      const width = container.scrollWidth || 300;
       const height = container.scrollHeight || barHeight - 20;
       console.log("bar ==>", document.getElementById("bar").scrollHeight);
       console.log("画布的宽高 ==>", width, height);

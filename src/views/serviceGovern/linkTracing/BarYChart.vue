@@ -199,6 +199,7 @@ export default {
             itemStyle: {
               borderRadius: 10, // 统一设置四个角的圆角大小
               color: (item) => {
+                // console.log(item)
                 let res = this.labelList.filter(
                   (elem) => item.name == elem.label
                 );
