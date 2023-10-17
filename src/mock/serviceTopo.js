@@ -1,12 +1,13 @@
 export const tableData = [
   {
     "serverName": "shop_gateway",
+    "serverSystem": "eoitek-shoping",
     "serverSystemGroup": "未分组",
     "requestNum": 130,
     "errorRate": 23.07,
     "responseTime": 53,
 
-    "instanceNum": "2",
+    "instanceNum": "1",
     "apdex": "0.34",
     "avgThroughput": 200,
     "p75ResponseTime": 20
@@ -19,7 +20,7 @@ export const tableData = [
     "errorRate": 23.07,
     "responseTime": 53,
 
-    "instanceNum": "2",
+    "instanceNum": "1",
     "apdex": "0.34",
     "avgThroughput": 200,
     "p75ResponseTime": 20
@@ -32,7 +33,7 @@ export const tableData = [
     "errorRate": 23.07,
     "responseTime": 53,
 
-    "instanceNum": "2",
+    "instanceNum": "1",
     "apdex": "0.34",
     "avgThroughput": 200,
     "p75ResponseTime": 20
@@ -44,8 +45,8 @@ export const tableData = [
     "requestNum": 130,
     "errorRate": 23.07,
     "responseTime": 53,
-    
-    "instanceNum": "2",
+
+    "instanceNum": "1",
     "apdex": "0.34",
     "avgThroughput": 200,
     "p75ResponseTime": 20
@@ -58,7 +59,7 @@ export const tableData = [
     "errorRate": 23.07,
     "responseTime": 53,
 
-    "instanceNum": "2",
+    "instanceNum": "1",
     "apdex": "0.34",
     "avgThroughput": 200,
     "p75ResponseTime": 20
@@ -71,7 +72,7 @@ export const tableData = [
     "errorRate": 23.07,
     "responseTime": 53,
 
-    "instanceNum": "2",
+    "instanceNum": "1",
     "apdex": "0.34",
     "avgThroughput": 200,
     "p75ResponseTime": 20
@@ -84,7 +85,7 @@ export const tableData = [
     "errorRate": 23.07,
     "responseTime": 53,
 
-    "instanceNum": "2",
+    "instanceNum": "1",
     "apdex": "0.34",
     "avgThroughput": 200,
     "p75ResponseTime": 20
@@ -97,7 +98,7 @@ export const tableData = [
     "errorRate": 23.07,
     "responseTime": 53,
 
-    "instanceNum": "2",
+    "instanceNum": "1",
     "apdex": "0.34",
     "avgThroughput": 200,
     "p75ResponseTime": 20
@@ -110,7 +111,7 @@ export const tableData = [
     "errorRate": 23.07,
     "responseTime": 53,
 
-    "instanceNum": "2",
+    "instanceNum": "1",
     "apdex": "0.34",
     "avgThroughput": 200,
     "p75ResponseTime": 20
@@ -123,7 +124,7 @@ export const tableData = [
     "errorRate": 23.07,
     "responseTime": 53,
 
-    "instanceNum": "2",
+    "instanceNum": "1",
     "apdex": "0.34",
     "avgThroughput": 200,
     "p75ResponseTime": 20
@@ -136,7 +137,7 @@ export const tableData = [
     "errorRate": 23.07,
     "responseTime": 53,
 
-    "instanceNum": "2",
+    "instanceNum": "1",
     "apdex": "0.34",
     "avgThroughput": 200,
     "p75ResponseTime": 20
@@ -148,8 +149,8 @@ export const tableData = [
     "requestNum": 130,
     "errorRate": 23.07,
     "responseTime": 53,
-    
-    "instanceNum": "2",
+
+    "instanceNum": "1",
     "apdex": "0.34",
     "avgThroughput": 200,
     "p75ResponseTime": 20

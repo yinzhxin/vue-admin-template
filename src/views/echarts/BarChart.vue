@@ -4,7 +4,7 @@
 
 <script>
 import * as echarts from "echarts";
-import resize from "@/views/echarts/mixins/resize";
+import resize from "@/views/echarts/mixins/resize.js";
 
 export default {
   name: "BarChart",
@@ -44,10 +44,45 @@ export default {
       },
     },
 
+    // 主题颜色
     color: {
       type: Array,
       default: () => {
         return [];
+      },
+    },
+
+    // y轴的刻度标签，默认只显示数值
+    yAxisFormatter: {
+      type: String,
+      default: "{value}",
+    },
+
+    // 柱宽
+    barWidth: {
+      type: String,
+      default: "",
+    },
+
+    // 让刻度线与标签对齐
+    alignWithLabel: {
+      type: Boolean,
+      default: false,
+    },
+
+    interval: {
+      type: Object,
+      default: () => {
+        return {};
+      },
+    },
+
+    grid: {
+      type: Object,
+      default: () => {
+        return {
+          show: false,
+        };
       },
     },
   },
@@ -85,50 +120,62 @@ export default {
     initChart() {
       this.chart = echarts.init(this.$el);
 
+      // 添加属性
+      const chartDeal = this.chartData.map((i) => {
+        return {
+          ...i,
+          // 图表类型
+          type: "bar",
+          // 柱宽
+          barWidth: this.barWidth,
+        };
+      });
+
       const option = {
         title: {
           text: this.title,
         },
+
+        grid: this.grid,
+
+        // 提示框组件
         tooltip: {
-          trigger: "axis",
+          trigger: "axis", // 触发类型，表示以坐标轴触发显示提示框
           axisPointer: {
-            type: "shadow",
+            type: "shadow", // 坐标轴指示器类型，表示以阴影形式显示指示器
           },
         },
-        grid: {
-          left: "3%",
-          right: "4%",
-          bottom: "3%",
-          containLabel: true,
-        },
+
+        // x轴
         xAxis: [
           {
-            type: "category",
+            type: "category", // x轴类型为类目轴
             data: this.xAxisData,
             axisTick: {
-              alignWithLabel: true,
+              alignWithLabel: this.alignWithLabel, // 让刻度线与标签对齐
             },
-            axisLabel: {
-              interval: (index, value) => {
-                if (index == 2 || index == 7 || index == 12) return true;
-              },
-            },
+            axisLabel: this.interval,
           },
         ],
+
+        // y轴
         yAxis: [
           {
             type: "value",
+            axisLabel: {
+              formatter: this.yAxisFormatter,
+            },
           },
         ],
-        series: [
-          {
-            name: this.title,
-            type: "bar",
-            barWidth: "60%",
-            data: this.chartData,
-            color: this.color,
-          },
-        ],
+
+        // 数据
+        series: chartDeal,
+
+        // 主题颜色
+        color: this.color,
+
+        // 添加空隙，或者使用 barCategoryGap: '20%'
+        barGap: "0",
       };
 
       this.chart.setOption(option);

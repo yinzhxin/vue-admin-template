@@ -42,8 +42,8 @@
     </el-row>
 
     <el-row :gutter="20">
-      <el-col :span="7" style="background-color: #fff; margin: 0 10px">
-        <div style="display: flex; width: 33.33%">
+      <el-col :span="8" style="">
+        <div style="display: flex; background-color: #fff">
           <div style="background-color: #fff">
             <img
               src="/topo_images/cube.svg"
@@ -68,8 +68,8 @@
         </div>
       </el-col>
 
-      <el-col :span="7" style="background-color: #fff; margin: 0 10px">
-        <div style="display: flex; width: 33.33%">
+      <el-col :span="8" style="">
+        <div style="display: flex; background-color: #fff">
           <div style="background-color: #fff">
             <img
               src="/topo_images/cube.svg"
@@ -94,8 +94,8 @@
         </div>
       </el-col>
 
-      <el-col :span="7" style="background-color: #fff; margin: 0 10px">
-        <div style="display: flex; width: 33.33%">
+      <el-col :span="8" style="">
+        <div style="display: flex; background-color: #fff">
           <div style="background-color: #fff">
             <img
               src="/topo_images/cube.svg"
@@ -123,7 +123,7 @@
 
     <h2>错误率排名</h2>
 
-    <el-row :gutter="20">
+    <el-row :gutter="20" style="margin-bottom: 0">
       <el-col :span="8">
         <el-card class="box-card" shadow="hover">
           <div slot="header">
@@ -147,10 +147,11 @@
 
               <div style="margin: 0 30px 0 0">
                 <el-progress
+                  :show-text="false"
                   type="circle"
                   :percentage="50"
                   status="exception"
-                  width="60"
+                  :width="60"
                 ></el-progress>
               </div>
             </li>
@@ -179,10 +180,11 @@
 
               <div style="margin: 0 30px 0 0">
                 <el-progress
+                  :show-text="false"
                   type="circle"
                   :percentage="50"
                   status="exception"
-                  width="60"
+                  :width="60"
                 ></el-progress>
               </div>
             </li>
@@ -193,7 +195,9 @@
       <el-col :span="8">
         <el-card class="box-card" shadow="hover">
           <div slot="header">
-            <el-tag type="warning" style="font-size: 16px; margin-right: 10px"> Top5 </el-tag>
+            <el-tag type="warning" style="font-size: 16px; margin-right: 10px">
+              Top5
+            </el-tag>
             <span style="font-size: 16px; font-weight: bold">实例</span>
           </div>
           <ul>
@@ -211,10 +215,11 @@
 
               <div style="margin: 0 30px 0 0">
                 <el-progress
+                  :show-text="false"
                   type="circle"
                   :percentage="50"
                   status="exception"
-                  width="60"
+                  :width="60"
                 ></el-progress>
               </div>
             </li>
@@ -245,7 +250,10 @@
       <el-col :span="8">
         <el-card class="box-card" shadow="hover">
           <div slot="header">
-            <strong>服务</strong>
+            <el-tag type="success" style="font-size: 16px; margin-right: 10px">
+              Top5
+            </el-tag>
+            <span style="font-size: 16px; font-weight: bold">服务</span>
           </div>
           <ul>
             <li v-for="item in data3" :key="item.name">
@@ -262,10 +270,11 @@
 
               <div style="margin: 0 30px 0 0">
                 <el-progress
+                  :show-text="false"
                   type="circle"
                   :percentage="50"
                   status="exception"
-                  width="60"
+                  :width="60"
                 ></el-progress>
               </div>
             </li>
@@ -276,7 +285,8 @@
       <el-col :span="8">
         <el-card class="box-card" shadow="hover">
           <div slot="header">
-            <strong>Endpoint</strong>
+            <el-tag style="font-size: 16px; margin-right: 10px"> Top5 </el-tag>
+            <span style="font-size: 16px; font-weight: bold">Endpoint</span>
           </div>
           <ul>
             <li v-for="item in data3" :key="item.name">
@@ -293,10 +303,11 @@
 
               <div style="margin: 0 30px 0 0">
                 <el-progress
+                  :show-text="false"
                   type="circle"
                   :percentage="50"
                   status="exception"
-                  width="60"
+                  :width="60"
                 ></el-progress>
               </div>
             </li>
@@ -307,7 +318,10 @@
       <el-col :span="8">
         <el-card class="box-card" shadow="hover">
           <div slot="header">
-            <strong>实例</strong>
+            <el-tag type="warning" style="font-size: 16px; margin-right: 10px">
+              Top5
+            </el-tag>
+            <span style="font-size: 16px; font-weight: bold">实例</span>
           </div>
           <ul>
             <li v-for="item in data3" :key="item.name">
@@ -324,10 +338,11 @@
 
               <div style="margin: 0 30px 0 0">
                 <el-progress
+                  :show-text="false"
                   type="circle"
                   :percentage="50"
                   status="exception"
-                  width="60"
+                  :width="60"
                 ></el-progress>
               </div>
             </li>
@@ -384,20 +399,20 @@ export default {
 
       // 所属应用
       appOption: [
-        { label: "app1", value: "app1" },
-        { label: "app2", value: "app2" },
-        { label: "app3", value: "app3" },
-        { label: "app4", value: "app4" },
-        { label: "app5", value: "app5" },
+        // { label: "app1", value: "app1" },
+        // { label: "app2", value: "app2" },
+        // { label: "app3", value: "app3" },
+        // { label: "app4", value: "app4" },
+        // { label: "app5", value: "app5" },
       ],
 
       // 所属服务
       serviceOption: [
-        { label: "service1", value: "service1" },
-        { label: "service2", value: "service2" },
-        { label: "service3", value: "service3" },
-        { label: "service4", value: "service4" },
-        { label: "service5", value: "service5" },
+        // { label: "service1", value: "service1" },
+        // { label: "service2", value: "service2" },
+        // { label: "service3", value: "service3" },
+        // { label: "service4", value: "service4" },
+        // { label: "service5", value: "service5" },
       ],
       title: "SQL 执行数",
       title2: "SQL 执行错误数",

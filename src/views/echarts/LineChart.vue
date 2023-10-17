@@ -61,9 +61,21 @@ export default {
     },
 
     // 是否显示折线图结点的数据，默认显示
+    isBoundaryGap: {
+      type: Boolean,
+      default: true,
+    },
+
+    // X轴的两边是否留白留白，默认留白
     isShowNode: {
       type: Boolean,
       default: true,
+    },
+
+    // y轴的刻度标签，默认只显示数值
+    yAxisFormatter: {
+      type: String,
+      default: "{value}",
     },
 
     // 折线图图例，默认不显示
@@ -78,6 +90,16 @@ export default {
 
     // 折线图在容器内的方位调整，默认不调整
     grid: {
+      type: Object,
+      default: () => {
+        return {
+          show: false,
+        };
+      },
+    },
+
+    // 折线图的工具栏目，默认不用
+    toolbox: {
       type: Object,
       default: () => {
         return {
@@ -128,7 +150,7 @@ export default {
           // 图表类型
           type: "line",
           // 阴影显示
-          areaStyle: { normal: { opacity } },
+          areaStyle: { opacity },
           // 显示节点数据
           label: {
             show: this.isShowNode,
@@ -145,22 +167,32 @@ export default {
 
         tooltip: {
           trigger: "axis",
+          axisPointer: {
+            type: "line",
+          },
         },
 
         legend: this.legend,
 
         grid: this.grid,
 
+        toolbox: this.toolbox,
+
         xAxis: {
           type: "category", // x轴类型为类目轴
-          boundaryGap: true, // 坐标轴两边留白
           data: this.xAxisData,
+          boundaryGap: true, // 坐标轴两边留白
         },
 
+        // y轴
         yAxis: {
-          type: "value", // x轴类型为类目轴
+          type: "value", // y轴类型为数值轴，适用于连续数据
+          axisLabel: {
+            formatter: this.yAxisFormatter,
+          },
         },
 
+        // 数据
         series: chartDeal,
 
         // 主题颜色

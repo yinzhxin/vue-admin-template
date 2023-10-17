@@ -1,6 +1,97 @@
 import request from '@/utils/request'
 
 /**
+ * 查询链路分页列表
+ * @returns
+ */
+export function getTraceList(params) {
+  return request({
+    url: '/trace/queryTraceList',
+    method: 'get',
+    params: {
+      traceId: params.traceId,
+      status: params.status,
+      appName: params.appName,
+      appSystemGroup: params.appSystemGroup,
+    }
+  })
+}
+
+/**
+ * 链路详情
+ * @returns
+ */
+export function getTraceInfo(params) {
+  return request({
+    url: '/trace/getTraceInfoById',
+    method: 'get',
+    params: {
+      traceId: params.traceId,
+    }
+  })
+}
+
+/**
+ * 日志详情
+ * @returns
+ */
+export function getLogInfo(params) {
+  return request({
+    url: '/log/getLogInfoById',
+    method: 'get',
+    params: {
+      logId: params.logId,
+    }
+  })
+}
+
+/**
+ * span详情
+ * @returns
+ */
+export function getSpanInfo(params) {
+  return request({
+    url: '/span/getSpanInfoById',
+    method: 'get',
+    params: {
+      spanId: params.spanId,
+    }
+  })
+}
+
+
+/**
+ * 获取所有系统
+ * @returns
+ */
+export function getAllSystem() {
+  return request({
+    url: '/system/getAllSystem',
+    method: 'get',
+  })
+}
+
+/**
+ * 获取某个系统下所有服务
+ * @returns
+ */
+export function getAllService(params) {
+  return request({
+    url: '/system/findAllServiceBySystem',
+    method: 'get',
+    params: {
+      systemName: params.systemName,
+    }
+  })
+}
+
+
+
+
+
+
+
+/**
  * 获取全量项目名称
  * @returns
  */
@@ -26,45 +117,9 @@ export function getInstanceList() {
  * 获取全量应用名称
  * @returns
  */
-export function getAppList2() {
+export function getAppList() {
   return request({
     url: '/app/list',
     method: 'get',
   })
 }
-
-/**
- * 查询链路分页列表
- * @returns
- */
-export function getTraceList(params) {
-  return request({
-    url: '/trace/list',
-    method: 'get',
-    params: {
-      projectId: params.projectId,
-      traceId: params.traceId,
-      appId: params.appId,
-      instanceId: params.instanceId,
-      status: params.status,
-      spendTime: params.spendTime,
-      pageNum: params.pageNum,
-      pageSize: params.pageSize
-    }
-  })
-}
-
-/**
- * span详情
- * @returns
- */
-export function getSpanInfo2(params) {
-  return request({
-    url: '/span/info',
-    method: 'get',
-    params: {
-      spanId: 'dkfjgh2378ysdjkhb23768ys'
-    }
-  })
-}
-

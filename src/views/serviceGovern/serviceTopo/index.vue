@@ -17,9 +17,9 @@
       </el-form-item>
       <!-- 所属应用 -->
       <el-form-item label="">
-        <el-select v-model="form.app" placeholder="所属应用" multiple clearable>
+        <el-select v-model="form.app" placeholder="所属应用" clearable>
           <el-option
-            v-for="item in appOption"
+            v-for="item in appList"
             :key="item.value"
             :label="item.label"
             :value="item.value"
@@ -29,17 +29,12 @@
       </el-form-item>
       <!-- 所属服务 -->
       <el-form-item label="">
-        <el-select
-          v-model="form.server"
-          placeholder="所属服务"
-          multiple
-          clearable
-        >
+        <el-select v-model="form.server" placeholder="所属服务" clearable>
           <el-option
-            v-for="item in serviceOption"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+            v-for="item in serviceList"
+            :key="item.serverId"
+            :label="item.serverName"
+            :value="item.serverId"
           >
           </el-option>
         </el-select>
@@ -51,6 +46,9 @@
         </el-button>
         <el-button class="clearBtn" @click="handleClear('form')">
           清空
+        </el-button>
+        <el-button type="primary" @click="handleClear('form')">
+          刷新
         </el-button>
       </el-form-item>
     </el-form>
@@ -81,7 +79,7 @@
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :total="table.page.count"
+          :total="table.page.total"
           :current-page="table.page.current"
           :page-size="table.page.size"
           :page-sizes="[10, 20, 30, 40]"
@@ -103,6 +101,11 @@ import Table from "@/views/components/Table";
 export default {
   name: "ServiceTopo",
   components: { Table },
+  computed: {
+    ser() {
+      return this.$store.state.link.serviceOptions;
+    },
+  },
 
   data() {
     return {
@@ -113,22 +116,10 @@ export default {
       },
 
       // 所属应用
-      appOption: [
-        { label: "app1", value: "app1" },
-        { label: "app2", value: "app2" },
-        { label: "app3", value: "app3" },
-        { label: "app4", value: "app4" },
-        { label: "app5", value: "app5" },
-      ],
+      appList: [],
 
       // 所属服务
-      serviceOption: [
-        { label: "service1", value: "service1" },
-        { label: "service2", value: "service2" },
-        { label: "service3", value: "service3" },
-        { label: "service4", value: "service4" },
-        { label: "service5", value: "service5" },
-      ],
+      serviceList: [],
 
       toTotalTopo: "", // 返回总拓扑图右边的选框
       serverIdOption: "", // 返回总拓扑图右边的选框的选项数组
@@ -171,13 +162,21 @@ export default {
         page: {
           current: 1, // 当前页数--handleCurrentChange
           size: 20, // 每页条数--handleSizeChange
-          total: 1, // 总页数
+          total: 12, // 总页数
         },
       },
     };
   },
 
   watch: {
+    ser: {
+      handler: function (newV, oldV) {
+        console.log("serviceOptions 改变了");
+        this.serviceList = newV;
+      },
+      deep: true,
+      immediate: true,
+    },
     // graphData: {
     //   handler: function (newV, oldV) {
     //     console.log("总拓扑图 ==> newV ==>", newV, "oldV ==>", oldV);
@@ -194,6 +193,7 @@ export default {
 
   mounted() {
     this.getTopoGraph();
+    this.serviceList = this.$store.state.link.serviceOptions;
   },
 
   beforeDestroy() {
@@ -256,14 +256,36 @@ export default {
             return newItem;
           });
 
-          // 分组，目前默认一个，是节点对象的serverSystem属性
-          this.combosArray = [
-            {
-              id: "eoitek-shoping", // 唯一的标志符，标识不同分组
-              label: "eoitek-shoping", // 分组的标签
-              collapsed: false, // 默认不折叠
-            },
-          ];
+          // 分组，是节点对象的serverSystem属性
+          this.combosArray = res.nodes.map((item) => {
+            if (item.serverSystem) {
+              const newItem = {};
+              newItem.id = item.serverSystem;
+              newItem.label = item.serverSystem;
+              newItem.collapsed = false;
+              return newItem;
+            } else {
+              return false;
+            }
+          });
+
+          this.combosArray = Array.from(
+            new Set(this.combosArray.filter(Boolean).map(JSON.stringify)),
+            JSON.parse
+          );
+
+          // this.combosArray = [
+          //   {
+          //     id: "eoitek-shoping", // 唯一的标志符，标识不同分组
+          //     label: "eoitek-shoping", // 分组的标签
+          //     collapsed: false, // 默认不折叠
+          //   },
+          //   {
+          //     id: "eoitek-bank", // 唯一的标志符，标识不同分组
+          //     label: "eoitek-bank", // 分组的标签
+          //     collapsed: false, // 默认不折叠
+          //   },
+          // ];
 
           // 初始化服务选项数组
           this.serverIdOption = this.nodesArray.map((item) => {
@@ -274,6 +296,14 @@ export default {
           this.initGraph();
         })
         .catch(() => {});
+    },
+
+    filterByProperty(arr, property) {
+      return arr.filter((item, index, array) => {
+        return !array
+          .slice(index + 1)
+          .some((ele) => ele[property] === item[property]);
+      });
     },
 
     // 搜索
@@ -293,7 +323,10 @@ export default {
         // 表单清空
         this.form = { radio: "topo", app: "", server: "" };
         // 不论现在分组什么状态，一旦清除和刷新就展开分组
-        this.combosArray[0].collapsed = false;
+        // this.combosArray[0].collapsed = false;
+        this.combosArray.forEach((item) => {
+          item.collapsed = false;
+        });
         // 隐藏 返回总拓扑的按钮
         this.isTotalTopo = true;
         // 销毁画布
@@ -379,7 +412,16 @@ export default {
         const resNodes = this.nodesArray.filter((node) =>
           ids.includes(node.id)
         );
-        // console.log("筛选结果: ", resNodes);
+        console.log("筛选结果: ", resNodes);
+
+        let combos = this.combosArray.filter((item) => {
+          return resNodes.find((elem) => {
+            item.collapsed = false;
+            return item.id == elem.comboId;
+          });
+        });
+
+        console.log(combos);
 
         const edgeIds = this.getEdgeIdsByNodeId(nodeId);
         // console.log("节点 " + nodeId + " 相关的边的 ID: ", edgeIds);
@@ -394,7 +436,7 @@ export default {
         this.graphStreamData = {
           nodes: resNodes,
           edges: this.edgesArray,
-          combos: this.combosArray,
+          combos: combos,
         };
         // 初始化图表数据
         this.updateData(this.graphStreamData);
@@ -450,20 +492,23 @@ export default {
     // 返回总拓扑
     handleBack() {
       // 不论现在分组什么状态，一旦返回总拓扑就展开分组
-      this.combosArray[0].collapsed = false;
+      // this.combosArray[0].collapsed = false;
+      this.combosArray.forEach((item) => {
+        item.collapsed = false;
+      });
       // 隐藏按钮
       this.isTotalTopo = !this.isTotalTopo;
       // 可以不写
       this.graphStreamData = "";
       // 重新渲染
-      this.updateData(this.graphData);
-      this.renderGraph();
+      // this.updateData(this.graphData);
+      // this.renderGraph();
 
       // 或者
-      // this.graph.destroy();
-      // this.graph = null;
-      // this.graphData = "";
-      // this.initGraph();
+      this.graph.destroy();
+      this.graph = null;
+      this.graphData = "";
+      this.initGraph();
     },
 
     // 服务名称选择器
@@ -988,21 +1033,22 @@ export default {
         // 布局算法配置对象
         layout: {
           type: "comboCombined",
-          spacing: 200,
+          // type: "comboForce", // comboForce力导向布局，用于对包含组合的图进行布局，默认为random布局
+          spacing: 100,
           outerLayout: new G6.Layout["forceAtlas2"]({
             kr: 30,
           }),
-          linkDistance: 600, // 布局时边的距离长度，指定两个连接的节点之间的期望距离。值越大，节点之间的距离越远。
+          sortByCombo: true,
+          linkDistance: 750, // 布局时边的距离长度，指定两个连接的节点之间的期望距离。值越大，节点之间的距离越远。
           nodeStrength: 500, // 节点的力量，用于决定节点受到的引力和斥力的强度。值越大，节点之间相互排斥的力量越强。
           center: [300, 300], // 可选，默认为图的中心
-          // type: "comboForce", // comboForce力导向布局，用于对包含组合的图进行布局，默认为random布局
-          // preventOverlap: true, // 防止节点重叠
-          // preventNodeOverlap: true,
+          preventOverlap: true, // 防止节点重叠
+          preventNodeOverlap: true,
           // collideStrength: 1,
-          // nodeSize: 100, // 节点大小，用于算法中防止节点重叠时的碰撞检测。由于已经在上一节的元素配置中设置了每个节点的 size 属性，则不需要在此设置 nodeSize
+          nodeSize: 200, // 节点大小，用于算法中防止节点重叠时的碰撞检测。由于已经在上一节的元素配置中设置了每个节点的 size 属性，则不需要在此设置 nodeSize
           // nodeSpacing: (d) => 20, // 指定节点之间的最小空间距离为 8
           // linkDistance: 450, // 布局时边的距离长度，指定两个连接的节点之间的期望距离。值越大，节点之间的距离越远。
-          // nodeStrength: 200, // 节点的力量，用于决定节点受到的引力和斥力的强度。值越大，节点之间相互排斥的力量越强。
+          nodeStrength: 300, // 节点的力量，用于决定节点受到的引力和斥力的强度。值越大，节点之间相互排斥的力量越强。
           // edgeStrength: 1, // 边的力量，用于决定边的长度对布局的影响程度。值越小，边在布局中的长度越紧凑。
           // curveOffset: -100, // 设置曲线偏移量为负值。在布局中，边的形状可以是直线或曲线，通过调整此偏移量可以改变曲线的弯曲程度。
         },
@@ -1244,7 +1290,7 @@ export default {
   background: #fff;
   padding: 20px;
   .el-pagination {
-    margin-top: 10px;
+    margin-top: 30px;
   }
 }
 .back-div {

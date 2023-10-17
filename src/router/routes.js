@@ -282,7 +282,7 @@ export default [
       // 批量运维
       {
         path: 'batchOperationMaintenance',
-        name: 'PrometheusResource',
+        name: 'BatchOperationMaintenance',
         component: () => import('@/views/operationManagement/batchOperationMaintenance/index'),
         meta: { title: '批量运维' }
       },
@@ -315,7 +315,7 @@ export default [
   // 系统管理
   {
     path: '/systemManagement',
-    name: 'FusionScene',
+    name: 'SystemManagement',
     component: Layout,
     redirect: '/systemManagement/operationLog',
     meta: { title: '系统管理', icon: 'el-icon-setting' },

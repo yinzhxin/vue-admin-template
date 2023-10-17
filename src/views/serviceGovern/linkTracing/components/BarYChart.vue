@@ -110,7 +110,7 @@ export default {
         },
 
         grid: {
-          left: "-14%",
+          left: "-30%",
           right: "5%",
           top: 0, //拉伸距离顶部高度
           bottom: 10, //拉伸距离底部高度
@@ -199,6 +199,7 @@ export default {
             itemStyle: {
               borderRadius: 10, // 统一设置四个角的圆角大小
               color: (item) => {
+                // console.log(item)
                 let res = this.labelList.filter(
                   (elem) => item.name == elem.label
                 );

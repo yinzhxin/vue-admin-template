@@ -37,7 +37,9 @@
           <BarChart
             :width="'100%'"
             :height="'300px'"
-            :chart-data="chartData2"
+            :chart-data="chartData2.data"
+            :color="chartData2.color"
+            :xAxisData="chartData2.xAxisData"
             :title="`不同来源事件数量走势`"
           />
         </div>
@@ -125,7 +127,7 @@
 </template>
 <script>
 import RadiusPieChart from "@/views/echarts/RadiusPieChart.vue";
-import BarChart from "@/views/echarts/BarChart_application.vue";
+import BarChart from "@/views/echarts/BarChart.vue";
 import Table from "@/views/components/Table.vue";
 import { Divider } from "element-ui";
 
@@ -175,23 +177,27 @@ export default {
       },
 
       // 柱状图数据
-      chartData2: [
-        {
-          name: "应用扩缩容",
-          data: [1, 2, 2, 3, 2],
-        },
-        {
-          name: "扩缩容达到上下线",
-          data: [1, 1, 1, 1, 1],
-        },
-      ],
+      chartData2: {
+        data: [
+          {
+            name: "应用扩缩容",
+            data: [1, 2, 2, 3, 2],
+          },
+          {
+            name: "扩缩容达到上下线",
+            data: [1, 1, 1, 1, 1],
+          },
+        ],
+        color: ["#5087ED", "#66BBC3"],
+        xAxisData: ["3月4日", "3月5日", "3月6日", "3月7日", "3月8日"],
+      },
 
       // 事件总览数据
       eventData: [
         { title: "应用变更失败", num: 0, times1: 0, times2: 0 },
         { title: "应用扩缩容", num: 10, times1: 10, times2: 10 },
         { title: "扩缩容达到上下限", num: 20, times1: 0, times2: 0 },
-        { title: "Pod启动失败", num:30, times1: 0, times2: 0 },
+        { title: "Pod启动失败", num: 30, times1: 0, times2: 0 },
         { title: "镜像拉取失败", num: 40, times1: 0, times2: 0 },
         { title: "Pod被驱逐", num: 0, times1: 0, times2: 0 },
         { title: "K8S集群资源不足", num: 0, times1: 0, times2: 0 },
