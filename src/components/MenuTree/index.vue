@@ -1,5 +1,9 @@
 <template>
-  <el-menu :default-active="defaultActive" class="el-menu-vertical-demo">
+  <el-menu
+    style="height: 100%; overflow-y: auto"
+    :default-active="defaultActive"
+    class="el-menu-vertical-demo"
+  >
     <el-submenu v-for="item in treeData" :key="item.id" :index="item.id">
       <template slot="title">
         <i :class="item.icon"></i>

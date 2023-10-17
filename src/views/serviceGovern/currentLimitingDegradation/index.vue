@@ -428,10 +428,13 @@ export default {
   height: 100%;
   .left {
     flex: 1;
+    height: 100%;
+    overflow-y: auto;
   }
   .right {
     flex: 4;
     height: 100%;
+    overflow-y: auto;
   }
 }
 .el-row {
