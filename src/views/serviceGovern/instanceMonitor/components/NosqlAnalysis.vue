@@ -7,7 +7,7 @@
         :chart-data="chartData1.data"
         :xAxisData="chartData1.xAxisData"
         :color="chartData1.color"
-        :title="`SQL调用统计/每天`"
+        :title="`调用统计/每天`"
       />
     </div>
 
@@ -69,20 +69,14 @@ export default {
       chartData1: {
         data: [
           {
-            name: "SQL调用统计/每天",
+            name: "调用统计/每天",
             type: "bar",
-            data: [
-              750, 750, 700, 700, 720, 680, 700, 700, 700, 680, 720, 700, 700,
-              700, 200,
-            ],
+            data: [0, 0, 0, 0, 0, 0, 70, 0, 0, 0, 0, 0, 0, 0, 0],
           },
           {
-            name: "SQL调用统计率/每天",
+            name: "调用统计率/每天",
             type: "line",
-            data: [
-              1.3, 1.3, 1.25, 1.25, 1.25, 1.3, 1.25, 1.3, 1.25, 1.5, 1.3, 1.25,
-              1.3, 1.3, 1.5,
-            ],
+            data: [0, 0, 0, 0, 0, 0, 0.6, 0, 0, 0, 0, 0, 0, 0, 0],
             yAxisIndex: 1, //索引从0开始
           },
         ],
@@ -110,8 +104,22 @@ export default {
         tableData: [
           {
             app: "Provider-demo-group-1",
-            type: "MySQL",
-            sql: "select * from user",
+            type: "Redis",
+            command: "DEL",
+            spendTime: "1.4",
+            times: "19.2",
+          },
+          {
+            app: "Provider-demo-group-1",
+            type: "Redis",
+            command: "RPUSH",
+            spendTime: "1.4",
+            times: "19.2",
+          },
+          {
+            app: "Provider-demo-group-1",
+            type: "Redis",
+            command: "EVAL",
             spendTime: "1.4",
             times: "19.2",
           },
@@ -124,12 +132,12 @@ export default {
             render: (h, data) => {
               return (
                 <div>
-                  <el-tag>{data.row.type}</el-tag>
+                  <el-tag type="danger">{data.row.type}</el-tag>
                 </div>
               );
             },
           },
-          { label: "SQL语句", index: "sql", width: "200px" },
+          { label: "操作命令", index: "command", width: "180px" },
           {
             label: "平均耗时",
             index: "spendTime",

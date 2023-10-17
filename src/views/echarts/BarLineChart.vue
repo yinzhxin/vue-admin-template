@@ -7,7 +7,7 @@ import * as echarts from "echarts";
 import resize from "./mixins/resize";
 
 export default {
-  name: "BarChart",
+  name: "BarLineChart",
   mixins: [resize],
   props: {
     className: {
@@ -73,8 +73,7 @@ export default {
     interval: {
       type: Object,
       default: () => {
-        return {
-        };
+        return {};
       },
     },
 
@@ -122,15 +121,15 @@ export default {
       this.chart = echarts.init(this.$el);
 
       // 添加属性
-      const chartDeal = this.chartData.map((i) => {
-        return {
-          ...i,
-          // 图表类型
-          type: "bar",
-          // 柱宽
-          barWidth: this.barWidth,
-        };
-      });
+      // const chartDeal = this.chartData.map((i) => {
+      //   return {
+      //     ...i,
+      //     // 图表类型
+      //     type: "bar",
+      //     // 柱宽
+      //     barWidth: this.barWidth,
+      //   };
+      // });
 
       const option = {
         title: {
@@ -143,7 +142,7 @@ export default {
         tooltip: {
           trigger: "axis", // 触发类型，表示以坐标轴触发显示提示框
           axisPointer: {
-            type: "shadow", // 坐标轴指示器类型，表示以阴影形式显示指示器
+            type: "line", // 坐标轴指示器类型，表示以阴影形式显示指示器
           },
         },
 
@@ -155,7 +154,10 @@ export default {
             axisTick: {
               alignWithLabel: this.alignWithLabel, // 让刻度线与标签对齐
             },
-            axisLabel: this.interval,
+            axisLabel: {
+              interval: 0,
+              rotate: 30,
+            },
           },
         ],
 
@@ -163,14 +165,22 @@ export default {
         yAxis: [
           {
             type: "value",
-            axisLabel: {
-              formatter: this.yAxisFormatter,
+            name: this.chartData[0].name,
+            splitLine: {
+              show: false, //显示分割线
+            },
+          },
+          {
+            type: "value",
+            name: this.chartData[1].name,
+            splitLine: {
+              show: true,
             },
           },
         ],
 
         // 数据
-        series: chartDeal,
+        series: this.chartData,
 
         // 主题颜色
         color: this.color,
