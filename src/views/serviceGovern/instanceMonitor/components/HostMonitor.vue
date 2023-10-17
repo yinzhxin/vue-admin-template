@@ -23,7 +23,7 @@
         :xAxisData="chartData2.xAxisData"
         :yAxisFormatter="chartData2.yAxisFormatter"
         :color="color"
-        :legend="legend"
+        :legend="chartData2.legend"
         :isAreaStyle="false"
       />
     </div>
@@ -123,6 +123,9 @@ export default {
         ],
         xAxisData: ["09:54", "09:55", "09:56", "09:57"],
         yAxisFormatter: "{value} G",
+        legend: {
+          top: 20,
+        },
       },
 
       title3: "Disk/每分钟",

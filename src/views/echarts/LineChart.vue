@@ -180,10 +180,11 @@ export default {
 
         xAxis: {
           type: "category", // x轴类型为类目轴
-          boundaryGap: true, // 坐标轴两边留白
           data: this.xAxisData,
+          boundaryGap: true, // 坐标轴两边留白
         },
 
+        // y轴
         yAxis: {
           type: "value", // y轴类型为数值轴，适用于连续数据
           axisLabel: {
@@ -191,6 +192,7 @@ export default {
           },
         },
 
+        // 数据
         series: chartDeal,
 
         // 主题颜色

@@ -33,7 +33,7 @@
         :xAxisData="chartData3.xAxisData"
         :yAxisFormatter="chartData3.yAxisFormatter"
         :color="color"
-        :legend="legend"
+        :legend="chartData3.legend"
         :isAreaStyle="false"
       />
       <LineChart
@@ -57,7 +57,7 @@
         :xAxisData="chartData5.xAxisData"
         :yAxisFormatter="chartData5.yAxisFormatter"
         :color="color"
-        :legend="legend"
+        :legend="chartData5.legend"
         :isAreaStyle="false"
       />
       <LineChart
@@ -68,7 +68,7 @@
         :xAxisData="chartData6.xAxisData"
         :yAxisFormatter="chartData6.yAxisFormatter"
         :color="color"
-        :legend="legend"
+        :legend="chartData6.legend"
         :isAreaStyle="false"
       />
     </div>
@@ -170,6 +170,9 @@ export default {
         ],
         xAxisData: ["09:54", "09:55", "09:56", "09:57"],
         yAxisFormatter: "{value} M",
+        legend: {
+          top: 20,
+        },
       },
 
       title4: "元空间详情/每分钟",
@@ -201,6 +204,9 @@ export default {
         ],
         xAxisData: ["09:54", "09:55", "09:56", "09:57"],
         yAxisFormatter: "{value} M",
+        legend: {
+          top: 20,
+        },
       },
 
       title6: "直接缓冲区/每分钟",
@@ -217,6 +223,9 @@ export default {
         ],
         yAxisFormatter: "{value} K",
         xAxisData: ["09:54", "09:55", "09:56", "09:57"],
+        legend: {
+          top: 20,
+        },
       },
 
       title7: "JVM线程数/每分钟",

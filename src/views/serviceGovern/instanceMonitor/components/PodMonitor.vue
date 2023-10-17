@@ -35,7 +35,7 @@
         :chartData="chartData3.data"
         :xAxisData="chartData3.xAxisData"
         :color="color"
-        :legend="legend"
+        :legend="chartData3.legend"
         :isAreaStyle="false"
       />
 
@@ -46,7 +46,8 @@
         :chartData="chartData4.data"
         :xAxisData="chartData4.xAxisData"
         :color="color"
-        :legend="legend"
+        :legend="chartData4.legend"
+        :grid="chartData4.grid"
         :isAreaStyle="false"
       />
     </div>
@@ -122,6 +123,9 @@ export default {
           },
         ],
         xAxisData: ["09:54", "09:55", "09:56", "09:57"],
+        legend: {
+          top: 20,
+        },
       },
 
       title4: "网络数据包 (个)",
@@ -149,6 +153,12 @@ export default {
           },
         ],
         xAxisData: ["09:54", "09:55", "09:56", "09:57"],
+        legend: {
+          top: 20,
+        },
+        grid: {
+          top: "35%",
+        },
       },
     };
   },

@@ -283,7 +283,7 @@ export default {
           position: "center",
           fontSize: "20px",
           formatter(params) {
-            return `200 个`;
+            return `25 个`;
           },
         },
       },

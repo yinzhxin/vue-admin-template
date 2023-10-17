@@ -77,11 +77,8 @@ export default {
       this.systemOptions = res;
     });
     if (this.form.system) {
-      getAllService({ system: this.form.system }).then((res) => {
+      getAllService({ systemName: this.form.system }).then((res) => {
         this.serviceOptions = res;
-        // this.serviceOptions = [
-        //   { serviceId: "test-init", serviceName: "test-init" },
-        // ];
         this.setServiceOptions(this.serviceOptions);
       });
     }
@@ -115,24 +112,10 @@ export default {
     },
     // 选择器
     handleChange(val) {
-      getAllSystem({ system: val }).then((res) => {
-        getAllService({ system: val }).then((res) => {
+      this.serviceOptions = [];
+      getAllSystem().then((result) => {
+        getAllService({ systemName: val }).then((res) => {
           this.serviceOptions = res;
-          
-          // if (val == "eoitek-shoping") {
-          //   this.serviceOptions = [
-          //     { serviceId: "eoitek-shoping", serviceName: "eoitek-shoping" },
-          //   ];
-          // } else if (val == "eoitek-bank") {
-          //   this.serviceOptions = [
-          //     { serviceId: "eoitek-bank", serviceName: "eoitek-bank" },
-          //   ];
-          // } else {
-          //   this.serviceOptions = [
-          //     { serviceId: "eoitek-dd", serviceName: "eoitek-dd" },
-          //   ];
-          // }
-
           this.setServiceOptions(this.serviceOptions);
         });
       });

@@ -37,9 +37,9 @@
             <el-select v-model="form.serverId" placeholder="所属服务" clearable>
               <el-option
                 v-for="item in serviceList"
-                :key="item.serviceId"
-                :label="item.serviceName"
-                :value="item.serviceId"
+                :key="item.serverId"
+                :label="item.serverName"
+                :value="item.serverId"
               />
             </el-select>
           </el-form-item>
@@ -47,7 +47,7 @@
           <el-form-item label="">
             <el-input
               v-model="form.Endpoint"
-              placeholder="请输入Endpoint 名称"
+              placeholder="请输入 Endpoint 名称"
               clearable
             />
             <!-- <el-select
@@ -219,7 +219,7 @@
           <div class="drawer-content">
             <!-- 树状图表 -->
             <div style="width: 45%; height: 100%">
-              <span style="font-size: 12px; color: gray">接口名称</span>
+              <span style="font-size: 12px; color: gray" v-if="label[0]">接口名称</span>
 
               <div id="container" ref="container" />
             </div>
@@ -310,7 +310,16 @@
           <el-card style="margin: 20px; margin-left: 10px">
             <div slot="header">
               执行情况
-              <el-tag type="success" size="small">status</el-tag>
+              <el-tag
+                style="font-size: 18px"
+                type="success"
+                v-if="spanInfo.status == 1"
+              >
+                成功
+              </el-tag>
+              <el-tag style="font-size: 18px" type="danger" v-else>
+                失败
+              </el-tag>
             </div>
             <div
               v-for="(o, index) in spanStatusList"
@@ -369,7 +378,7 @@
 import G6 from "@antv/g6";
 import Clipboard from "clipboard";
 import Table from "@/views/components/Table.vue";
-import BarYChart from "./BarYChart";
+import BarYChart from "./components/BarYChart";
 import { treeData } from "@/mock/linkTracing";
 import {
   getTraceList,
@@ -626,10 +635,10 @@ export default {
     // 链路列表
     queryList() {
       getTraceList({
-        traceId: "",
-        status: "",
-        appName: "",
-        appSystemGroup: "",
+        traceId: this.form.traceId,
+        status: this.form.status,
+        appName: this.form.serverId,
+        appSystemGroup: this.form.appId,
         // [traceId] 链路id，可选筛选条件
         // [appName] 所属服务，可选筛选条件
         // [status] 状态，可选条件 1成功 0失败
@@ -782,17 +791,17 @@ export default {
     },
 
     handleStatus(val) {
-      if (val == "1") {
-        this.table.tableData = this.linkList.filter((item) => {
-          return item.status == 1;
-        });
-      } else if (val == "0") {
-        this.table.tableData = this.linkList.filter((item) => {
-          return item.status == 0;
-        });
-      } else {
-        this.table.tableData = this.linkList;
-      }
+      // if (val == "1") {
+      //   this.table.tableData = this.linkList.filter((item) => {
+      //     return item.status == 1;
+      //   });
+      // } else if (val == "0") {
+      //   this.table.tableData = this.linkList.filter((item) => {
+      //     return item.status == 0;
+      //   });
+      // } else {
+      //   this.table.tableData = this.linkList;
+      // }
     },
 
     // 打开抽屉
@@ -920,11 +929,11 @@ export default {
             this.spanStatusList = [
               { title: "db_Instance", value: res.dbInstance },
               { title: "db_Type", value: res.dbType },
-              { title: "apm_component", value: "" },
+              // { title: "apm_component", value: "" },
               { title: "db_statement", value: res.statement },
               { title: "apm_layer", value: res.layer },
               { title: "apm_addr", value: res.addr },
-              { title: "apm_custom_application", value: "" },
+              // { title: "apm_custom_application", value: "" },
             ];
           })
           .catch((err) => {
@@ -949,10 +958,10 @@ export default {
     handleClear(ruleForm) {
       this.form = {
         traceId: "",
-        appId: [],
-        instanceId: [],
-        serverId: [],
-        Endpoint: [],
+        appId: "",
+        instanceId: "",
+        serverId: "",
+        Endpoint: "",
         status: "",
         spendTime: "",
       };

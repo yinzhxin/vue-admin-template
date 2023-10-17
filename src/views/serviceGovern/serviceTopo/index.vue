@@ -17,7 +17,7 @@
       </el-form-item>
       <!-- 所属应用 -->
       <el-form-item label="">
-        <el-select v-model="form.app" placeholder="所属应用" multiple clearable>
+        <el-select v-model="form.app" placeholder="所属应用" clearable>
           <el-option
             v-for="item in appList"
             :key="item.value"
@@ -29,17 +29,12 @@
       </el-form-item>
       <!-- 所属服务 -->
       <el-form-item label="">
-        <el-select
-          v-model="form.server"
-          placeholder="所属服务"
-          multiple
-          clearable
-        >
+        <el-select v-model="form.server" placeholder="所属服务" clearable>
           <el-option
             v-for="item in serviceList"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+            :key="item.serverId"
+            :label="item.serverName"
+            :value="item.serverId"
           >
           </el-option>
         </el-select>

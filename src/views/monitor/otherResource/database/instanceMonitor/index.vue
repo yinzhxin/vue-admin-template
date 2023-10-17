@@ -74,6 +74,9 @@
             :chartData="chartData.data"
             :xAxisData="chartData.xAxisData"
             :color="chartData.color"
+            :alignWithLabel="chartData.alignWithLabel"
+            :interval="chartData.interval"
+            :grid="grid"
           />
         </div>
       </el-col>
@@ -87,6 +90,9 @@
             :chartData="chartData2.data"
             :xAxisData="chartData2.xAxisData"
             :color="chartData2.color"
+            :alignWithLabel="chartData2.alignWithLabel"
+            :interval="chartData2.interval"
+            :grid="grid"
           />
         </div>
       </el-col>
@@ -228,6 +234,9 @@
               :chartData="chartData4.data"
               :xAxisData="chartData4.xAxisData"
               :color="chartData4.color"
+              :alignWithLabel="chartData4.alignWithLabel"
+              :interval="chartData4.interval"
+              :grid="grid"
             />
           </div>
         </el-col>
@@ -311,8 +320,8 @@
 </template>
 
 <script>
-import BarChart from "./BarChart.vue";
-import LineChart from "./LineChart.vue";
+import LineChart from "./components/LineChart.vue";
+import BarChart from "@/views/echarts/BarChart.vue";
 import RadiusPieChart from "@/views/echarts/RadiusPieChart.vue";
 import Table from "@/views/components/Table.vue";
 
@@ -396,12 +405,24 @@ export default {
         },
       },
 
+      grid: {
+        left: "3%",
+        right: "4%",
+        bottom: "3%",
+        containLabel: true,
+      },
+
       // SQL 执行数
       title1: "SQL 执行数",
       chartData: {
         data: [
-          120, 200, 150, 80, 70, 110, 90, 160, 220, 100, 130, 180, 140, 190,
-          210, 200,
+          {
+            name: "慢执行统计",
+            data: [
+              120, 200, 150, 80, 70, 110, 90, 160, 220, 100, 130, 180, 140, 190,
+              210, 200,
+            ],
+          },
         ],
         xAxisData: [
           "00:00",
@@ -422,13 +443,24 @@ export default {
           "01:00",
         ],
         color: ["#0FC7C1"],
+        alignWithLabel: true,
+        interval: {
+          interval: (index, value) => {
+            if (index == 2 || index == 7 || index == 12) return true;
+          },
+        },
       },
       // SQL 执行错误数
       title2: "SQL 执行错误数",
       chartData2: {
         data: [
-          120, 200, 150, 80, 70, 110, 90, 160, 220, 100, 130, 180, 140, 190,
-          210, 200,
+          {
+            name: "SQL 执行错误数",
+            data: [
+              120, 200, 150, 80, 70, 110, 90, 160, 220, 100, 130, 180, 140, 190,
+              210, 200,
+            ],
+          },
         ],
         xAxisData: [
           "00:00",
@@ -449,6 +481,12 @@ export default {
           "01:00",
         ],
         color: ["#F56C6C"],
+        alignWithLabel: true,
+        interval: {
+          interval: (index, value) => {
+            if (index == 2 || index == 7 || index == 12) return true;
+          },
+        },
       },
       // SQL 执行平均耗时
       title3: "SQL 执行平均耗时",
@@ -481,8 +519,13 @@ export default {
       title4: "慢执行统计",
       chartData4: {
         data: [
-          120, 200, 150, 80, 70, 110, 90, 160, 220, 100, 130, 180, 140, 190,
-          210, 200,
+          {
+            name: "慢执行统计",
+            data: [
+              120, 200, 150, 80, 70, 110, 90, 160, 220, 100, 130, 180, 140, 190,
+              210, 200,
+            ],
+          },
         ],
         xAxisData: [
           "00:00",
@@ -503,6 +546,12 @@ export default {
           "01:00",
         ],
         color: ["#E6A23C"],
+        alignWithLabel: true,
+        interval: {
+          interval: (index, value) => {
+            if (index == 2 || index == 7 || index == 12) return true;
+          },
+        },
       },
 
       title5: "慢执行平均耗时",
@@ -546,8 +595,8 @@ export default {
         ],
         color: ["#94D2F4", "#BD3026"],
         radius: ["45%", "65%"],
-        center: ["50%", "45%"],
-        isShowLegend: true,
+        center: ["50%", "55%"],
+        isShowLegend: false,
       },
 
       // tab切换

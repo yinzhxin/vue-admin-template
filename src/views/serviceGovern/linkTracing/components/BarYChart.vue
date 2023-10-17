@@ -110,7 +110,7 @@ export default {
         },
 
         grid: {
-          left: "-14%",
+          left: "-30%",
           right: "5%",
           top: 0, //拉伸距离顶部高度
           bottom: 10, //拉伸距离底部高度

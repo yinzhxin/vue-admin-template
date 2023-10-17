@@ -46,7 +46,7 @@
         :chartData="chartData4.data"
         :xAxisData="chartData4.xAxisData"
         :color="color"
-        :legend="legend"
+        :legend="chartData4.legend"
         :isAreaStyle="false"
       />
     </div>
@@ -144,7 +144,7 @@ export default {
         xAxisData: ["09:54", "09:55", "09:56", "09:57"],
         color: ["#409EFF", "#68BBC4", "#58A55C", "#F2BD42"],
         legend: {
-          top: 10,
+          top: 20,
         },
       },
     };

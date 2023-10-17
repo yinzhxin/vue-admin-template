@@ -1,60 +1,30 @@
 <template>
   <div>
-    <!-- <div style="display: flex; margin-top: 20px">
+    <div style="display: flex; margin-top: 20px">
       <BarChart
         :width="'100%'"
         :height="'300px'"
-        :chart-data="chartData1"
-        :title="`不同来源事件数量走势`"
-      />
-    </div> -->
-
-    <div style="display: flex; margin-top: 20px">
-      <LineChart
-        :width="'100%'"
-        :height="'280px'"
-        :title="title2"
-        :chartData="chartData2.data"
-        :xAxisData="chartData2.xAxisData"
-        :yAxisFormatter="chartData2.yAxisFormatter"
-        :color="color"
-        :legend="legend"
-        :isAreaStyle="false"
+        :chart-data="chartData1.data"
+        :xAxisData="chartData1.xAxisData"
+        :color="chartData1.color"
+        :title="`SQL调用统计/每天`"
       />
     </div>
 
     <div style="display: flex; margin-top: 20px">
-      <LineChart
-        :width="'50%'"
-        :height="'280px'"
-        :title="title3"
-        :chartData="chartData3.data"
-        :xAxisData="chartData3.xAxisData"
-        :color="color"
-        :legend="legend"
-        :isAreaStyle="false"
-      />
-
-      <LineChart
-        :width="'50%'"
-        :height="'280px'"
-        :title="title4"
-        :chartData="chartData4.data"
-        :xAxisData="chartData4.xAxisData"
-        :color="color"
-        :legend="legend"
-        :isAreaStyle="false"
-      />
+      <Table :table-data="tableData2" :columns="columns" />
     </div>
   </div>
 </template>
 
 <script>
 import LineChart from "@/views/echarts/LineChart.vue";
+import BarChart from "@/views/echarts/BarChart.vue";
+import Table from "@/views/components/Table.vue";
 
 export default {
   name: "",
-  components: { LineChart },
+  components: { LineChart, BarChart, Table },
   data() {
     return {
       // 图表工具栏
@@ -77,77 +47,148 @@ export default {
         top: 10,
       },
 
-      // 图表数据
-      title1: "CPU",
       // 柱状图数据
-      chartData: [
+      chartData1: {
+        data: [
+          {
+            name: "SQL调用统计/每天",
+            data: [
+              750, 750, 700, 700, 720, 680, 700, 700, 700, 680, 720, 700, 700,
+              700, 200,
+            ],
+          },
+        ],
+        color: ["#5087ED"],
+        xAxisData: [
+          "08月01日",
+          "08月02日",
+          "08月03日",
+          "08月04日",
+          "08月05日",
+          "08月06日",
+          "08月07日",
+          "08月08日",
+          "08月09日",
+          "08月10日",
+          "08月11日",
+          "08月12日",
+          "08月13日",
+          "08月14日",
+          "08月15日",
+        ],
+      },
+
+      tableData2: [
         {
-          name: "应用扩缩容",
-          data: [1, 2, 2, 3, 2],
+          node: "az3-DB-server0",
+          source: "正常",
+          type: "主",
+          connectionCount: 25,
+          activeConnections: 10,
+          blockedSessions: 2,
+          lockTimeouts: 0,
+          statementConflicts: 3,
+          cacheHitRate: "98.5%",
+          qps: 1200,
+          tps: 800,
+          spaceUsage: "70%",
+          logSpaceUsage: "35%",
+          diskUsage: "60%",
+          memoryUsage: "40%",
+          cpuUsage: "20%",
         },
         {
-          name: "扩缩容达到上下线",
-          data: [1, 1, 1, 1, 1],
+          node: "az3-DB-server1",
+          source: "正常",
+          type: "主",
+          connectionCount: 25,
+          activeConnections: 10,
+          blockedSessions: 2,
+          lockTimeouts: 0,
+          statementConflicts: 3,
+          cacheHitRate: "98.5%",
+          qps: 1200,
+          tps: 800,
+          spaceUsage: "70%",
+          logSpaceUsage: "35%",
+          diskUsage: "60%",
+          memoryUsage: "40%",
+          cpuUsage: "20%",
+        },
+        {
+          node: "az3-DB-server0",
+          source: "正常",
+          type: "主",
+          connectionCount: 25,
+          activeConnections: 10,
+          blockedSessions: 2,
+          lockTimeouts: 0,
+          statementConflicts: 3,
+          cacheHitRate: "98.5%",
+          qps: 1200,
+          tps: 800,
+          spaceUsage: "70%",
+          logSpaceUsage: "35%",
+          diskUsage: "60%",
+          memoryUsage: "40%",
+          cpuUsage: "20%",
+        },
+        {
+          node: "az3-DB-server1",
+          source: "正常",
+          type: "主",
+          connectionCount: 25,
+          activeConnections: 10,
+          blockedSessions: 2,
+          lockTimeouts: 0,
+          statementConflicts: 3,
+          cacheHitRate: "98.5%",
+          qps: 1200,
+          tps: 800,
+          spaceUsage: "70%",
+          logSpaceUsage: "35%",
+          diskUsage: "60%",
+          memoryUsage: "40%",
+          cpuUsage: "20%",
         },
       ],
 
-      title2: "物理内存",
-      chartData2: {
-        data: [
-          {
-            data: [250, 250, 250, 250],
-            name: "内存使用量",
+      columns: [
+        { label: "节点", index: "node" },
+        {
+          label: "状态",
+          index: "source",
+          render: (h, data) => {
+            return (
+              <div>
+                {data.row.source == "正常" ? (
+                  <span style="color:#67C23A">
+                    <i class="el-icon-success" />
+                  </span>
+                ) : (
+                  <span style="color:#F56C6C">
+                    <i class="el-icon-error" />
+                  </span>
+                )}
+              </div>
+            );
           },
-          {
-            data: [0, 0, 0, 0],
-            name: "内存配额",
-          },
-        ],
-        xAxisData: ["09:54", "09:55", "09:56", "09:57"],
-        yAxisFormatter: "{value} M",
-      },
-
-      title3: "网络流量 (Byte)",
-      chartData3: {
-        data: [
-          {
-            data: [500, 600, 500, 500],
-            name: "网络接收的字节数",
-          },
-          {
-            data: [1000, 900, 1000, 1100],
-            name: "网络发送的字节数",
-          },
-        ],
-        xAxisData: ["09:54", "09:55", "09:56", "09:57"],
-      },
-
-      title4: "网络数据包 (个)",
-      chartData4: {
-        data: [
-          {
-            data: [4, 3, 3, 2],
-            name: "网络发送的报文数",
-          },
-          {
-            data: [0, 0, 0, 0],
-            name: "网络发送丢弃的报文数",
-          },
-          {
-            data: [0, 0, 0, 0],
-            name: "网络接收丢弃的报文数",
-          },
-          {
-            data: [0, 0, 0, 0],
-            name: "网络发送的错误数",
-          },
-          {
-            data: [0, 0, 0, 0],
-            name: "网络接收的错误数",
-          },
-        ],
-        xAxisData: ["09:54", "09:55", "09:56", "09:57"],
-      },
+        },
+        { label: "主从", index: "type" },
+        { label: "链接数", index: "connectionCount" },
+        { label: "活跃连接数", index: "activeConnections" },
+        { label: "阻塞会话数", index: "blockedSessions" },
+        { label: "锁超时间", index: "lockTimeouts" },
+        { label: "语句冲突次数", index: "statementConflicts", width: "120" },
+        { label: "缓存命中率", index: "cacheHitRate" },
+        { label: "QPS", index: "qps" },
+        { label: "TPS", index: "tps" },
+        { label: "空间使用率", index: "spaceUsage" },
+        { label: "日志空间使用率", index: "logSpaceUsage", width: "120" },
+        { label: "磁盘使用率", index: "diskUsage" },
+        { label: "内存使用率", index: "memoryUsage" },
+        { label: "CPU使用率", index: "cpuUsage" },
+      ],
     };
   },
 

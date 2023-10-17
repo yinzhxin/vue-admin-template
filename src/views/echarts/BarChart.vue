@@ -4,7 +4,7 @@
 
 <script>
 import * as echarts from "echarts";
-import resize from "./mixins/resize";
+import resize from "@/views/echarts/mixins/resize.js";
 
 export default {
   name: "BarChart",
@@ -32,10 +32,16 @@ export default {
       },
     },
 
-    // 标题
     title: {
       type: String,
       default: "",
+    },
+
+    xAxisData: {
+      type: Array,
+      default: () => {
+        return [];
+      },
     },
 
     // 主题颜色
@@ -43,6 +49,40 @@ export default {
       type: Array,
       default: () => {
         return [];
+      },
+    },
+
+    // y轴的刻度标签，默认只显示数值
+    yAxisFormatter: {
+      type: String,
+      default: "{value}",
+    },
+
+    // 柱宽
+    barWidth: {
+      type: String,
+      default: "",
+    },
+
+    // 让刻度线与标签对齐
+    alignWithLabel: {
+      type: Boolean,
+      default: false,
+    },
+
+    interval: {
+      type: Object,
+      default: () => {
+        return {};
+      },
+    },
+
+    grid: {
+      type: Object,
+      default: () => {
+        return {
+          show: false,
+        };
       },
     },
   },
@@ -82,67 +122,57 @@ export default {
 
       // 添加属性
       const chartDeal = this.chartData.map((i) => {
-        return { ...i, type: "bar" };
+        return {
+          ...i,
+          // 图表类型
+          type: "bar",
+          // 柱宽
+          barWidth: this.barWidth,
+        };
       });
 
       const option = {
-        // 标题组件，包含主标题和副标题
         title: {
-          show: true,
           text: this.title,
         },
 
+        grid: this.grid,
+
         // 提示框组件
         tooltip: {
-          // 触发类型，表示以坐标轴触发显示提示框
-          trigger: "axis",
-          // 坐标轴指示器类型，表示以阴影形式显示指示器
+          trigger: "axis", // 触发类型，表示以坐标轴触发显示提示框
           axisPointer: {
-            type: "shadow",
+            type: "shadow", // 坐标轴指示器类型，表示以阴影形式显示指示器
           },
-          // 提示框的内容格式化函数
-          formatter: function (params) {
-            var series1Name = params[0].seriesName; // 第一个系列的名称
-            var series2Name = params[1].seriesName; // 第二个系列的名称
-            var series1Value = params[0].value; // 第一个系列的值
-            var series2Value = params[1].value; // 第二个系列的值
-            return (
-              '<span style="display:inline-block;width:10px;height:10px;background-color:#5087ED;border-radius:50%;margin-right:5px;"></span>' + // 自定义样式的小圆点
-              series1Name +
-              " : " +
-              series1Value +
-              "<br />" +
-              '<span style="display:inline-block;width:10px;height:10px;background-color:#66BBC3;border-radius:50%;margin-right:5px;"></span>' + // 自定义样式的小圆点
-              series2Name +
-              " : " +
-              series2Value
-            );
-          },
-          // 返回自定义格式化后的文本内容
-          // textStyle: {
-          //   rich: {
-          //     series1: {
-          //       color: "blue",
-          //     },
-          //     series2: {
-          //       color: "red",
-          //     },
-          //   },
-          // },
         },
 
         // x轴
-        xAxis: {
-          data: ["3月4日", "3月5日", "3月6日", "3月7日", "3月8日"],
-        },
+        xAxis: [
+          {
+            type: "category", // x轴类型为类目轴
+            data: this.xAxisData,
+            axisTick: {
+              alignWithLabel: this.alignWithLabel, // 让刻度线与标签对齐
+            },
+            axisLabel: this.interval,
+          },
+        ],
+
         // y轴
-        yAxis: {},
+        yAxis: [
+          {
+            type: "value",
+            axisLabel: {
+              formatter: this.yAxisFormatter,
+            },
+          },
+        ],
 
         // 数据
         series: chartDeal,
 
         // 主题颜色
-        color: ["#5087ED", "#66BBC3"],
+        color: this.color,
 
         // 添加空隙，或者使用 barCategoryGap: '20%'
         barGap: "0",

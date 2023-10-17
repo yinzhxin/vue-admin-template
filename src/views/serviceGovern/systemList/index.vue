@@ -233,13 +233,11 @@
 </template>
 
 <script>
-import BarChart from "./BarChart.vue";
-import LineChart from "./LineChart.vue";
 import Table from "@/views/components/Table.vue";
 
 export default {
   name: "DatabaseMonitor",
-  components: { BarChart, LineChart, Table },
+  components: {Table },
   data() {
     return {
       title: "SQL 执行数",
