@@ -5,6 +5,158 @@
     </div>
     <div class="right">
       <BaseInfoCard class="margin-bottom" title="归因分析服务" :desc="desc" />
+      <el-tabs type="border-card">
+        <el-tab-pane label="概览">
+          <el-row :gutter="20">
+            <el-col :span="24">
+              <div class="grid-content">
+                <div class="rating" v-for="item in cardData" :key="item.title">
+                  <div class="margin-bottom20">{{ item.title }}</div>
+                  <div class="margin-bottom20 fontSize24">
+                    {{ item.num }}
+                    <span class="fontSize16" v-if="item.title == '平均响应时间'"
+                      >ms</span
+                    >
+                    <span
+                      class="fontSize16"
+                      v-else-if="
+                        item.title == '错误数' ||
+                        item.title == 'Full GC' ||
+                        item.title == '慢SQL'
+                      "
+                      >次</span
+                    >
+                    <span
+                      class="fontSize16"
+                      v-else-if="item.title == '异常' || item.title == '慢调用'"
+                      >个</span
+                    >
+                  </div>
+                  <div class="margin-bottom">
+                    周同比
+                    <i class="el-icon-caret-top error" v-if="item.week > 0" />
+                    <img
+                      src="@/assets/icons/rect.svg"
+                      alt=""
+                      class="img-box"
+                      v-else
+                    />
+                    {{ item.week }}%
+                  </div>
+                  <div>
+                    日同比
+                    <i class="el-icon-caret-top error" v-if="item.day > 0" />
+                    <img
+                      src="@/assets/icons/rect.svg"
+                      alt=""
+                      class="img-box"
+                      v-else
+                    />
+                    {{ item.day }}%
+                  </div>
+                </div>
+              </div>
+            </el-col>
+          </el-row>
+        </el-tab-pane>
+      </el-tabs>
+      <div class="right-bottom margin-top">
+        <div class="bottom-left margin-right">
+          <el-card class="box-card margin-bottom" style="width: 100%">
+            <div class="margin-bottom flex-between">
+              <div>接入性能</div>
+              <div>
+                <el-date-picker
+                  v-model="value1"
+                  type="date"
+                  placeholder="选择日期"
+                  size="mini"
+                  style="width: 150px"
+                >
+                </el-date-picker>
+                <span style="margin: 0 10px">AZ</span>
+                <el-select
+                  v-model="value"
+                  placeholder="请选择"
+                  size="mini"
+                  style="width: 150px"
+                >
+                  <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  >
+                  </el-option>
+                </el-select>
+              </div>
+              <el-button type="primary" size="mini">查询</el-button>
+            </div>
+
+            <el-table
+              :data="tableData"
+              border
+              style="width: 100%"
+              size="mini"
+              max-height="140"
+            >
+              <el-table-column
+                v-for="col in columns"
+                :key="col.index"
+                :label="col.label"
+                :width="col.width"
+                :show-overflow-tooltip="col['show-overflow-tooltip']"
+                :fixed="col.fixed"
+              >
+                <template slot-scope="scope">{{
+                  scope.row[col.index]
+                }}</template>
+              </el-table-column>
+            </el-table>
+          </el-card>
+          <el-card class="box-card">
+            <div class="margin-bottom flex-between">
+              <div>发布记录</div>
+              <div>
+                <el-date-picker
+                  v-model="value1"
+                  type="date"
+                  placeholder="选择日期"
+                  class="margin-right"
+                  size="mini"
+                >
+                </el-date-picker>
+                <el-button type="primary" size="mini">查询</el-button>
+              </div>
+            </div>
+            <el-table
+              :data="tableData2"
+              border
+              style="width: 100%"
+              size="mini"
+              max-height="140"
+            >
+              <el-table-column
+                v-for="col in columns2"
+                :key="col.index"
+                :label="col.label"
+              >
+                <template slot-scope="scope">{{
+                  scope.row[col.index]
+                }}</template>
+              </el-table-column>
+            </el-table>
+          </el-card>
+        </div>
+        <el-card class="bottom-right">
+          <line-chart width="100%" height="450px" :chartData="chartData" />
+          <el-button
+            type="text"
+            icon="el-icon-refresh-right"
+            class="button"
+          ></el-button>
+        </el-card>
+      </div>
     </div>
   </div>
 </template>
@@ -13,10 +165,11 @@
 import MenuTree from "@/components/MenuTree";
 import BaseInfoCard from "@/components/BaseInfoCard.vue";
 import LineChart from "@/components/Chart/LineChart.vue";
+import Table from "@/views/components/Table";
 
 export default {
   name: "",
-  components: { MenuTree, BaseInfoCard, LineChart },
+  components: { MenuTree, BaseInfoCard, LineChart, Table },
   props: {},
   data() {
     return {
@@ -164,6 +317,182 @@ export default {
           value: "王东东",
         },
       ],
+      // 事件总览数据
+      cardData: [
+        { title: "总请求量", num: 700, week: 7, day: 7 },
+        { title: "平均响应时间", num: 2.8, week: 25.3, day: 25.3 },
+        { title: "错误数", num: 0, week: 20, day: 20 },
+        { title: "Full GC", num: 0, week: 0, day: 0 },
+        { title: "慢SQL", num: 0, week: 0, day: 0 },
+        { title: "异常", num: 0, week: 0, day: 0 },
+        { title: "慢调用", num: 0, week: 0, day: 0 },
+      ],
+      tableData: [
+        {
+          AZ: "AZ1",
+          deploy: "NRCP-SUBNOA-MS-Manager-Master",
+          instanceNum: 0,
+          healthNum: 0,
+          downNum: 0,
+          num: 0,
+          successNum: 0,
+          successRate: "100%",
+        },
+        {
+          AZ: "AZ1",
+          deploy: "NRCP-SUBNOA-MS-Manager-Master",
+          instanceNum: 0,
+          healthNum: 0,
+          downNum: 0,
+          num: 0,
+          successNum: 0,
+          successRate: "100%",
+        },
+        {
+          AZ: "AZ1",
+          deploy: "NRCP-SUBNOA-MS-Manager-Master",
+          instanceNum: 0,
+          healthNum: 0,
+          downNum: 0,
+          num: 0,
+          successNum: 0,
+          successRate: "100%",
+        },
+        {
+          AZ: "AZ1",
+          deploy: "NRCP-SUBNOA-MS-Manager-Master",
+          instanceNum: 0,
+          healthNum: 0,
+          downNum: 0,
+          num: 0,
+          successNum: 0,
+          successRate: "100%",
+        },
+        {
+          AZ: "AZ1",
+          deploy: "NRCP-SUBNOA-MS-Manager-Master",
+          instanceNum: 0,
+          healthNum: 0,
+          downNum: 0,
+          num: 0,
+          successNum: 0,
+          successRate: "100%",
+        },
+        {
+          AZ: "AZ1",
+          deploy: "NRCP-SUBNOA-MS-Manager-Master",
+          instanceNum: 0,
+          healthNum: 0,
+          downNum: 0,
+          num: 0,
+          successNum: 0,
+          successRate: "100%",
+        },
+      ],
+      columns: [
+        {
+          label: "AZ",
+          index: "AZ",
+          width: 50,
+          "show-overflow-tooltip": true,
+          fixed: true,
+        },
+        {
+          label: "部署",
+          index: "deploy",
+          "show-overflow-tooltip": true,
+          fixed: true,
+        },
+        {
+          label: "实例服务数量",
+          index: "instanceNum",
+          "show-overflow-tooltip": true,
+          width: 100,
+        },
+        {
+          label: "健康服务实例数量",
+          index: "healthNum",
+          "show-overflow-tooltip": true,
+          width: 120,
+        },
+        {
+          label: "宕机服务实例数",
+          index: "downNum",
+          "show-overflow-tooltip": true,
+          width: 110,
+        },
+        {
+          label: "请求数量",
+          index: "num",
+          "show-overflow-tooltip": true,
+          width: 70,
+        },
+        {
+          label: "请求成功数量",
+          index: "successNum",
+          "show-overflow-tooltip": true,
+          width: 100,
+        },
+
+        {
+          label: "成功率",
+          index: "successRate",
+          "show-overflow-tooltip": true,
+          width: 60,
+        },
+      ],
+      tableData2: [
+        {
+          lot: "20230429153539",
+          deployNum: 3,
+          releaseStatus: "发布完成",
+          releaseType: "正常发布",
+        },
+        {
+          lot: "20230429153539",
+          deployNum: 3,
+          releaseStatus: "发布完成",
+          releaseType: "正常发布",
+        },
+        {
+          lot: "20230429153539",
+          deployNum: 3,
+          releaseStatus: "发布完成",
+          releaseType: "正常发布",
+        },
+      ],
+      columns2: [
+        {
+          label: "批次",
+          index: "lot",
+          width: 50,
+        },
+        {
+          label: "部署数量",
+          index: "deployNum",
+        },
+        {
+          label: "发布状态",
+          index: "releaseStatus",
+        },
+        {
+          label: "发布类型",
+          index: "releaseType",
+        },
+      ],
+      chartData: {
+        xData: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        yData: [
+          {
+            name: "请求量/分钟",
+            data: [120, 132, 101, 134, 90, 230, 210],
+          },
+          {
+            name: "平均响应时间/分钟",
+            data: [50, 32, 10, 34, 90, 30, 21],
+          },
+        ],
+      },
     };
   },
   watch: {},
@@ -186,9 +515,52 @@ export default {
     flex: 4;
     height: 100%;
     overflow-y: auto;
+    .grid-content {
+      min-height: 200px;
+      display: flex;
+      justify-content: space-around;
+      .rating {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 30px;
+        span {
+          font-weight: 500;
+          /* 第二个span的样式 */
+          &:nth-child(2) {
+            font-size: 25px;
+            margin: 20px 0;
+            color: #409eff;
+          }
+        }
+      }
+    }
+    .right-bottom {
+      display: flex;
+      height: 450px;
+      .bottom-left {
+        width: 60%;
+        height: 100%;
+      }
+      .bottom-right {
+        position: relative;
+        width: 40%;
+        height: 100%;
+        .button {
+          position: absolute;
+          top: 20px;
+          right: 30px;
+          z-index: 10;
+        }
+      }
+    }
   }
 }
 .el-row {
   margin-bottom: 0;
+}
+.img-box {
+  width: 16px;
+  height: 10px;
 }
 </style>
