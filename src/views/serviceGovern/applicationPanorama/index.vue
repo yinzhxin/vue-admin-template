@@ -6,10 +6,15 @@
     <div class="right">
       <BaseInfoCard class="margin-bottom" title="归因分析服务" :desc="desc" />
     </div>
+
+    <div>
+      <div id="container" style=""></div>
+    </div>
   </div>
 </template>
 
 <script>
+import G6 from "@antv/g6";
 import MenuTree from "@/components/MenuTree";
 import BaseInfoCard from "@/components/BaseInfoCard.vue";
 import LineChart from "@/components/Chart/LineChart.vue";
@@ -164,12 +169,143 @@ export default {
           value: "王东东",
         },
       ],
+
+      graph: null,
     };
   },
-  watch: {},
-  created() {},
-  computed: {},
-  methods: {},
+
+  mounted() {
+    this.initGraph();
+  },
+
+  beforeDestroy() {
+    // 销毁画布
+    this.graph.destroy();
+    // 实例销毁
+    this.graph = null;
+  },
+
+  methods: {
+    // 更新图表数据，初次渲染也调用data方法
+    updateData(newData) {
+      this.graph.data(newData);
+    },
+
+    // 渲染图表
+    renderGraph() {
+      this.graph.render();
+    },
+
+    // 初始化图表
+    initGraph() {
+      const toolbar = new G6.ToolBar({
+        position: { x: 0, y: 30 },
+      });
+
+      const data = {
+        id: "person",
+        children: [
+          {
+            id: "server",
+          },
+        ],
+      };
+
+      G6.Util.traverseTree(data, (d) => {
+        d.leftIcon = {
+          style: {
+            fill: "#e6fffb",
+            stroke: "#e6fffb",
+          },
+          img: "https://gw.alipayobjects.com/mdn/rms_f8c6a0/afts/img/A*Q_FQT6nwEC8AAAAAAAAAAABkARQnAQ",
+        };
+        return true;
+      });
+
+      const defaultLayout = {
+        type: "compactBox",
+        direction: "TB",
+        getId: function getId(d) {
+          return d.id;
+        },
+        getHeight: function getHeight() {
+          return 16;
+        },
+        getWidth: function getWidth() {
+          return 16;
+        },
+        getVGap: function getVGap() {
+          return 40;
+        },
+        getHGap: function getHGap() {
+          return 70;
+        },
+      };
+
+      // 获取容器图形
+      const container = document.getElementById("container");
+      const width = container.scrollWidth || 1190;
+      const height = container.scrollHeight || 300;
+      console.log(width, height);
+
+      this.graph = new G6.TreeGraph({
+        container: "container",
+        width,
+        height,
+        plugins: [toolbar],
+        modes: {
+          default: ["drag-canvas", "zoom-canvas"],
+        },
+        defaultNode: {
+          type: "image",
+          size: [60, 60],
+        },
+        defaultEdge: {
+          style: {
+            lineDash: [4, 4], // 虚线样式
+            stroke: "blue", // 线条颜色
+            lineWidth: 1, // 线条宽度
+          },
+        },
+
+        layout: defaultLayout,
+      });
+
+      this.graph.node((node) => {
+        if (node.id == "person") {
+          node.img = "/topo_images/person.svg";
+          node.size = 30;
+        }
+        if (node.id == "server") {
+          node.img = "/topo_images/server.svg";
+          node.size = 30;
+        }
+        return {};
+      });
+
+      this.graph.edge((edge) => {
+        const label = "4000次/小时 HTTP"; // 标签文字
+
+        const labelCfg = {
+          position: "middle",
+          style: {
+            fill: "#F56C6C", // 文字颜色
+            fontSize: 8, // 文字大小
+            textAlign: "center",
+            textBaseline: "middle",
+          },
+        };
+        return { label, labelCfg };
+      });
+
+      // 图初始化数据
+      this.updateData(data);
+      // 渲染画布
+      this.renderGraph();
+      // this.graph.zoom(1);
+      this.graph.fitView();
+    },
+  },
   mounted() {},
 };
 </script>

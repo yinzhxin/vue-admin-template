@@ -93,7 +93,6 @@
 </template>
 
 <script>
-// import LineChart from "@/views/echarts/LineChart.vue";
 //概览
 import Overview from "./components/Overview.vue";
 // JVM监控
@@ -104,18 +103,30 @@ import HostMonitor from "./components/HostMonitor.vue";
 import PodMonitor from "./components/PodMonitor.vue";
 // SQL调用分析
 import SqlAnalysis from "./components/SqlAnalysis.vue";
-
-
+// NoSQL调用分析
+import NosqlAnalysis from "./components/NosqlAnalysis.vue";
+// 异常分析
+import AnoAnalysis from "./components/AnoAnalysis.vue";
+// 错误分析
+import ErrAnalysis from "./components/ErrAnalysis.vue";
+// 上游应用
+import UpApplication from "./components/UpApplication.vue";
+// 日志
+import Log from "./components/Log.vue";
 
 export default {
   name: "InstanceMonitor",
   components: {
-    // LineChart,
     Overview,
     JvmMonitor,
     HostMonitor,
     PodMonitor,
-    SqlAnalysis
+    SqlAnalysis,
+    NosqlAnalysis,
+    AnoAnalysis,
+    ErrAnalysis,
+    UpApplication,
+    Log,
   },
   data() {
     return {
@@ -130,8 +141,8 @@ export default {
         { label: "NoSQL调用分析", value: "NosqlAnalysis" },
         { label: "异常分析", value: "AnoAnalysis" },
         { label: "错误分析", value: "ErrAnalysis" },
-        { label: "上游应用", value: "UpAnalysis" },
-        { label: "下游应用", value: "DownAnalysis" },
+        { label: "上游应用", value: "UpApplication" },
+        { label: "下游应用", value: "DownApplication" },
         { label: "接口快照", value: "Interface" },
         { label: "日志", value: "Log" },
       ],

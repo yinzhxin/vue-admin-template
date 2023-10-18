@@ -1,7 +1,8 @@
 <template>
   <div>
     <div>
-      <!-- <div id="container" style="background: pink"></div> -->
+      <div id="container" style=""></div>
+      172.22.1.143
     </div>
 
     <div style="display: flex; margin-top: 20px">
@@ -106,7 +107,6 @@ export default {
         ],
         xAxisData: ["09:54", "09:55", "09:56", "09:57"],
         yAxisFormatter: "{value} ms",
-        color: ["#409EFF"],
       },
 
       title3: "错误数/每分钟",
@@ -118,7 +118,6 @@ export default {
           },
         ],
         xAxisData: ["09:54", "09:55", "09:56", "09:57"],
-        color: ["#409EFF"],
       },
 
       title4: "HTTP-状态码统计",
@@ -142,7 +141,6 @@ export default {
           },
         ],
         xAxisData: ["09:54", "09:55", "09:56", "09:57"],
-        color: ["#409EFF", "#68BBC4", "#58A55C", "#F2BD42"],
         legend: {
           top: 20,
         },
@@ -150,16 +148,16 @@ export default {
     };
   },
 
-  // mounted() {
-  //   this.initGraph();
-  // },
+  mounted() {
+    this.initGraph();
+  },
 
-  // beforeDestroy() {
-  //   // 销毁画布
-  //   this.graph.destroy();
-  //   // 实例销毁
-  //   this.graph = null;
-  // },
+  beforeDestroy() {
+    // 销毁画布
+    this.graph.destroy();
+    // 实例销毁
+    this.graph = null;
+  },
 
   methods: {
     // 更新图表数据，初次渲染也调用data方法
@@ -174,16 +172,15 @@ export default {
 
     // 初始化图表
     initGraph() {
+      const toolbar = new G6.ToolBar({
+        position: { x: 0, y: 30 },
+      });
+
       const data = {
         id: "person",
-        icon: {
-          img: "/topo_images/person.svg",
-        },
-        // label: "root",
         children: [
           {
-            id: "service",
-            // label: "c1",
+            id: "server",
           },
         ],
       };
@@ -198,51 +195,6 @@ export default {
         };
         return true;
       });
-
-      G6.registerEdge("flow-line", {
-        draw(cfg, group) {
-          const startPoint = cfg.startPoint;
-          const endPoint = cfg.endPoint;
-
-          const { style } = cfg;
-          const shape = group.addShape("path", {
-            attrs: {
-              stroke: style.stroke,
-              endArrow: style.endArrow,
-              path: [
-                ["M", startPoint.x, startPoint.y],
-                ["L", startPoint.x, (startPoint.y + endPoint.y) / 2],
-                ["L", endPoint.x, (startPoint.y + endPoint.y) / 2],
-                ["L", endPoint.x, endPoint.y],
-              ],
-            },
-          });
-
-          return shape;
-        },
-      });
-
-      const defaultStateStyles = {
-        hover: {
-          stroke: "#1890ff",
-          lineWidth: 2,
-        },
-      };
-
-      const defaultNodeStyle = {
-        fill: "#91d5ff",
-        stroke: "#40a9ff",
-        radius: 5,
-      };
-
-      const defaultEdgeStyle = {
-        stroke: "#91d5ff",
-        endArrow: {
-          path: "M 0,0 L 12, 6 L 9,0 L 12, -6 Z",
-          fill: "#91d5ff",
-          d: -20,
-        },
-      };
 
       const defaultLayout = {
         type: "compactBox",
@@ -264,12 +216,6 @@ export default {
         },
       };
 
-      const defaultLabelCfg = {
-        style: {
-          fill: "#000",
-          fontSize: 12,
-        },
-      };
       // 获取容器图形
       const container = document.getElementById("container");
       const width = container.scrollWidth || 1190;
@@ -280,37 +226,54 @@ export default {
         container: "container",
         width,
         height,
-        linkCenter: true,
-        // plugins: [minimap],
+        plugins: [toolbar],
         modes: {
           default: ["drag-canvas", "zoom-canvas"],
         },
         defaultNode: {
-          // 类型
-          type: "donut",
-          // 大小
-          size: 30,
-          // 文字样式
-          labelCfg: {
-            position: "bottom",
-            style: {
-              fontSize: 25,
-              fill: "black",
-            },
-          },
+          type: "image",
+          size: [60, 60],
         },
         defaultEdge: {
-          type: "flow-line",
-          style: defaultEdgeStyle,
+          style: {
+            lineDash: [4, 4], // 虚线样式
+            stroke: "blue", // 线条颜色
+            lineWidth: 1, // 线条宽度
+          },
         },
-        nodeStateStyles: defaultStateStyles,
-        edgeStateStyles: defaultStateStyles,
+
         layout: defaultLayout,
+      });
+
+      this.graph.node((node) => {
+        if (node.id == "person") {
+          node.img = "/topo_images/person.svg";
+          node.size = 30;
+        }
+        if (node.id == "server") {
+          node.img = "/topo_images/server.svg";
+          node.size = 30;
+        }
+        return {};
+      });
+
+      this.graph.edge((edge) => {
+        const label = "4000次/小时 HTTP"; // 标签文字
+
+        const labelCfg = {
+          position: "middle",
+          style: {
+            fill: "#F56C6C", // 文字颜色
+            fontSize: 8, // 文字大小
+            textAlign: "center",
+            textBaseline: "middle",
+          },
+        };
+        return { label, labelCfg };
       });
 
       // 图初始化数据
       this.updateData(data);
-
       // 渲染画布
       this.renderGraph();
       // this.graph.zoom(1);
