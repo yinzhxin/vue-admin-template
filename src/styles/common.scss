@@ -28,6 +28,11 @@
     justify-content: space-between;
 }
 
+.flex-end {
+    display: flex;
+    justify-content: flex-end;
+}
+
 .success {
     color: #67C23A
 }
