@@ -5,16 +5,19 @@
     </div>
     <div class="right">
       <BaseInfoCard class="margin-bottom" title="归因分析服务" :desc="desc" />
-    </div>
-
-    <div>
-      <div id="container" style=""></div>
+      <div style="width: 100%; height: 200%; background: #fff">
+        <img
+          src="../../../assets/panorama.svg"
+          alt="panorama"
+          style="width: 100%; height: auto;"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import G6 from "@antv/g6";
+// import G6 from "@antv/g6";
 import MenuTree from "@/components/MenuTree";
 import BaseInfoCard from "@/components/BaseInfoCard.vue";
 import LineChart from "@/components/Chart/LineChart.vue";
@@ -170,20 +173,20 @@ export default {
         },
       ],
 
-      graph: null,
+      // graph: null,
     };
   },
 
-  mounted() {
-    this.initGraph();
-  },
+  // mounted() {
+  //   this.initGraph();
+  // },
 
-  beforeDestroy() {
-    // 销毁画布
-    this.graph.destroy();
-    // 实例销毁
-    this.graph = null;
-  },
+  // beforeDestroy() {
+  //   // 销毁画布
+  //   this.graph.destroy();
+  //   // 实例销毁
+  //   this.graph = null;
+  // },
 
   methods: {
     // 更新图表数据，初次渲染也调用data方法
@@ -203,72 +206,132 @@ export default {
       });
 
       const data = {
-        id: "person",
+        id: "root",
+        img: "user",
+        label: "User",
         children: [
           {
-            id: "server",
+            id: "root/1",
+            img: "request",
+            label: "主动请求",
+            children: [
+              {
+                id: "root/2/3",
+                img: "request",
+                label: "创建",
+              },
+            ],
+          },
+          {
+            id: "root/2",
+            img: "request",
+            label: "自动请求",
+            children: [
+              {
+                id: "root/2/1",
+                img: "request",
+                label: "创建",
+              },
+            ],
+          },
+          {
+            id: "root/3",
+            img: "request",
+            label: "查询请求",
+            children: [
+              {
+                id: "root/3/1",
+                img: "request",
+                label: "查询执行",
+                children: [
+                  {
+                    id: "root/3/1/1",
+                    img: "right",
+                    label: "User",
+                  },
+                ],
+              },
+            ],
           },
         ],
       };
 
-      G6.Util.traverseTree(data, (d) => {
-        d.leftIcon = {
-          style: {
-            fill: "#e6fffb",
-            stroke: "#e6fffb",
+      G6.registerNode(
+        "sql",
+        {
+          drawShape(cfg, group) {
+            const rect = group.addShape("rect", {
+              attrs: {
+                x: -75,
+                y: -25,
+                width: 150,
+                height: 50,
+                radius: 10,
+                stroke: "#5B8FF9",
+                fill: "#C6E5FF",
+                lineWidth: 3,
+              },
+              name: "rect-shape",
+            });
+            if (cfg.name) {
+              group.addShape("text", {
+                attrs: {
+                  text: cfg.name,
+                  x: 0,
+                  y: 0,
+                  fill: "#00287E",
+                  fontSize: 14,
+                  textAlign: "center",
+                  textBaseline: "middle",
+                  fontWeight: "bold",
+                },
+                name: "text-shape",
+              });
+            }
+            return rect;
           },
-          img: "https://gw.alipayobjects.com/mdn/rms_f8c6a0/afts/img/A*Q_FQT6nwEC8AAAAAAAAAAABkARQnAQ",
-        };
-        return true;
-      });
-
-      const defaultLayout = {
-        type: "compactBox",
-        direction: "TB",
-        getId: function getId(d) {
-          return d.id;
         },
-        getHeight: function getHeight() {
-          return 16;
-        },
-        getWidth: function getWidth() {
-          return 16;
-        },
-        getVGap: function getVGap() {
-          return 40;
-        },
-        getHGap: function getHGap() {
-          return 70;
-        },
-      };
+        "single-node"
+      );
 
       // 获取容器图形
       const container = document.getElementById("container");
       const width = container.scrollWidth || 1190;
       const height = container.scrollHeight || 300;
       console.log(width, height);
-
-      this.graph = new G6.TreeGraph({
+      const graph = new G6.Graph({
         container: "container",
         width,
         height,
-        plugins: [toolbar],
-        modes: {
-          default: ["drag-canvas", "zoom-canvas"],
+        layout: {
+          type: "dagre",
+          rankdir: "LR", // 可选，默认为图的中心
+          ranksep: 70,
+          controlPoints: true,
         },
         defaultNode: {
-          type: "image",
-          size: [60, 60],
+          type: "sql",
         },
         defaultEdge: {
+          type: "polyline",
           style: {
-            lineDash: [4, 4], // 虚线样式
-            stroke: "blue", // 线条颜色
-            lineWidth: 1, // 线条宽度
+            radius: 20,
+            offset: 45,
+            endArrow: true,
+            lineWidth: 2,
+            stroke: "#C2C8D5",
           },
         },
-
-        layout: defaultLayout,
+        nodeStateStyles: {
+          selected: {
+            stroke: "#d9d9d9",
+            fill: "#5394ef",
+          },
+        },
+        modes: {
+          default: ["drag-canvas", "zoom-canvas", "click-select"],
+        },
+        fitView: true,
       });
 
       this.graph.node((node) => {
@@ -283,30 +346,13 @@ export default {
         return {};
       });
 
-      this.graph.edge((edge) => {
-        const label = "4000次/小时 HTTP"; // 标签文字
-
-        const labelCfg = {
-          position: "middle",
-          style: {
-            fill: "#F56C6C", // 文字颜色
-            fontSize: 8, // 文字大小
-            textAlign: "center",
-            textBaseline: "middle",
-          },
-        };
-        return { label, labelCfg };
-      });
-
       // 图初始化数据
       this.updateData(data);
       // 渲染画布
       this.renderGraph();
-      // this.graph.zoom(1);
-      this.graph.fitView();
+      this.graph.zoom(1);
     },
   },
-  mounted() {},
 };
 </script>
 <style lang="scss" scoped>

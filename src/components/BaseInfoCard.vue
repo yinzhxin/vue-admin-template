@@ -53,9 +53,9 @@ export default {
       default: "",
     },
     desc: {
-      type: Object,
+      type: Array,
       default: () => {
-        return {};
+        return [];
       },
     },
   },
