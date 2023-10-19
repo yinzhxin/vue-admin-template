@@ -23,7 +23,7 @@ import BaseInfoCard from "@/components/BaseInfoCard.vue";
 import LineChart from "@/components/Chart/LineChart.vue";
 
 export default {
-  name: "",
+  name: "ApplicationPanorama",
   components: { MenuTree, BaseInfoCard, LineChart },
   props: {},
   data() {

@@ -9,10 +9,10 @@
         <el-select
           v-model="formInline.value2"
           placeholder="请选择"
-          style="width: 300px"
+          style="width: 200px"
         >
           <el-option
-            v-for="item in options"
+            v-for="item in groupOptions"
             :key="item.value"
             :label="item.label"
             :value="item.value"
@@ -20,7 +20,7 @@
           </el-option>
         </el-select>
 
-        <i class="el-icon-back toTotalTopo">创建泳道</i>
+        <i class="el-icon-plus createLane" @click="handleCreate">创建</i>
       </el-form-item>
 
       <el-form-item label="监控时间">
@@ -39,7 +39,7 @@
 
     <el-row :gutter="20">
       <el-col :span="12">
-        <el-card shadow="never" class="grid-content">
+        <el-card shadow="never" class="grid-content" style="height: 521px">
           <div slot="header">
             <strong>泳道组涉及应用</strong>
             <el-button type="text" style="float: right; padding: 3px 0">
@@ -61,12 +61,14 @@
           </el-input>
 
           <div style="margin-bottom: 10px">
-            <el-tag type="info" class="tag-style"> sc-a </el-tag>
-            <el-tag type="info" class="tag-style"> sc-b </el-tag>
-            <el-tag type="info" class="tag-style"> sc-c </el-tag>
-            <el-tag type="info" class="tag-style"> sc-b-red </el-tag>
-            <el-tag type="info" class="tag-style"> sc-b-blue </el-tag>
-            <el-tag type="info" class="tag-style"> sc-a-blue </el-tag>
+            <el-tag
+              type="info"
+              class="tag-style"
+              v-for="item in tagList"
+              :key="item.value"
+            >
+              {{ item.label }}
+            </el-tag>
           </div>
         </el-card>
       </el-col>
@@ -75,167 +77,439 @@
         <div class="grid-content">
           <LineChart
             :width="'100%'"
-            :height="'200%'"
+            :height="'250px'"
             :chartData="chartData2"
             :title="`入口应用监控(总)`"
             :xAxisData="xAxisData"
-            :isShowStyle="false"
-            :color="['#5470C6', '#91CC75', '#FAC858']"
+            :isAreaStyle="false"
+            :color="['#409EFF']"
           />
+        </div>
+
+        <div class="grid-content" style="margin-top: 20px">
           <LineChart
             :width="'100%'"
-            :height="'200%'"
-            :chartData="chartData3"
+            :height="'250px'"
+            :chartData="chartData2"
             :title="`入口应用监控(未打标部分)`"
             :xAxisData="xAxisData"
-            :isShowStyle="false"
-            :color="['#5470C6', '#91CC75', '#FAC858']"
+            :isAreaStyle="false"
+            :color="['#F56C6C']"
           />
         </div>
       </el-col>
     </el-row>
+
+    <el-row :gutter="20">
+      <el-col :span="24">
+        <el-card shadow="never" class="grid-content">
+          <div slot="header">
+            <strong>流控分配</strong>
+          </div>
+
+          <div class="flow-style">
+            <div>
+              <el-button type="primary" size="small" @click="handleCreate"
+                >创建泳道</el-button
+              >
+
+              <el-select
+                v-model="name"
+                placeholder="流控泳道名称"
+                style="width: 200px; margin: 0 10px"
+                size="small"
+              >
+                <el-option
+                  v-for="item in nameOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+
+              <el-input
+                placeholder="请输入流控泳道名称"
+                suffix-icon="el-icon-search"
+                style="width: 240px"
+                size="small"
+                v-model="nameValue"
+              >
+              </el-input>
+            </div>
+
+            <div>
+              <el-button type="text">优先级设置</el-button>
+              <i class="el-icon-refresh"></i>
+            </div>
+          </div>
+
+          <div style="margin: 20px 0">
+            <Table :table-data="tableData" :columns="columns" size="small" />
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
+
+    <el-drawer
+      :visible.sync="drawer"
+      :before-close="handleClose"
+      direction="rtl"
+      size="50%"
+    >
+      <template v-slot:title>
+        <h2>
+          <i class="el-icon-back" style="font-weight: 700"></i>创建流控泳道
+        </h2>
+      </template>
+
+      <div style="margin: 0 20px">
+        <el-form ref="form" :model="form" label-width="0px">
+          <strong> 流控泳道名称 </strong>
+          <el-form-item label="">
+            <el-input v-model="form.name"></el-input>
+          </el-form-item>
+
+          <strong> 接收打标流量应用 </strong>
+          <el-form-item label="">
+            <el-select v-model="form.app1" placeholder="" style="width: 100%">
+              <el-option label="区域一" value="shanghai"></el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item label="">
+            <el-select v-model="form.app2" placeholder="" style="width: 100%">
+              <el-option label="区域一" value="shanghai"></el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item label="">
+            <!-- <el-button type="text"> + 添加泳道应用 (不超过泳道范围) </el-button> -->
+            <i class="el-icon-plus createLane">添加泳道应用 (不超过泳道范围)</i>
+          </el-form-item>
+
+          <strong> 流控规则 </strong>
+          <el-form-item label="">
+            <el-switch v-model="form.rule"></el-switch>
+          </el-form-item>
+
+          <strong> Path </strong>
+          <el-form-item label="">
+            <el-input
+              v-model="form.path"
+              placeholder="HTTP 相对路径，严格匹配"
+            />
+          </el-form-item>
+
+          <strong> 条件模式 </strong>
+          <el-form-item label="">
+            <el-radio-group v-model="form.mode">
+              <el-radio label="同时满足下列条件" name="1"></el-radio>
+              <el-radio label="满足下列任一条件" name="2"></el-radio>
+            </el-radio-group>
+          </el-form-item>
+
+          <strong> 条件列表 </strong>
+          <!-- <Table :table-data="tableData" :columns="columns" size="small" /> -->
+          <table border="0" style="width: 100%">
+            <thead>
+              <tr class="headerStyle">
+                <th>
+                  <div class="cell">参数类型</div>
+                </th>
+                <th>
+                  <div class="cell">参数</div>
+                </th>
+                <th>
+                  <div class="cell">条件</div>
+                </th>
+                <th>
+                  <div class="cell">值</div>
+                </th>
+                <th>
+                  <div class="cell">操作</div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                class="tr-style"
+                v-for="(domain, index) in limitForm.nodeUpdateItems"
+                :key="domain.id"
+              >
+                <td>
+                  <el-form-item class="td-style">
+                    <el-input v-model="domain.type"> </el-input>
+                  </el-form-item>
+                </td>
+
+                <td>
+                  <el-form-item class="td-style">
+                    <el-input v-model="domain.params"> </el-input>
+                  </el-form-item>
+                </td>
+
+                <td>
+                  <el-form-item class="td-style">
+                    <el-select v-model="domain.condition" style="width: 100%">
+                      <el-option
+                        v-for="item in []"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      >
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+                </td>
+
+                <td>
+                  <el-form-item class="td-style">
+                    <el-input v-model="domain.value"> </el-input>
+                  </el-form-item>
+                </td>
+
+                <td style="margin-bottom: 10px">
+                  <el-button
+                    icon="el-icon-delete"
+                    type="text"
+                    @click="handleDeleteLabel('nodeUpdateItems', domain, index)"
+                  />
+                </td>
+              </tr>
+
+              <!-- <tr>
+                <td colspan="5">
+                  <div
+                    class="cursor-pointer text-center hover-div"
+                    @click="handleAddLabel('nodeUpdateItems')"
+                  >
+                    <i class="el-icon-circle-plus-outline" />
+                    添加
+                  </div>
+                </td>
+              </tr> -->
+            </tbody>
+          </table>
+
+          <el-form-item label="">
+            <!-- <el-button type="text"> + 添加规则条件 </el-button> -->
+            <i
+              class="el-icon-edit createLane"
+              @click="handleAddLabel('nodeUpdateItems')"
+              >添加规则条件</i
+            >
+          </el-form-item>
+
+          <div class="drawer-footer">
+            <el-button type="primary">确定</el-button>
+            <el-button @click="handleClose">取消</el-button>
+          </div>
+        </el-form>
+      </div>
+    </el-drawer>
   </div>
 </template>
 <script>
 import LineChart from "@/views/echarts/LineChart.vue";
+import Table from "@/views/components/Table.vue";
+import { nanoid } from "nanoid";
 
 export default {
-  name: "Business1",
-  components: { LineChart },
+  name: "EscapeObservationMain",
+  components: { LineChart, Table },
   data() {
     return {
       formInline: {
         value1: "",
         value2: "",
       },
-
-      value: "",
-      options: [],
-
+      groupOptions: [],
+      nameOptions: [],
+      name: "",
       searchValue: "",
-
-      // 列表和折线图数据
-      dbList: [
-        {
-          title: "TPS / QPS",
-          ulData: [
-            { title: "数据节点总数", num: "102" },
-            { title: "计算节点数", num: "0" },
-            { title: "全局事务节点数", num: "0" },
-          ],
-          chartData: [
-            {
-              name: "a",
-              data: [0, 0, 0, 0, 0, 0, 0],
-            },
-          ],
-        },
-        {
-          title: "磁盘实用率(%)",
-          ulData: [
-            { title: "主数据节点数", num: "9" },
-            { title: "TPS", num: "0" },
-            { title: "活跃连接数", num: "0" },
-          ],
-          chartData: [
-            {
-              name: "a",
-              data: [2, 2, 2, 2, 2, 2, 2],
-            },
-          ],
-        },
-        {
-          title: "连接使用率(%)",
-          ulData: [
-            { title: "全局事务节点数", num: "7" },
-            { title: "连接总数", num: "0" },
-            { title: "锁超时时间", num: "0.00" },
-          ],
-          chartData: [
-            {
-              name: "a",
-              data: [20, 22, 30, 32, 20, 22, 30],
-            },
-          ],
-        },
-        {
-          title: "内存 / CPU使用率(%)",
-          ulData: [
-            { title: "连接拒绝数", num: "102" },
-            { title: "慢Sql超时数量", num: "0" },
-            { title: ".", num: "." },
-          ],
-          chartData: [
-            {
-              name: "a",
-              data: [60, 60, 60, 60, 60, 60, 60],
-            },
-            {
-              name: "b",
-              data: [50, 50, 50, 50, 50, 50, 50],
-            },
-          ],
-        },
+      nameValue: "",
+      tagList: [
+        { value: "sc-a", label: "sc-a" },
+        { value: "sc-b", label: "sc-a" },
+        { value: "sc-c", label: "sc-a" },
+        { value: "sc-b-red", label: "sc-a" },
+        { value: "sc-b-blue", label: "sc-b-blue" },
+        { value: "sc-a-blue", label: "sc-a-blue" },
       ],
-
-      // 列表
-      ulList: {
-        msgmid: [
-          { title: "活动数 / 总数", num: "18/18" },
-          { title: "消息堆积量", num: "9.00" },
-          { title: "TPS", num: "0.00" },
-        ],
-        storage: [
-          { title: "存储桶数量", num: "2" },
-          { title: "对象总数", num: "2124214343" },
-          { title: "下载流量", num: "0.00" },
-          { title: "上传流量", num: "0.00" },
-          { title: "GET类请求次数", num: "78" },
-          { title: "PUT类请求次数", num: "0.00" },
-        ],
-        redis: [
-          { title: "活动数 / 总数", num: "18/18" },
-          { title: "客户端连接数", num: "2342" },
-          { title: "总QPS", num: "2344.55" },
-        ],
-        center: [
-          { title: "集群Leader", num: "√" },
-          { title: "指定服务健康检查", num: "3/3" },
-        ],
-        server: [
-          { title: "集群Leader", num: "√" },
-          { title: "指定服务健康检查", num: "0/0" },
-        ],
-      },
-
       // 折线图横坐标
-      xAxisData: ["9:00", "9:10", "9:20", "9:30", "9:40", "9:50", "10:00"],
+      xAxisData: ["14:51", "14:52", "14:53", "14:54", "14:55"],
 
       // 折线图数据
 
-      chartData2: [{ name: "a", data: [0, 0, 0.5, 0, 0, 0, 0] }],
-
-      chartData3: [
+      chartData1: [
         {
-          name: "a",
-          data: [0, 80, 0, 80, 0, 80, 0],
+          name: "QPS应用监控(总)",
+          data: [100, 140, 225, 100, 140],
         },
       ],
 
-      chartData4: [
+      chartData2: [
         {
-          name: "a",
-          data: [3000, 2400, 2200, 3000, 2200, 2000, 2800],
+          name: "QPS应用监控(未打标部分)",
+          data: [90, 130, 90, 150, 130],
         },
       ],
 
-      chartData5: [
+      columns: [
         {
-          name: "a",
-          data: [0.23, 0.25, 0.22, 0.25, 0.3, 0.24, 0.23],
+          label: "流控泳道名称",
+          index: "name",
+          render(h, data) {
+            return (
+              <div style="cursor:pointer;color:#409EFF">{data.row.name}</div>
+            );
+          },
+        },
+        {
+          label: "流控规则及状态",
+          index: "status",
+          render(h, data) {
+            return (
+              <div>
+                <div>
+                  {data.row.status == "已开启" ? (
+                    <div>
+                      <span style="color:#67C23A">
+                        <i class="el-icon-success" />
+                      </span>
+                      <span>{data.row.status}</span>
+                    </div>
+                  ) : (
+                    <span style="color:#F56C6C">
+                      <i class="el-icon-error" />
+                    </span>
+                  )}
+                </div>
+                <div>条件:AND</div>
+              </div>
+            );
+          },
+        },
+        {
+          label: "摘要",
+          index: "summary",
+        },
+        {
+          label: "打标规则流量对应应用",
+          index: "app",
+          render(h, data) {
+            return (
+              <div>
+                {data.row.app.map((item) => (
+                  <el-tag type="info" style="margin-right:5px">
+                    {item}
+                  </el-tag>
+                ))}
+              </div>
+            );
+          },
+        },
+        {
+          label: "优先级",
+          index: "priority",
+          width: "100px",
+        },
+        {
+          label: "操作",
+          index: "operation",
+          width: "130px",
+          render: (h, data) => {
+            return (
+              <div>
+                <el-button size="small" type="text">
+                  {" "}
+                  编辑{" "}
+                </el-button>
+
+                <el-button size="small" type="text">
+                  {" "}
+                  删除{" "}
+                </el-button>
+
+                <el-button size="small" type="text">
+                  {" "}
+                  关闭{" "}
+                </el-button>
+              </div>
+            );
+          },
         },
       ],
+
+      tableData: [
+        {
+          name: "red",
+          status: "已开启",
+          summary: "availible DB resource left less then: 20%",
+          app: ["sc-a", "sc-b", "sc-c", "sc-d"],
+          priority: "1",
+        },
+      ],
+
+      drawer: false,
+
+      form: {
+        name: "",
+        app: "",
+        app2: "",
+        rule: "",
+        path: "",
+        mode: "同时满足下列条件",
+      },
+
+      limitForm: {
+        nodeUpdateItems: [
+          {
+            id: nanoid(),
+            type: "",
+            params: "",
+            condition: "",
+            value: "",
+          },
+        ],
+      },
     };
+  },
+
+  methods: {
+    handleCreate() {
+      this.drawer = true;
+    },
+
+    handleClose() {
+      this.drawer = false;
+      this.limitForm = {
+        nodeUpdateItems: [
+          {
+            id: nanoid(),
+            type: "",
+            params: "",
+            condition: "",
+            value: "",
+          },
+        ],
+      };
+    },
+    handleAddLabel(filed) {
+      const obj = {
+        id: nanoid(),
+        type: "",
+        params: "",
+        condition: "",
+        value: "",
+      };
+      this.limitForm[filed].push(obj);
+    },
+    // 删除
+    handleDeleteLabel(filed, item, index) {
+      this.limitForm[filed].splice(index, 1);
+    },
   },
 };
 </script>
@@ -247,54 +521,44 @@ $li-underline: #e8e8e8;
 
 .grid-content {
   background: $bg;
-  min-height: 400px;
-}
-.title {
-  display: flex;
-  justify-content: center;
-  height: 50px;
-  padding: 0 5px;
-  background: $title-bg;
+  min-height: 250px;
 }
 
-/* 横线列表样式 */
-ul {
-  display: flex;
-  flex-wrap: wrap;
-  list-style: none;
-  padding: 15px 15px 0;
-
-  li {
-    display: flex;
-    justify-content: space-between;
-    width: 48%;
-    border-bottom: 2px solid $li-underline;
-    // 上 右 下 左
-    padding: 0 10px 10px 0;
-    margin: 0 0 20px 15px;
-
-    &:nth-child(2n) {
-      margin-right: 0;
-    }
-  }
-
-  &.ul-style {
-    li {
-      width: 100%;
-      margin-right: 0;
-    }
-  }
-}
-
-.toTotalTopo {
-  font-size: 20px;
+.createLane {
+  font-size: 17px;
   font-weight: 700;
   margin-right: 10px;
+  color: #409eff;
   cursor: pointer;
+}
+
+.flow-style {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .el-icon-refresh {
+    font-size: 16px;
+    font-weight: 700;
+    margin-left: 10px;
+    cursor: pointer;
+  }
 }
 
 .tag-style {
   border-radius: 20px;
   margin-right: 10px;
+}
+
+.drawer-footer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 23px;
+}
+
+.tr-style {
+  .td-style {
+    margin-bottom: 0;
+  }
 }
 </style>
