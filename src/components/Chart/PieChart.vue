@@ -7,7 +7,7 @@ import * as echarts from "echarts";
 import resize from "../mixins/resize";
 
 export default {
-  name: "BarChart",
+  name: "LineChart",
   mixins: [resize],
   props: {
     className: {
@@ -32,10 +32,10 @@ export default {
       type: String,
       default: "",
     },
-    legend: {
+    legend:{
       type: String,
-      default: "",
-    },
+      default: '',
+    }
   },
 
   data() {
@@ -70,43 +70,27 @@ export default {
   methods: {
     initChart() {
       this.chart = echarts.init(this.$el);
-      let yData = this.chartData.yData.map((el) => {
-        let obj = {
-          ...el,
-          type: "bar",
-          stack: "total",
-          emphasis: {
-            focus: "series",
-          },
-        };
-        return obj;
-      });
       const option = {
         title: {
-          text: this.title ? this.title : "",
-          textStyle: {
-            fontWeight: "normal",
-            fontSize: "12",
+          text:this.title?this.title:'',
+          textStyle:{
+            fontWeight:'normal',
+            fontSize :'12'
           },
-          left: 40,
-          top: 5,
+          left:40,
+          top:5
         },
+       legend:{
+          show:this.legend?false:true,
+          orient: 'vertical',
+          right: 30,
+          top:70,
+
+       },
+
         tooltip: {
-          trigger: "axis",
-          axisPointer: {
-            type: "shadow", // 'shadow' as default; can also be 'line' or 'shadow'
-          },
-        },
-        legend: {
-          top: 25,
-          right: 100,
-        },
-        xAxis: {
-          type: "category",
-        },
-        yAxis: {
-          type: "value",
-          data: this.chartData.xData,
+          trigger: "axis", // 触发方式为坐标轴（'axis'）
+          confine: true, // 设定限制在图标内（'confine:true'）
         },
         grid: {
           // left: 15,
@@ -115,7 +99,13 @@ export default {
           // top: "5%",
           // containLabel: true, // 保持直角坐标系内绘图网格
         },
-        series: yData,
+         
+        series:{
+             type: 'pie',
+             radius: '50%',
+             data: this.chartData,
+        },
+        
       };
 
       this.chart.setOption(option);

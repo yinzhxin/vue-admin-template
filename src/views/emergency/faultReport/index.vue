@@ -65,7 +65,7 @@
           >RT相比其他过大
         </div>
         <div class="flex-box">
-          <bar-chart
+          <pie-chart
             height="300px"
             title="主机prod-ldx82sksa9se0的rt分布"
             :chartData="chartData2"
@@ -135,7 +135,7 @@
           >的影响最大，且主要由于其RT变化引起
         </div>
         <div class="flex-box">
-          <bar-chart
+          <pie-chart
             height="300px"
             title="主机prod-ldx82sksa9se0上的各服务对此次rt突增的影响占比"
             :chartData="chartData2"
@@ -153,10 +153,10 @@
 
 <script>
 import LineChart from "@/components/Chart/LineChart.vue";
-import BarChart from "@/components/Chart/BarChart.vue";
+import PieChart from "@/components/Chart/PieChart.vue";
 export default {
   name: "",
-  components: { LineChart, BarChart },
+  components: { LineChart, PieChart },
   props: {},
   data() {
     return {

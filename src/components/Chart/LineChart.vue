@@ -65,26 +65,26 @@ export default {
 
   methods: {
     initChart() {
-        let series=this.chartData.yData.map(el=>{
-          return  {
-            type:'line',
-             ...el
-          }
-        })
+      let series = this.chartData.yData.map((el) => {
+        return {
+          type: "line",
+          ...el,
+        };
+      });
       this.chart = echarts.init(this.$el);
       const option = {
         title: {
-          text:this.title?this.title:'',
-          textStyle:{
-            fontWeight:'normal',
-            fontSize :'12'
+          text: this.title ? this.title : "",
+          textStyle: {
+            fontWeight: "normal",
+            fontSize: "12",
           },
-          left:40,
-          top:5
+          left: 40,
+          top: 5,
         },
         legend: {
-            top:0,
-            right:100
+          top: 25,
+          right: 100,
         },
         tooltip: {
           trigger: "axis", // 触发方式为坐标轴（'axis'）
@@ -97,15 +97,14 @@ export default {
           // top: "5%",
           // containLabel: true, // 保持直角坐标系内绘图网格
         },
-         xAxis: {
-          type: 'category',
-          data: this.chartData.xData
+        xAxis: {
+          type: "category",
+          data: this.chartData.xData,
         },
         yAxis: {
-          type: 'value'
+          type: "value",
         },
-        series:series,
-        
+        series: series,
       };
 
       this.chart.setOption(option);
