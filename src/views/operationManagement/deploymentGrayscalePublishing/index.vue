@@ -197,16 +197,16 @@
                   <thead class="headerStyle">
                     <tr>
                       <th>
-                        <div>参数类型</div>
+                        <div class="cell">参数类型</div>
                       </th>
                       <th>
-                        <div>参数</div>
+                        <div class="cell">参数</div>
                       </th>
                       <th>
-                        <div>条件</div>
+                        <div class="cell">条件</div>
                       </th>
                       <th>
-                        <div>值</div>
+                        <div class="cell">值</div>
                       </th>
                       <th></th>
                     </tr>
@@ -217,7 +217,7 @@
                       :key="index"
                     >
                       <td>
-                        <el-form-item label="">
+                        <el-form-item >
                           <el-select
                             v-model="item.argumentType"
                             placeholder="Cookie"
@@ -231,7 +231,7 @@
                         </el-form-item>
                       </td>
                       <td>
-                        <el-form-item label="">
+                        <el-form-item >
                           <el-select
                             v-model="item.argument"
                             placeholder="Cookie字段名"
@@ -242,7 +242,7 @@
                         </el-form-item>
                       </td>
                       <td>
-                        <el-form-item label="">
+                        <el-form-item >
                           <el-select
                             v-model="item.Conditions"
                             placeholder="请选择"
@@ -253,7 +253,7 @@
                         </el-form-item>
                       </td>
                       <td>
-                        <el-form-item label="">
+                        <el-form-item >
                           <el-input v-model="item.value" size="mini">
                           </el-input>
                         </el-form-item>
@@ -263,6 +263,7 @@
                           class="error"
                           type="text"
                           icon="el-icon-delete"
+                           @click="handleDelete('conditionList', item, index)"
                         ></el-button>
                       </td>
                     </tr>
@@ -460,6 +461,9 @@ export default {
       };
       this.ruleForm.conditionList.push(obj);
     },
+     handleDelete(filed, item, index) {
+      this.ruleForm[filed].splice(index, 1);
+    },
     // 更新图表数据，初次渲染也调用data方法
     updateData(newData) {
       this.graph.data(newData);
@@ -652,4 +656,5 @@ export default {
     height: 500px;
   }
 }
+
 </style>
