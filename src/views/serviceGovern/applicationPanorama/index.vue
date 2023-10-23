@@ -5,12 +5,15 @@
     </div>
     <div class="right">
       <BaseInfoCard class="margin-bottom" title="归因分析服务" :desc="desc" />
-      <div style="width: 100%; height: 200%; background: #fff">
-        <img
+      <div style="width: 100%; height: 100%; background: #fff">
+        <!-- <img
           src="../../../assets/panorama.svg"
           alt="panorama"
           style="width: 100%; height: auto;"
-        />
+        /> -->
+
+        <Drage />
+      <Drage1 />
       </div>
     </div>
   </div>
@@ -21,10 +24,12 @@
 import MenuTree from "@/components/MenuTree";
 import BaseInfoCard from "@/components/BaseInfoCard.vue";
 import LineChart from "@/components/Chart/LineChart.vue";
+import Drage from "./components/Drage.vue";
+import Drage1 from "./components/Drage1.vue";
 
 export default {
   name: "ApplicationPanorama",
-  components: { MenuTree, BaseInfoCard, LineChart },
+  components: { MenuTree, BaseInfoCard, LineChart, Drage, Drage1 },
   props: {},
   data() {
     return {

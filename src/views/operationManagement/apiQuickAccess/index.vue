@@ -13,6 +13,10 @@
           >
           </el-option>
         </el-select>
+
+        <el-button @click="addTab(activeTab)" class="addBtn" size="small">
+          <i class="el-icon-plus"></i>
+        </el-button>
       </el-col>
     </el-row>
 
@@ -25,15 +29,26 @@
           editable
           @edit="handleTabsEdit"
         >
-          <el-tab-pane
+          <!-- <el-tab-pane
             v-if=""
             v-for="item in tabList"
-            :key="item.name"
+            :key="item.title"
             :label="item.title"
             :name="item.name"
           >
             <keep-alive>
               <component :is="item.name" v-if="activeTab == item.name" />
+            </keep-alive>
+          </el-tab-pane> -->
+          <el-tab-pane
+            v-if=""
+            v-for="item in tabList"
+            :key="item.title"
+            :label="item.title"
+            :name="item.title"
+          >
+            <keep-alive>
+              <component is="Overview" />
             </keep-alive>
           </el-tab-pane>
         </el-tabs>
@@ -45,36 +60,20 @@
 <script>
 //概览
 import Overview from "./components/Overview.vue";
-// JVM监控
-import JvmMonitor from "./components/JvmMonitor.vue";
-// 主机监控
-import HostMonitor from "./components/HostMonitor.vue";
-// Pod监控
-import PodMonitor from "./components/PodMonitor.vue";
-// SQL调用分析
-import SqlAnalysis from "./components/SqlAnalysis.vue";
 
 export default {
   name: "ApiQuickAccess",
   components: {
     Overview,
-    JvmMonitor,
-    HostMonitor,
-    PodMonitor,
-    SqlAnalysis,
   },
   data() {
     return {
-      activeTab: "Overview", // 绑定到当前激活的标签页
-      tabList: [
-        { title: "概览", name: "Overview" },
-        { title: "JVM监控", name: "JvmMonitor" },
-        { title: "主机监控", name: "HostMonitor" },
-        { title: "Pod监控", name: "PodMonitor" },
-        { title: "SQL调用分析", name: "SqlAnalysis" },
-      ],
+      activeTab: "url1", // 绑定到当前激活的标签页
+      tabList: [{ title: "url1", name: "Overview" }],
       options: [],
       value: "",
+
+      num: 1,
     };
   },
 
@@ -87,32 +86,43 @@ export default {
     },
 
     handleTabsEdit(targetName, action) {
-      if (action === "add") {
-        let newTabName = ++this.tabIndex + "";
-        this.tabList.push({
-          title: "New Tab",
-          name: newTabName,
-          content: "New Tab content",
-        });
-        this.activeTab = newTabName;
-      }
+      // if (action === "add") {
+      //   let newTabName = ++this.tabIndex + "";
+      //   this.tabList.push({
+      //     title: "New Tab",
+      //     name: newTabName,
+      //     content: "New Tab content",
+      //   });
+      //   this.activeTab = newTabName;
+      // }
       if (action === "remove") {
         let tabs = this.tabList;
         let activeName = this.activeTab;
         if (activeName === targetName) {
           tabs.forEach((tab, index) => {
-            if (tab.name === targetName) {
+            if (tab.title === targetName) {
               let nextTab = tabs[index + 1] || tabs[index - 1];
               if (nextTab) {
-                activeName = nextTab.name;
+                activeName = nextTab.title;
               }
             }
           });
         }
 
         this.activeTab = activeName;
-        this.tabList = tabs.filter((tab) => tab.name !== targetName);
+        this.tabList = tabs.filter((tab) => tab.title !== targetName);
+        this.num--;
       }
+    },
+
+    addTab(targetName) {
+      let newTabName = "url" + ++this.num;
+      this.tabList.push({
+        title: newTabName,
+        name: "Overview",
+      });
+
+      this.activeTab = newTabName;
     },
   },
 };
@@ -159,17 +169,9 @@ export default {
     }
   }
 }
-/* 选择器 */
-.selectbox {
-  width: 100%;
-}
-/* 小圆点 */
-.dot {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: #67c23a;
-  margin-right: 5px;
+
+.addBtn {
+  margin-left: 10px;
+  font-size: 20px;
 }
 </style>

@@ -387,7 +387,7 @@ export default {
 
     handleToDetail(id) {
       this.$router.push({
-        name: "InstanceMonitorMain",
+        name: "SystemOverview",
         query: { serverId: id }, // 应用服务节点的'名称/id'
       });
     },
