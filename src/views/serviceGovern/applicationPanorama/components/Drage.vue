@@ -1,9 +1,16 @@
 <template>
   <!-- <div style="width: 100%; height: 200%; background: #fff;border:1px solid gray"> -->
   <el-card class="card-style">
-    <div slot="header" style="writing-mode: tb">
-      <h1>业务逻辑图</h1>
-    </div>
+    <!-- <div slot="header" style="writing-mode: tb; text-align: center">
+          <h1>业务逻辑层</h1>
+    </div> -->
+
+    <template #header>
+      <div class="card-header">
+        <h1>业务逻辑层</h1>
+      </div>
+    </template>
+
     <div id="container" />
   </el-card>
   <!-- </div> -->
@@ -20,7 +27,9 @@ export default {
   },
 
   mounted() {
-    this.initGraph();
+    this.$nextTick(() => {
+      this.initGraph();
+    });
   },
 
   beforeDestroy() {
@@ -43,10 +52,6 @@ export default {
 
     // 初始化图表
     initGraph() {
-      const toolbar = new G6.ToolBar({
-        position: { x: 0, y: 30 },
-      });
-
       const data = {
         nodes: [
           {
@@ -197,103 +202,6 @@ export default {
         ],
       };
 
-      // G6.registerEdge(
-      //   "line-arrow",
-      //   {
-      //     // getPath(points) {
-      //     //   console.log(points);
-      //     //   const startPoint = points[0];
-      //     //   const endPoint = points[1];
-      //     //   return [
-      //     //     ["M", startPoint.x, startPoint.y],
-      //     //     ["L", endPoint.x / 3 + (2 / 3) * startPoint.x, startPoint.y],
-      //     //     ["L", endPoint.x / 3 + (2 / 3) * startPoint.x, endPoint.y],
-      //     //     ["L", endPoint.x, endPoint.y],
-      //     //   ];
-      //     // },
-
-      //     getPath(points) {
-      //       const startPoint = points[0];
-      //       const endPoint = points[1];
-      //       const leftPointX = startPoint.x + 150;
-      //       return [
-      //         ["M", startPoint.x, startPoint.y],
-      //         ["L", leftPointX, startPoint.y],
-      //         ["L", leftPointX, endPoint.y],
-      //         ["L", endPoint.x, endPoint.y],
-      //       ];
-      //     },
-
-      //     getShapeStyle(cfg) {
-      //       const startPoint = cfg.startPoint;
-      //       const endPoint = cfg.endPoint;
-      //       const controlPoints = this.getControlPoints(cfg);
-      //       let points = [startPoint]; // the start point
-      //       // the control points
-      //       if (controlPoints) {
-      //         points = points.concat(controlPoints);
-      //       }
-      //       // the end point
-      //       points.push(endPoint);
-      //       const path = this.getPath(points);
-      //       const style = Object.assign(
-      //         {},
-      //         G6.Global.defaultEdge.style,
-      //         {
-      //           stroke: "#BBB",
-      //           lineWidth: 1,
-      //           path,
-      //         },
-      //         cfg.style
-      //       );
-      //       return style;
-      //     },
-      //   },
-      //   "line"
-      // );
-
-      // G6.registerEdge(
-      //   "line-arrow",
-      //   {
-      //     getPath(points) {
-      //       const startPoint = points[0];
-      //       const endPoint = points[1];
-      //       const leftPointX = startPoint.x;
-      //       return [
-      //         ["M", startPoint.x, startPoint.y],
-      //         ["L", leftPointX, startPoint.y],
-      //         ["L", leftPointX, endPoint.y],
-      //         ["L", endPoint.x, endPoint.y],
-      //       ];
-      //     },
-
-      //     getShapeStyle(cfg) {
-      //       const startPoint = cfg.startPoint;
-      //       const endPoint = cfg.endPoint;
-      //       const controlPoints = this.getControlPoints(cfg);
-      //       let points = [startPoint];
-      //       if (controlPoints) {
-      //         points = points.concat(controlPoints);
-      //       }
-      //       points.push(endPoint);
-      //       const path = this.getPath(points);
-      //       const style = Object.assign(
-      //         {},
-      //         G6.Global.defaultEdge.style,
-      //         {
-      //           stroke: "#B0B6B8",
-      //           lineWidth: 4,
-      //           path,
-      //         },
-      //         cfg.style
-      //       );
-      //       return style;
-      //     },
-      //   },
-
-      //   "line"
-      // );
-
       G6.registerEdge("hvh", {
         draw(cfg, group) {
           const startPoint = cfg.startPoint;
@@ -316,73 +224,85 @@ export default {
       // 获取容器图形
       const container = document.getElementById("container");
       const width = container.scrollWidth || 1190;
-      const height = container.scrollHeight || 600;
+      const height = container.scrollHeight || 450;
       console.log(width, height);
       this.graph = new G6.Graph({
         container: "container",
         width,
         height,
+        fitView: true,
+        fitViewPadding: 20,
         layout: {
-          // type: "dagre",
-          // rankdir: "LR", // 可选，默认为图的中心
-          // ranksep: 70,
-          // controlPoints: true,
-          // ranker: 'tight-tree',
+          controlPoints: true,
           type: "dagre",
+          rankdir: "LR", // 图的延展方向，节点对齐方式，可选： 'TB' | 'BT' | 'LR' | 'RL'
+          // nodeSize: 20,
           // ranker: "network-simplex", // 节点分层算法，可选：'tight-tree' 'longest-path' 'network-simplex'
-          rankdir: "LR", // 图的延展方向，可选： 'TB' | 'BT' | 'LR' | 'RL'
           // ranksep: 50, // 图的各个层次之间的间距
-          // nodesep: 30, // 同层各个节点之间的间距
-          // align: "UL", // 节点对齐方式，可选：'UL' | 'UR' | 'DL' | 'DR' | undefined
-          nodeSize: 30,
+          nodesep: 20, // 同层各个节点之间的间距
         },
         defaultNode: {
-          // 类型
-          type: "image",
-          // 大小
-          size: 50,
-          // 文字样式
+          type: "image", // 类型
+          size: 30, // 大小
           labelCfg: {
             position: "bottom",
             style: {
-              fontSize: 20,
+              fontSize: 12,
               fill: "black",
             },
           },
         },
         defaultEdge: {
           type: "hvh",
-          // type: "line-arrow",
           // style: {},
         },
         modes: {
           // default: ["drag-canvas", "zoom-canvas"],
         },
-        fitView: true,
       });
 
-      // this.graph.node((node) => {
+      data.nodes.forEach((node) => {
+        node.stateStyles = {
+          hover: {
+            cursor: "pointer",
+            stroke: "#409EFF",
+          },
+        };
+      });
 
-      //   return {};
-      // });
+      this.graph.on("node:mouseenter", (e) => {
+        const nodeItem = e.item;
+        this.graph.setItemState(nodeItem, "hover", true);
+      });
+
+      this.graph.on("node:mouseleave", (e) => {
+        const nodeItem = e.item;
+        this.graph.setItemState(nodeItem, "hover", false);
+      });
 
       // 图初始化数据
       this.updateData(data);
       // 渲染画布
       this.renderGraph();
-      this.graph.zoom(1);
+      // this.graph.zoom(1);
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  writing-mode: tb;
+}
 .card-style {
   display: flex;
   ::v-deep .el-card__header {
-    padding: 18px 20px;
+    // padding: 18px 20px;
     border-bottom: 1px solid #ebeef5;
-    background-color: #ebeef5;
+    background-color: #bbb;
   }
 }
 </style>

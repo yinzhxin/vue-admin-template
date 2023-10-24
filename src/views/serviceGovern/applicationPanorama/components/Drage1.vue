@@ -2,9 +2,9 @@
   <!-- <div style="width: 100%; height: 200%; background: #fff;border:1px solid gray"> -->
   <el-card class="card-style">
     <div slot="header" style="writing-mode: tb">
-      <h1>业务逻辑图</h1>
+      <h1>应用逻辑层</h1>
     </div>
-    <div id="container" />
+    <div id="container1" />
   </el-card>
   <!-- </div> -->
 </template>
@@ -43,16 +43,12 @@ export default {
 
     // 初始化图表
     initGraph() {
-      const toolbar = new G6.ToolBar({
-        position: { x: 0, y: 30 },
-      });
-
       const data = {
         nodes: [
           {
             id: "1",
-            img: "/panorama/.svg",
-            label: "User",
+            img: "/panorama/earth.svg",
+            label: "请求",
             anchorPoints: [
               [0, 0.5],
               [1, 0.5],
@@ -60,8 +56,8 @@ export default {
           },
           {
             id: "2",
-            img: "/panorama/four.svg",
-            label: "主动请求",
+            img: "/panorama/earth.svg",
+            label: "响应",
             anchorPoints: [
               [0, 0.5],
               [1, 0.5],
@@ -69,8 +65,8 @@ export default {
           },
           {
             id: "3",
-            img: "/panorama/four.svg",
-            label: "自动请求",
+            img: "/panorama/tree.svg",
+            label: "ELB",
             anchorPoints: [
               [0, 0.5],
               [1, 0.5],
@@ -78,8 +74,8 @@ export default {
           },
           {
             id: "4",
-            img: "/panorama/four.svg",
-            label: "查询请求",
+            img: "/panorama/cube.svg",
+            label: "APP",
             anchorPoints: [
               [0, 0.5],
               [1, 0.5],
@@ -87,8 +83,8 @@ export default {
           },
           {
             id: "5",
-            img: "/panorama/four.svg",
-            label: "创建",
+            img: "/panorama/cube.svg",
+            label: "APP",
             anchorPoints: [
               [0, 0.5],
               [1, 0.5],
@@ -96,8 +92,8 @@ export default {
           },
           {
             id: "6",
-            img: "/panorama/four.svg",
-            label: "查询执行",
+            img: "/panorama/cubes.svg",
+            label: "db",
             anchorPoints: [
               [0, 0.5],
               [1, 0.5],
@@ -105,8 +101,8 @@ export default {
           },
           {
             id: "7",
-            img: "/panorama/four.svg",
-            label: "付款确认",
+            img: "/panorama/cubes.svg",
+            label: "db",
             anchorPoints: [
               [0, 0.5],
               [1, 0.5],
@@ -114,8 +110,8 @@ export default {
           },
           {
             id: "8",
-            img: "/panorama/four.svg",
-            label: "付款取消",
+            img: "/panorama/database.svg",
+            label: "redis",
             anchorPoints: [
               [0, 0.5],
               [1, 0.5],
@@ -123,8 +119,8 @@ export default {
           },
           {
             id: "9",
-            img: "/panorama/right.svg",
-            label: "User",
+            img: "/panorama/database.svg",
+            label: "redis",
             anchorPoints: [
               [0, 0.5],
               [1, 0.5],
@@ -132,8 +128,8 @@ export default {
           },
           {
             id: "10",
-            img: "/panorama/del.svg",
-            label: "User",
+            img: "/panorama/tree.svg",
+            label: "ELB",
             anchorPoints: [
               [0, 0.5],
               [1, 0.5],
@@ -141,8 +137,26 @@ export default {
           },
           {
             id: "11",
-            img: "/panorama/right.svg",
-            label: "User",
+            img: "/panorama/tree.svg",
+            label: "ELB",
+            anchorPoints: [
+              [0, 0.5],
+              [1, 0.5],
+            ],
+          },
+          {
+            id: "12",
+            img: "/panorama/cube.svg",
+            label: "APP",
+            anchorPoints: [
+              [0, 0.5],
+              [1, 0.5],
+            ],
+          },
+          {
+            id: "13",
+            img: "/panorama/cube.svg",
+            label: "APP",
             anchorPoints: [
               [0, 0.5],
               [1, 0.5],
@@ -152,19 +166,15 @@ export default {
         edges: [
           {
             source: "1",
-            target: "2",
-          },
-          {
-            source: "1",
             target: "3",
           },
           {
-            source: "1",
-            target: "4",
+            source: "2",
+            target: "3",
           },
           {
-            source: "2",
-            target: "5",
+            source: "3",
+            target: "4",
           },
           {
             source: "3",
@@ -179,120 +189,31 @@ export default {
             target: "7",
           },
           {
-            source: "5",
-            target: "8",
-          },
-          {
-            source: "7",
-            target: "9",
-          },
-          {
-            source: "8",
+            source: "4",
             target: "10",
           },
           {
-            source: "6",
+            source: "5",
             target: "11",
+          },
+          {
+            source: "4",
+            target: "8",
+          },
+          {
+            source: "5",
+            target: "9",
+          },
+          {
+            source: "10",
+            target: "12",
+          },
+          {
+            source: "11",
+            target: "13",
           },
         ],
       };
-
-      // G6.registerEdge(
-      //   "line-arrow",
-      //   {
-      //     // getPath(points) {
-      //     //   console.log(points);
-      //     //   const startPoint = points[0];
-      //     //   const endPoint = points[1];
-      //     //   return [
-      //     //     ["M", startPoint.x, startPoint.y],
-      //     //     ["L", endPoint.x / 3 + (2 / 3) * startPoint.x, startPoint.y],
-      //     //     ["L", endPoint.x / 3 + (2 / 3) * startPoint.x, endPoint.y],
-      //     //     ["L", endPoint.x, endPoint.y],
-      //     //   ];
-      //     // },
-
-      //     getPath(points) {
-      //       const startPoint = points[0];
-      //       const endPoint = points[1];
-      //       const leftPointX = startPoint.x + 150;
-      //       return [
-      //         ["M", startPoint.x, startPoint.y],
-      //         ["L", leftPointX, startPoint.y],
-      //         ["L", leftPointX, endPoint.y],
-      //         ["L", endPoint.x, endPoint.y],
-      //       ];
-      //     },
-
-      //     getShapeStyle(cfg) {
-      //       const startPoint = cfg.startPoint;
-      //       const endPoint = cfg.endPoint;
-      //       const controlPoints = this.getControlPoints(cfg);
-      //       let points = [startPoint]; // the start point
-      //       // the control points
-      //       if (controlPoints) {
-      //         points = points.concat(controlPoints);
-      //       }
-      //       // the end point
-      //       points.push(endPoint);
-      //       const path = this.getPath(points);
-      //       const style = Object.assign(
-      //         {},
-      //         G6.Global.defaultEdge.style,
-      //         {
-      //           stroke: "#BBB",
-      //           lineWidth: 1,
-      //           path,
-      //         },
-      //         cfg.style
-      //       );
-      //       return style;
-      //     },
-      //   },
-      //   "line"
-      // );
-
-      // G6.registerEdge(
-      //   "line-arrow",
-      //   {
-      //     getPath(points) {
-      //       const startPoint = points[0];
-      //       const endPoint = points[1];
-      //       const leftPointX = startPoint.x;
-      //       return [
-      //         ["M", startPoint.x, startPoint.y],
-      //         ["L", leftPointX, startPoint.y],
-      //         ["L", leftPointX, endPoint.y],
-      //         ["L", endPoint.x, endPoint.y],
-      //       ];
-      //     },
-
-      //     getShapeStyle(cfg) {
-      //       const startPoint = cfg.startPoint;
-      //       const endPoint = cfg.endPoint;
-      //       const controlPoints = this.getControlPoints(cfg);
-      //       let points = [startPoint];
-      //       if (controlPoints) {
-      //         points = points.concat(controlPoints);
-      //       }
-      //       points.push(endPoint);
-      //       const path = this.getPath(points);
-      //       const style = Object.assign(
-      //         {},
-      //         G6.Global.defaultEdge.style,
-      //         {
-      //           stroke: "#B0B6B8",
-      //           lineWidth: 4,
-      //           path,
-      //         },
-      //         cfg.style
-      //       );
-      //       return style;
-      //     },
-      //   },
-
-      //   "line"
-      // );
 
       G6.registerEdge("hvh", {
         draw(cfg, group) {
@@ -314,57 +235,62 @@ export default {
       });
 
       // 获取容器图形
-      const container = document.getElementById("container");
+      const container = document.getElementById("container1");
       const width = container.scrollWidth || 1190;
-      const height = container.scrollHeight || 600;
+      const height = container.scrollHeight || 450;
       console.log(width, height);
       this.graph = new G6.Graph({
-        container: "container",
+        container: "container1",
         width,
         height,
+        fitView: true,
+        fitViewPadding: 20,
         layout: {
-          // type: "dagre",
-          // rankdir: "LR", // 可选，默认为图的中心
-          // ranksep: 70,
-          // controlPoints: true,
-          // ranker: 'tight-tree',
+          controlPoints: true,
           type: "dagre",
+          rankdir: "LR", // 图的延展方向，节点对齐方式，可选： 'TB' | 'BT' | 'LR' | 'RL'
+          // nodeSize: 20,
           // ranker: "network-simplex", // 节点分层算法，可选：'tight-tree' 'longest-path' 'network-simplex'
-          rankdir: "LR", // 图的延展方向，可选： 'TB' | 'BT' | 'LR' | 'RL'
           // ranksep: 50, // 图的各个层次之间的间距
-          // nodesep: 30, // 同层各个节点之间的间距
-          // align: "UL", // 节点对齐方式，可选：'UL' | 'UR' | 'DL' | 'DR' | undefined
-          nodeSize: 30,
+          nodesep: 15, // 同层各个节点之间的间距
         },
         defaultNode: {
-          // 类型
-          type: "image",
-          // 大小
-          size: 50,
-          // 文字样式
+          type: "image", // 类型
+          size: 30, // 大小
           labelCfg: {
             position: "bottom",
             style: {
-              fontSize: 20,
+              fontSize: 12,
               fill: "black",
             },
           },
         },
         defaultEdge: {
           type: "hvh",
-          // type: "line-arrow",
           // style: {},
         },
         modes: {
           // default: ["drag-canvas", "zoom-canvas"],
         },
-        fitView: true,
       });
 
-      // this.graph.node((node) => {
+      data.nodes.forEach((node) => {
+        node.stateStyles = {
+          hover: {
+            cursor: "pointer",
+          },
+        };
+      });
 
-      //   return {};
-      // });
+      this.graph.on("node:mouseenter", (e) => {
+        const nodeItem = e.item;
+        this.graph.setItemState(nodeItem, "hover", true);
+      });
+
+      this.graph.on("node:mouseleave", (e) => {
+        const nodeItem = e.item;
+        this.graph.setItemState(nodeItem, "hover", false);
+      });
 
       // 图初始化数据
       this.updateData(data);
@@ -382,7 +308,7 @@ export default {
   ::v-deep .el-card__header {
     padding: 18px 20px;
     border-bottom: 1px solid #ebeef5;
-    background-color: #ebeef5;
+    background-color: #bbb;
   }
 }
 </style>

@@ -204,91 +204,91 @@ export default {
     return {
       treeData: [
         {
-          id: 1,
+          id: '1',
           label: "XXXX平台",
           icon: "el-icon-s-tools",
           children: [
             {
-              id: 11,
+              id: '11',
               label: "归因分析服务",
             },
             {
-              id: 12,
+              id: '12',
               label: "用户行为间隔分析",
             },
             {
-              id: 13,
+              id: '13',
               label: "非金融维护服务",
             },
             {
-              id: 14,
+              id: '14',
               label: "授权交易服务",
             },
           ],
         },
         {
-          id: 2,
+          id: '2',
           label: "XXXX系统",
           icon: "el-icon-user-solid",
           children: [
             {
-              id: 21,
+              id: '21',
               label: "二级 1-1",
               newVal: "",
             },
             {
-              id: 22,
+              id: '22',
               label: "二级 22",
               newVal: "",
             },
           ],
         },
         {
-          id: 3,
+          id: '3',
           label: "XXXX平台",
           icon: "el-icon-s-order",
           children: [
             {
-              id: 31,
+              id: '31',
               label: "二级 1-1",
               newVal: "",
             },
             {
-              id: 32,
+              id: '32',
               label: "二级 22",
               newVal: "",
             },
           ],
         },
         {
-          id: 4,
+          id: '4',
           label: "XXXX平台",
           icon: "el-icon-s-order",
           children: [
             {
-              id: 41,
+              id: '41',
               label: "二级 1-1",
               newVal: "",
             },
             {
-              id: 42,
+              id: '42',
               label: "二级 22",
               newVal: "",
             },
           ],
         },
         {
-          id: 5,
+          id: '5',
           label: "XXXX平台",
           icon: "el-icon-s-order",
           children: [
             {
-              id: 51,
+              id: '51',
               label: "二级 1-1",
               newVal: "",
             },
             {
-              id: 52,
+              id: '52',
               label: "二级 22",
               newVal: "",
             },

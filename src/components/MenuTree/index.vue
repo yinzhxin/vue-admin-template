@@ -30,7 +30,7 @@ export default {
   },
   data() {
     return {
-      defaultActive: 11,
+      defaultActive: "11",
     };
   },
   watch: {},

@@ -5,15 +5,13 @@
     </div>
     <div class="right">
       <BaseInfoCard class="margin-bottom" title="归因分析服务" :desc="desc" />
-      <div style="width: 100%; height: 100%; background: #fff">
-        <!-- <img
-          src="../../../assets/panorama.svg"
-          alt="panorama"
-          style="width: 100%; height: auto;"
-        /> -->
 
+      <div style="width: 100%; height: 100%; background: #fff">
+        <!-- <img src="../../../assets/panorama.svg" style="width: 100%; height: auto" /> -->
         <Drage />
-      <Drage1 />
+        <Drage1 />
+        <Drage3 />
+        <Drage2 />
       </div>
     </div>
   </div>
@@ -26,100 +24,110 @@ import BaseInfoCard from "@/components/BaseInfoCard.vue";
 import LineChart from "@/components/Chart/LineChart.vue";
 import Drage from "./components/Drage.vue";
 import Drage1 from "./components/Drage1.vue";
+import Drage2 from "./components/Drage2.vue";
+import Drage3 from "./components/Drage3.vue";
 
 export default {
   name: "ApplicationPanorama",
-  components: { MenuTree, BaseInfoCard, LineChart, Drage, Drage1 },
+  components: {
+    MenuTree,
+    BaseInfoCard,
+    LineChart,
+    Drage,
+    Drage1,
+    Drage2,
+    Drage3,
+  },
   props: {},
   data() {
     return {
       treeData: [
         {
-          id: 1,
+          id: '1',
           label: "XXXX平台",
           icon: "el-icon-s-tools",
           children: [
             {
-              id: 11,
+              id: '11',
               label: "归因分析服务",
             },
             {
-              id: 12,
+              id: '12',
               label: "用户行为间隔分析",
             },
             {
-              id: 13,
+              id: '13',
               label: "非金融维护服务",
             },
             {
-              id: 14,
+              id: '14',
               label: "授权交易服务",
             },
           ],
         },
         {
-          id: 2,
+          id: '2',
           label: "XXXX系统",
           icon: "el-icon-user-solid",
           children: [
             {
-              id: 21,
+              id: '21',
               label: "二级 1-1",
               newVal: "",
             },
             {
-              id: 22,
+              id: '22',
               label: "二级 22",
               newVal: "",
             },
           ],
         },
         {
-          id: 3,
+          id: '3',
           label: "XXXX平台",
           icon: "el-icon-s-order",
           children: [
             {
-              id: 31,
+              id: '31',
               label: "二级 1-1",
               newVal: "",
             },
             {
-              id: 32,
+              id: '32',
               label: "二级 22",
               newVal: "",
             },
           ],
         },
         {
-          id: 4,
+          id: '4',
           label: "XXXX平台",
           icon: "el-icon-s-order",
           children: [
             {
-              id: 41,
+              id: '41',
               label: "二级 1-1",
               newVal: "",
             },
             {
-              id: 42,
+              id: '42',
               label: "二级 22",
               newVal: "",
             },
           ],
         },
         {
-          id: 5,
+          id: '5',
           label: "XXXX平台",
           icon: "el-icon-s-order",
           children: [
             {
-              id: 51,
+              id: '51',
               label: "二级 1-1",
               newVal: "",
             },
             {
-              id: 52,
+              id: '52',
               label: "二级 22",
               newVal: "",
             },
@@ -368,11 +376,13 @@ export default {
     flex: 1;
     height: 100%;
     overflow-y: auto;
+    overflow-x: auto;
   }
   .right {
     flex: 4;
     height: 100%;
     overflow-y: auto;
+    overflow-x: auto;
   }
 }
 .el-row {
