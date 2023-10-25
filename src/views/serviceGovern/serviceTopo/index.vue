@@ -449,7 +449,6 @@ export default {
       } else if (target.innerHTML == "查看告警") {
         this.handleToAlarm(item._cfg.model.label);
       } else if (target.innerHTML == "查看服务详情") {
-        // alert("查看服务详情");
         this.handleToDetail(item._cfg.model.label);
       }
     },

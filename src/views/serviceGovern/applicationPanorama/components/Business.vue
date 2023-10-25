@@ -1,19 +1,15 @@
 <template>
-  <!-- <div style="width: 100%; height: 200%; background: #fff;border:1px solid gray"> -->
   <el-card class="card-style">
-    <!-- <div slot="header" style="writing-mode: tb; text-align: center">
-          <h1>业务逻辑层</h1>
-    </div> -->
-
     <template #header>
       <div class="card-header">
         <h1>业务逻辑层</h1>
       </div>
     </template>
 
-    <div id="container" />
+    <div style="width: 1200px; height: 450px">
+      <div id="business" />
+    </div>
   </el-card>
-  <!-- </div> -->
 </template>
 
 <script>
@@ -27,9 +23,7 @@ export default {
   },
 
   mounted() {
-    this.$nextTick(() => {
-      this.initGraph();
-    });
+    this.initGraph();
   },
 
   beforeDestroy() {
@@ -222,12 +216,12 @@ export default {
       });
 
       // 获取容器图形
-      const container = document.getElementById("container");
-      const width = container.scrollWidth || 1190;
+      const container = document.getElementById("business");
+      const width = container.scrollWidth || 1200;
       const height = container.scrollHeight || 450;
       console.log(width, height);
       this.graph = new G6.Graph({
-        container: "container",
+        container: "business",
         width,
         height,
         fitView: true,
@@ -236,9 +230,9 @@ export default {
           controlPoints: true,
           type: "dagre",
           rankdir: "LR", // 图的延展方向，节点对齐方式，可选： 'TB' | 'BT' | 'LR' | 'RL'
-          // nodeSize: 20,
+          nodeSize: 20,
           // ranker: "network-simplex", // 节点分层算法，可选：'tight-tree' 'longest-path' 'network-simplex'
-          // ranksep: 50, // 图的各个层次之间的间距
+          ranksep: 50, // 图的各个层次之间的间距
           nodesep: 20, // 同层各个节点之间的间距
         },
         defaultNode: {
@@ -252,6 +246,7 @@ export default {
             },
           },
         },
+        nodeStateStyles: {},
         defaultEdge: {
           type: "hvh",
           // style: {},
@@ -265,7 +260,6 @@ export default {
         node.stateStyles = {
           hover: {
             cursor: "pointer",
-            stroke: "#409EFF",
           },
         };
       });
@@ -291,18 +285,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  writing-mode: tb;
-}
 .card-style {
   display: flex;
   ::v-deep .el-card__header {
     // padding: 18px 20px;
     border-bottom: 1px solid #ebeef5;
     background-color: #bbb;
+    writing-mode: tb;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
 </style>
