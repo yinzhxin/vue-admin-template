@@ -332,8 +332,16 @@ export default [
         path: 'permissionAssistant',
         name: 'PermissionAssistant',
         component: () => import('@/views/systemManagement/permissionAssistant/index'),
-        meta: { title: '权限助手' }
+        meta: { title: '权限助手' },
       },
+      {
+         path: 'create',
+         name: 'Create',
+         component: () => import('@/views/systemManagement/permissionAssistant/create/index'),
+         meta: { title: '', activeMenu:'/systemManagement/permissionAssistant'},
+         hidden:true
+      },
+       
       // 角色
       {
         path: 'role',
