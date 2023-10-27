@@ -242,7 +242,7 @@ export default {
       const container = document.getElementById("application");
       // const width = container.scrollWidth || 1200;
       // const height = container.scrollHeight || 450;
-      const width = container.scrollWidth;
+      const width = container.scrollWidth||1100;
       const height = container.scrollHeight || 450;
       console.log(width, height);
       this.graph = new G6.Graph({
@@ -250,6 +250,7 @@ export default {
         width,
         height,
         fitView: true,
+        fitCenter:true,
         // fitViewPadding: 20,
         layout: {
           controlPoints: true,
@@ -304,6 +305,19 @@ export default {
       // 渲染画布
       this.renderGraph();
       // this.graph.zoom(1);
+
+      if (typeof window !== "undefined") {
+        window.onresize = () => {
+          if (!this.graph || this.graph.get("destroyed")) {
+            return;
+          }
+          if (!container || !container.scrollWidth || !container.scrollHeight) {
+            return;
+          }
+          console.log(container.scrollWidth, container.scrollHeight);
+          this.graph.changeSize(container.scrollWidth, container.scrollHeight);
+        };
+      }
     },
   },
 };

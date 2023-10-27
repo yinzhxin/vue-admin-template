@@ -8,12 +8,13 @@
 
       <div style="width: 100%; height: auto; background: #fff">
         <!-- <img src="../../../assets/panorama.svg" style="width: 100%; height: auto" /> -->
+
         <!-- 业务逻辑层 -->
         <Business />
         <!-- 应用逻辑层 -->
         <Application />
         <!-- 虚拟层 -->
-        <Virtual />
+        <!-- <Virtual /> -->
         <!-- 物理层 -->
         <Physics />
       </div>
@@ -201,13 +202,11 @@ export default {
     flex: 1;
     height: 100%;
     overflow-y: auto;
-    overflow-x: auto;
   }
   .right {
     flex: 4;
     height: 100%;
     overflow-y: auto;
-    overflow-x: auto;
   }
 }
 .el-row {

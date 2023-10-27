@@ -6,8 +6,8 @@
       </div>
     </template>
 
-    <div style="width: 1200px; height: 450px">
-      <div id="business" />
+    <div style="width: 100%; height: 450px">
+      <div id="business" ref="card" />
     </div>
   </el-card>
 </template>
@@ -22,8 +22,37 @@ export default {
     };
   },
 
+  watch: {
+    // "$refs.card.$el": {
+    //   // immediate: true,
+    //   deep: true,
+    //   handler(newVal, oldVal) {
+    //     const cardWidth = newVal.offsetWidth;
+    //     const cardHeight = newVal.offsetHeight;
+    //     console.log(`Card width: ${cardWidth}px, height: ${cardHeight}px`);
+    //   },
+    // },
+  },
+
   mounted() {
     this.initGraph();
+
+    window.addEventListener("resize", this.handleResize);
+
+    // this.$nextTick(() => {
+    //   const cardWidth = this.$refs.card.$el.offsetWidth;
+    //   const cardHeight = this.$refs.card.$el.offsetHeight;
+    //   console.log(`Card width: ${cardWidth}px, height: ${cardHeight}px`);
+    // });
+
+    this.$nextTick(() => {
+      const businessDiv = document.getElementById("business");
+      const businessWidth = businessDiv.offsetWidth;
+      const businessHeight = businessDiv.offsetHeight;
+      console.log(
+        `Business div width: ${businessWidth}px, height: ${businessHeight}px`
+      );
+    });
   },
 
   beforeDestroy() {
@@ -31,9 +60,23 @@ export default {
     this.graph.destroy();
     // 实例销毁
     this.graph = null;
+
+    window.removeEventListener("resize", this.handleResize);
   },
 
   methods: {
+    handleResize() {
+      const businessDiv = document.getElementById("business");
+      const businessWidth = businessDiv.offsetWidth;
+      const businessHeight = businessDiv.offsetHeight;
+      console.log(
+        `Business div width--: ${businessWidth}px, height--: ${businessHeight}px`
+      );
+      this.graph.changeSize(businessWidth, businessHeight);
+      // this.graph.zoom();
+
+      // this.graph.fitView();
+    },
     // 更新图表数据，初次渲染也调用data方法
     updateData(newData) {
       this.graph.data(newData);
@@ -217,7 +260,7 @@ export default {
 
       // 获取容器图形
       const container = document.getElementById("business");
-      const width = container.scrollWidth || 1200;
+      const width = container.scrollWidth || 1400;
       const height = container.scrollHeight || 450;
       console.log(width, height);
       this.graph = new G6.Graph({
@@ -225,7 +268,9 @@ export default {
         width,
         height,
         fitView: true,
-        fitViewPadding: 20,
+        // fitViewPadding: [20, 40, 50, 20],
+        // fitViewPadding: 30,
+        fitCenter:true,
         layout: {
           controlPoints: true,
           type: "dagre",
@@ -237,19 +282,23 @@ export default {
         },
         defaultNode: {
           type: "image", // 类型
-          size: 30, // 大小
+          size: 15, // 大小
           labelCfg: {
             position: "bottom",
             style: {
-              fontSize: 12,
+              fontSize: 8,
               fill: "black",
             },
           },
+          // style: {
+          //   fill: "#000", // 样式属性，元素的填充色
+          //   stroke: "#888", // 样式属性，元素的描边色
+          //   lineWidth: 3, // 节点描边粗细
+          // },
         },
         nodeStateStyles: {},
         defaultEdge: {
           type: "hvh",
-          // style: {},
         },
         modes: {
           // default: ["drag-canvas", "zoom-canvas"],
@@ -279,6 +328,19 @@ export default {
       // 渲染画布
       this.renderGraph();
       // this.graph.zoom(1);
+
+      if (typeof window !== "undefined") {
+        window.onresize = () => {
+          if (!this.graph || this.graph.get("destroyed")) {
+            return;
+          }
+          if (!container || !container.scrollWidth || !container.scrollHeight) {
+            return;
+          }
+          console.log(container.scrollWidth, container.scrollHeight);
+          this.graph.changeSize(container.scrollWidth, container.scrollHeight);
+        };
+      }
     },
   },
 };
@@ -287,6 +349,7 @@ export default {
 <style lang="scss" scoped>
 .card-style {
   display: flex;
+
   ::v-deep .el-card__header {
     // padding: 18px 20px;
     border-bottom: 1px solid #ebeef5;
