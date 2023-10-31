@@ -6,8 +6,8 @@
       </div>
     </template>
 
-    <div style="width: 1500px; height: 500px">
-      <div  id="virtual"/>
+    <div style="width: 50%; height: 800px">
+      <div id="virtual" />
     </div>
   </el-card>
 </template>
@@ -50,168 +50,191 @@ export default {
         nodes: [
           {
             id: "1",
-            img: "/panorama/router.svg",
-            // label: "请求",
-            anchorPoints: [
-              [0, 0.5],
-              [1, 0.5],
-            ],
+            img: "/panorama/html.svg",
+            label: "PodAZ",
+            comboId: "combo",
           },
           {
             id: "2",
-            img: "/panorama/router.svg",
-            // label: "响应",
-            anchorPoints: [
-              [0, 0.5],
-              [1, 0.5],
-            ],
+            img: "/panorama/html.svg",
+            label: "PodAZ",
+            comboId: "combo",
           },
           {
             id: "3",
-            img: "/panorama/router.svg",
-            // label: "ELB",
-            anchorPoints: [
-              [0, 0.5],
-              [1, 0.5],
-            ],
+            img: "/panorama/html.svg",
+            label: "PodAZ",
+            comboId: "combo",
           },
           {
             id: "4",
-            img: "/panorama/exchange.svg",
-            label: "核心交换机",
-            anchorPoints: [
-              [0, 0.5],
-              [1, 0.5],
-            ],
+            img: "/panorama/html.svg",
+            label: "PodAZ",
+            comboId: "combo",
           },
           {
             id: "5",
-            img: "/panorama/firewall.svg",
-            label: "防火墙",
-            anchorPoints: [
-              [0, 0.5],
-              [1, 0.5],
-            ],
+            img: "/panorama/tree.svg",
+            label: "网元",
+            comboId: "combo",
           },
           {
             id: "6",
-            img: "/panorama/exchange.svg",
-            label: "接入交换机",
-            anchorPoints: [
-              [0, 0.5],
-              [1, 0.5],
-            ],
+            img: "/panorama/net.svg",
+            label: "Nod AZ",
+            comboId: "combo",
           },
           {
             id: "7",
-            img: "/panorama/model.svg",
-            // label: "db",
-            anchorPoints: [
-              [0, 0.5],
-              [1, 0.5],
-            ],
+            img: "/panorama/net.svg",
+            label: "Nod AZ",
+            comboId: "combo",
           },
           {
             id: "8",
-            img: "/panorama/model.svg",
-            // label: "redis",
-            anchorPoints: [
-              [0, 0.5],
-              [1, 0.5],
-            ],
+            img: "/panorama/net.svg",
+            label: "Nod AZ",
+            comboId: "combo",
           },
           {
             id: "9",
-            img: "/panorama/model.svg",
-            // label: "redis",
-            anchorPoints: [
-              [0, 0.5],
-              [1, 0.5],
-            ],
+            img: "/panorama/net.svg",
+            label: "DRID",
+            comboId: "combo",
           },
           {
             id: "10",
-            img: "/panorama/model.svg",
-            // label: "ELB",
-            anchorPoints: [
-              [0, 0.5],
-              [1, 0.5],
-            ],
+            img: "/panorama/net.svg",
+            label: "DB",
+            comboId: "combo",
           },
           {
             id: "11",
-            img: "/panorama/exchange.svg",
-            label: "接入交换机",
-            anchorPoints: [
-              [0, 0.5],
-              [1, 0.5],
-            ],
+            img: "/panorama/net.svg",
+            label: "Redis",
+            comboId: "combo",
           },
           {
             id: "12",
-            img: "/panorama/model.svg",
-            // label: "APP",
-            anchorPoints: [
-              [0, 0.5],
-              [1, 0.5],
-            ],
+            img: "/panorama/net.svg",
+            label: "云硬盘",
+            comboId: "combo",
           },
           {
             id: "13",
-            img: "/panorama/model.svg",
-            // label: "APP",
-            anchorPoints: [
-              [0, 0.5],
-              [1, 0.5],
-            ],
+            img: "/panorama/net.svg",
+            label: "云硬盘",
+            comboId: "combo",
           },
           {
             id: "14",
-            img: "/panorama/model.svg",
-            // label: "APP",
-            anchorPoints: [
-              [0, 0.5],
-              [1, 0.5],
-            ],
+            img: "/panorama/net.svg",
+            label: "本地盘",
+            comboId: "combo",
           },
+
+          // 第二个
           {
             id: "15",
-            img: "/panorama/model.svg",
-            // label: "APP",
-            anchorPoints: [
-              [0, 0.5],
-              [1, 0.5],
-            ],
+            img: "/panorama/html.svg",
+            label: "PodAZ",
+            comboId: "combo2",
+          },
+          {
+            id: "16",
+            img: "/panorama/html.svg",
+            label: "PodAZ",
+            comboId: "combo2",
+          },
+          {
+            id: "17",
+            img: "/panorama/html.svg",
+            label: "PodAZ",
+            comboId: "combo2",
+          },
+          {
+            id: "18",
+            img: "/panorama/html.svg",
+            label: "PodAZ",
+            comboId: "combo2",
+          },
+          {
+            id: "19",
+            img: "/panorama/tree.svg",
+            label: "网元",
+            comboId: "combo2",
+          },
+          {
+            id: "20",
+            img: "/panorama/net.svg",
+            label: "Nod AZ",
+            comboId: "combo2",
+          },
+          {
+            id: "21",
+            img: "/panorama/net.svg",
+            label: "Nod AZ",
+            comboId: "combo2",
+          },
+          {
+            id: "22",
+            img: "/panorama/net.svg",
+            label: "Nod AZ",
+            comboId: "combo2",
+          },
+          {
+            id: "23",
+            img: "/panorama/net.svg",
+            label: "DRID",
+            comboId: "combo2",
+          },
+          {
+            id: "24",
+            img: "/panorama/net.svg",
+            label: "DB",
+            comboId: "combo2",
+          },
+          {
+            id: "25",
+            img: "/panorama/net.svg",
+            label: "Redis",
+            comboId: "combo2",
+          },
+          {
+            id: "26",
+            img: "/panorama/net.svg",
+            label: "云硬盘",
+            comboId: "combo",
+          },
+          {
+            id: "27",
+            img: "/panorama/net.svg",
+            label: "云硬盘",
+            comboId: "combo2",
+          },
+          {
+            id: "28",
+            img: "/panorama/net.svg",
+            label: "本地盘",
+            comboId: "combo2",
           },
         ],
-        edges: [
-     
+        combos: [
+          {
+            id: "combo",
+            label: "Combo",
+          },
+          {
+            id: "combo2",
+            label: "Combo2",
+          },
         ],
       };
 
-      G6.registerEdge("hvh", {
-        draw(cfg, group) {
-          const startPoint = cfg.startPoint;
-          const endPoint = cfg.endPoint;
-          const shape = group.addShape("path", {
-            attrs: {
-              stroke: "#333",
-              path: [
-                ["M", startPoint.x, startPoint.y],
-                ["L", endPoint.x / 3 + (2 / 3) * startPoint.x, startPoint.y], // 三分之一处
-                ["L", endPoint.x / 3 + (2 / 3) * startPoint.x, endPoint.y], // 三分之二处
-                ["L", endPoint.x, endPoint.y],
-              ],
-            },
-          });
-          return shape;
-        },
-      });
-
       // 获取容器图形
       const container = document.getElementById("virtual");
-      const width = container.scrollWidth || 1190;
-      const height = container.scrollHeight || 600;
+      const width = container.scrollWidth || 1400;
+      const height = container.scrollHeight || 1000;
       console.log(width, height);
       this.graph = new G6.Graph({
         container: "virtual",
@@ -219,33 +242,62 @@ export default {
         height,
         fitView: true,
         fitViewPadding: 20,
+        // layout: {
+        //   controlPoints: true,
+        //   type: "grid",
+        //   rankdir: "LR", // 图的延展方向，节点对齐方式，可选： 'TB' | 'BT' | 'LR' | 'RL'
+        //   // nodeSize: 20,
+        //   // ranker: "network-simplex", // 节点分层算法，可选：'tight-tree' 'longest-path' 'network-simplex'
+        //   // ranksep: 50, // 图的各个层次之间的间距
+        //   nodesep: 5, // 同层各个节点之间的间距
+        //   ranksep: 10, // 图的各个层次之间的间距
+        // },
         layout: {
-          controlPoints: true,
-          type: "grid",
-          rankdir: "LR", // 图的延展方向，节点对齐方式，可选： 'TB' | 'BT' | 'LR' | 'RL'
-          // nodeSize: 20,
-          // ranker: "network-simplex", // 节点分层算法，可选：'tight-tree' 'longest-path' 'network-simplex'
-          // ranksep: 50, // 图的各个层次之间的间距
-          nodesep: 10, // 同层各个节点之间的间距
+          type: "comboForce",
+          preventOverlap: true,
+          nodeSpacing: 20, // 调整节点间距
+          comboSpacing: 50, // 调整 combo 间距
+          direction: "LR", // 设置布局方向为从左到右
         },
         defaultNode: {
           type: "image", // 类型
-          size: 60, // 大小
+          size: 30, // 大小
           labelCfg: {
             position: "bottom",
             style: {
-              fontSize: 12,
+              fontSize: 8,
               fill: "black",
             },
           },
         },
         nodeStateStyles: {},
-        defaultEdge: {
-          type: "hvh",
-          // style: {},
+        defaultCombo: {
+          type: "rect",
+          /* The minimum size of the combo. combo 最小大小 */
+          size: [50, 50],
+          /* style for the keyShape */
+          // style: {
+          //   lineWidth: 1,
+          // },
+          labelCfg: {
+            /* label's offset to the keyShape */
+            // refY: 10,
+            /* label's position, options: center, top, bottom, left, right */
+            position: "top",
+            /* label's style */
+            // style: {
+            //   fontSize: 18,
+            // },
+          },
         },
         modes: {
-          // default: ["drag-canvas", "zoom-canvas"],
+          default: [
+            "zoom-canvas",
+            "drag-canvas",
+            "drag-node",
+            "drag-combo",
+            "collapse-expand-combo",
+          ],
         },
       });
 

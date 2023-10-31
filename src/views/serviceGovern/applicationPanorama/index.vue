@@ -14,7 +14,7 @@
         <!-- 应用逻辑层 -->
         <Application />
         <!-- 虚拟层 -->
-        <!-- <Virtual /> -->
+        <Virtual />
         <!-- 物理层 -->
         <Physics />
       </div>
