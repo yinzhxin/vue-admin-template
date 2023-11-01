@@ -270,7 +270,7 @@ export default {
         fitView: true,
         // fitViewPadding: [20, 40, 50, 20],
         // fitViewPadding: 30,
-        fitCenter:true,
+        fitCenter: true,
         layout: {
           controlPoints: true,
           type: "dagre",

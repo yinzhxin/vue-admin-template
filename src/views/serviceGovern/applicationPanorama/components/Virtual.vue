@@ -6,8 +6,194 @@
       </div>
     </template>
 
-    <div style="width: 50%; height: 800px">
-      <div id="virtual" />
+    <div style="width: 1200px; height: 800px; display: flex">
+      <div class="box" style="margin-right: 10px">
+        AZ1
+        <div class="az1-style">
+          <div class="az1-item-style">
+
+            <div class="az1-item-style-left">
+         <div>
+            <img src="../../../../assets/panorama/html.svg" width="60px" height="100px"/>
+          </div>
+          <div>
+            <img src="../../../../assets/panorama/html.svg" width="60px" height="100px"></img>
+          </div>
+          <div>
+            <img src="../../../../assets/panorama/html.svg" width="60px" height="100px"></img>
+          </div>
+          <div>
+            <img src="../../../../assets/panorama/html.svg" width="60px" height="100px"></img>
+          </div>
+         
+            </div>
+          
+            <br />
+
+            <div class="az1-item-style-center">
+          <div>
+          <img src="../../../../assets/panorama/net.svg" width="60px" height="100px"></img>
+          </div>
+          <div>
+          <img src="../../../../assets/panorama/net.svg" width="60px" height="100px"></img>
+          </div>
+           <div>
+          <img src="../../../../assets/panorama/net.svg" width="60px" height="100px"></img>
+          </div>
+          <div>
+          <img src="../../../../assets/panorama/net.svg" width="60px" height="100px"></img>
+          </div>
+            </div>
+
+          </div>
+
+          <div class="az1-item-style-right">
+          ELB
+          <div>
+          <img src="../../../../assets/panorama/tree.svg" width="60px" height="100px"></img>
+          </div>
+          <div>
+          <img src="../../../../assets/panorama/tree.svg" width="60px" height="100px"></img>
+          </div>
+          </div>
+        </div>
+
+        <div class="az1-style" style="width:100%">
+          <div class="az1-item-style" style="width:97%">
+
+            <div class="az1-item-style-left">
+         <div>
+            <img src="../../../../assets/panorama/html.svg" width="60px" height="100px"/>
+          </div>
+          <div>
+            <img src="../../../../assets/panorama/html.svg" width="60px" height="100px"></img>
+          </div>
+          <div>
+            <img src="../../../../assets/panorama/html.svg" width="60px" height="100px"></img>
+          </div>
+          <div>
+            <img src="../../../../assets/panorama/html.svg" width="60px" height="100px"></img>
+          </div>
+         
+            </div>
+          
+            <br />
+
+            <div class="az1-item-style-center">
+           <div>
+          <img src="../../../../assets/panorama/net.svg" width="60px" height="100px"></img>
+          </div>
+          <div>
+          <img src="../../../../assets/panorama/net.svg" width="60px" height="100px"></img>
+          </div>
+           <div>
+          <img src="../../../../assets/panorama/net.svg" width="60px" height="100px"></img>
+          </div>
+          <div>
+          <img src="../../../../assets/panorama/net.svg" width="60px" height="100px"></img>
+          </div>
+            </div>
+
+          </div>
+
+
+        </div>
+      </div>
+
+
+    <div class="box" style="margin-right: 10px">
+        AZ2
+        <div class="az1-style">
+          <div class="az1-item-style">
+
+            <div class="az1-item-style-left">
+         <div>
+            <img src="../../../../assets/panorama/html.svg" width="60px" height="100px"/>
+          </div>
+          <div>
+            <img src="../../../../assets/panorama/html.svg" width="60px" height="100px"></img>
+          </div>
+          <div>
+            <img src="../../../../assets/panorama/html.svg" width="60px" height="100px"></img>
+          </div>
+          <div>
+            <img src="../../../../assets/panorama/html.svg" width="60px" height="100px"></img>
+          </div>
+         
+            </div>
+          
+            <br />
+
+            <div class="az1-item-style-center">
+          <div>
+          <img src="../../../../assets/panorama/net.svg" width="60px" height="100px"></img>
+          </div>
+          <div>
+          <img src="../../../../assets/panorama/net.svg" width="60px" height="100px"></img>
+          </div>
+           <div>
+          <img src="../../../../assets/panorama/net.svg" width="60px" height="100px"></img>
+          </div>
+          <div>
+          <img src="../../../../assets/panorama/net.svg" width="60px" height="100px"></img>
+          </div>
+            </div>
+
+          </div>
+
+          <div class="az1-item-style-right">
+          ELB
+          <div>
+          <img src="../../../../assets/panorama/tree.svg" width="60px" height="100px"></img>
+          </div>
+          <div>
+          <img src="../../../../assets/panorama/tree.svg" width="60px" height="100px"></img>
+          </div>
+          </div>
+        </div>
+
+        <div class="az1-style" style="width:100%">
+          <div class="az1-item-style" style="width:97%">
+
+            <div class="az1-item-style-left">
+         <div>
+            <img src="../../../../assets/panorama/html.svg" width="60px" height="100px"/>
+          </div>
+          <div>
+            <img src="../../../../assets/panorama/html.svg" width="60px" height="100px"></img>
+          </div>
+          <div>
+            <img src="../../../../assets/panorama/html.svg" width="60px" height="100px"></img>
+          </div>
+          <div>
+            <img src="../../../../assets/panorama/html.svg" width="60px" height="100px"></img>
+          </div>
+         
+            </div>
+          
+            <br />
+
+            <div class="az1-item-style-center">
+           <div>
+          <img src="../../../../assets/panorama/net.svg" width="60px" height="100px"></img>
+          </div>
+          <div>
+          <img src="../../../../assets/panorama/net.svg" width="60px" height="100px"></img>
+          </div>
+           <div>
+          <img src="../../../../assets/panorama/net.svg" width="60px" height="100px"></img>
+          </div>
+          <div>
+          <img src="../../../../assets/panorama/net.svg" width="60px" height="100px"></img>
+          </div>
+            </div>
+
+          </div>
+
+
+        </div>
+      </div>
+
     </div>
   </el-card>
 </template>
@@ -23,14 +209,14 @@ export default {
   },
 
   mounted() {
-    this.initGraph();
+    // this.initGraph();
   },
 
   beforeDestroy() {
-    // 销毁画布
-    this.graph.destroy();
-    // 实例销毁
-    this.graph = null;
+    // // 销毁画布
+    // this.graph.destroy();
+    // // 实例销毁
+    // this.graph = null;
   },
 
   methods: {
@@ -342,4 +528,49 @@ export default {
     align-items: center;
   }
 }
+
+.box {
+  border: 1px solid black;
+  padding: 10px;
+  width: 50%;
+}
+.az1-style{
+width: 100%; 
+height: 300px; 
+display: flex;
+justify-content: space-between;
+}
+.az1-item-style{
+   display: flex;
+                 flex-direction: column;
+              width: 70%;
+              // margin: 10px;
+}
+.az1-item-style-left{
+    display: flex;
+    align-items: center;
+     width: 100%;
+    height:50%;
+              margin: 10px;
+              border: 1px solid black;
+}
+
+.az1-item-style-center{
+ display: flex;
+              align-items: center;
+              width: 100%;
+              height:50%;
+              margin: 10px;
+              border: 1px solid black;
+}
+
+.az1-item-style-right{
+   display: flex;
+              flex-direction: column;
+              align-items: center;
+              width: 25%;
+              margin: 10px;
+              border: 1px solid black
+}
+
 </style>
