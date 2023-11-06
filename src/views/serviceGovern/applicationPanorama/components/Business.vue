@@ -6,7 +6,7 @@
       </div>
     </template>
 
-    <div style="width: 100%; height: 450px">
+    <div style="width: 1200px; height: 450px">
       <div id="business" ref="card" />
     </div>
   </el-card>
@@ -38,12 +38,6 @@ export default {
     this.initGraph();
 
     window.addEventListener("resize", this.handleResize);
-
-    // this.$nextTick(() => {
-    //   const cardWidth = this.$refs.card.$el.offsetWidth;
-    //   const cardHeight = this.$refs.card.$el.offsetHeight;
-    //   console.log(`Card width: ${cardWidth}px, height: ${cardHeight}px`);
-    // });
 
     this.$nextTick(() => {
       const businessDiv = document.getElementById("business");
@@ -93,7 +87,7 @@ export default {
         nodes: [
           {
             id: "1",
-            img: "/panorama/person.svg",
+            img: "/panorama_images/person.svg",
             label: "User",
             anchorPoints: [
               [0, 0.5],
@@ -102,7 +96,7 @@ export default {
           },
           {
             id: "2",
-            img: "/panorama/four.svg",
+            img: "/panorama_images/four.svg",
             label: "主动请求",
             anchorPoints: [
               [0, 0.5],
@@ -111,7 +105,7 @@ export default {
           },
           {
             id: "3",
-            img: "/panorama/four.svg",
+            img: "/panorama_images/four.svg",
             label: "自动请求",
             anchorPoints: [
               [0, 0.5],
@@ -120,7 +114,7 @@ export default {
           },
           {
             id: "4",
-            img: "/panorama/four.svg",
+            img: "/panorama_images/four.svg",
             label: "查询请求",
             anchorPoints: [
               [0, 0.5],
@@ -129,7 +123,7 @@ export default {
           },
           {
             id: "5",
-            img: "/panorama/four.svg",
+            img: "/panorama_images/four.svg",
             label: "创建",
             anchorPoints: [
               [0, 0.5],
@@ -138,7 +132,7 @@ export default {
           },
           {
             id: "6",
-            img: "/panorama/four.svg",
+            img: "/panorama_images/four.svg",
             label: "查询执行",
             anchorPoints: [
               [0, 0.5],
@@ -147,7 +141,7 @@ export default {
           },
           {
             id: "7",
-            img: "/panorama/four.svg",
+            img: "/panorama_images/four.svg",
             label: "付款确认",
             anchorPoints: [
               [0, 0.5],
@@ -156,7 +150,7 @@ export default {
           },
           {
             id: "8",
-            img: "/panorama/four.svg",
+            img: "/panorama_images/four.svg",
             label: "付款取消",
             anchorPoints: [
               [0, 0.5],
@@ -165,7 +159,7 @@ export default {
           },
           {
             id: "9",
-            img: "/panorama/right.svg",
+            img: "/panorama_images/right.svg",
             label: "User",
             anchorPoints: [
               [0, 0.5],
@@ -174,7 +168,7 @@ export default {
           },
           {
             id: "10",
-            img: "/panorama/del.svg",
+            img: "/panorama_images/del.svg",
             label: "User",
             anchorPoints: [
               [0, 0.5],
@@ -183,7 +177,7 @@ export default {
           },
           {
             id: "11",
-            img: "/panorama/right.svg",
+            img: "/panorama_images/right.svg",
             label: "User",
             anchorPoints: [
               [0, 0.5],
@@ -268,17 +262,17 @@ export default {
         width,
         height,
         fitView: true,
+        fitCenter: true,
         // fitViewPadding: [20, 40, 50, 20],
         // fitViewPadding: 30,
-        fitCenter: true,
         layout: {
           controlPoints: true,
           type: "dagre",
           rankdir: "LR", // 图的延展方向，节点对齐方式，可选： 'TB' | 'BT' | 'LR' | 'RL'
           nodeSize: 20,
           // ranker: "network-simplex", // 节点分层算法，可选：'tight-tree' 'longest-path' 'network-simplex'
-          ranksep: 50, // 图的各个层次之间的间距
-          nodesep: 20, // 同层各个节点之间的间距
+          ranksep: 30, // 图的各个层次之间的间距
+          nodesep: 10, // 同层各个节点之间的间距
         },
         defaultNode: {
           type: "image", // 类型
@@ -290,11 +284,6 @@ export default {
               fill: "black",
             },
           },
-          // style: {
-          //   fill: "#000", // 样式属性，元素的填充色
-          //   stroke: "#888", // 样式属性，元素的描边色
-          //   lineWidth: 3, // 节点描边粗细
-          // },
         },
         nodeStateStyles: {},
         defaultEdge: {

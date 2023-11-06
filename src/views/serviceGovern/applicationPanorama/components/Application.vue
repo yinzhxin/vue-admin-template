@@ -14,7 +14,6 @@
 
 <script>
 import G6 from "@antv/g6";
-// import elementResizeDetectorMaker from "element-resize-detector";
 
 export default {
   data() {
@@ -51,7 +50,7 @@ export default {
         nodes: [
           {
             id: "1",
-            img: "/panorama/earth.svg",
+            img: "/panorama_images/earth.svg",
             label: "请求",
             anchorPoints: [
               [0, 0.5],
@@ -60,7 +59,7 @@ export default {
           },
           {
             id: "2",
-            img: "/panorama/earth.svg",
+            img: "/panorama_images/earth.svg",
             label: "响应",
             anchorPoints: [
               [0, 0.5],
@@ -69,7 +68,7 @@ export default {
           },
           {
             id: "3",
-            img: "/panorama/tree.svg",
+            img: "/panorama_images/tree.svg",
             label: "ELB",
             anchorPoints: [
               [0, 0.5],
@@ -78,7 +77,7 @@ export default {
           },
           {
             id: "4",
-            img: "/panorama/cube.svg",
+            img: "/panorama_images/cube.svg",
             label: "APP",
             anchorPoints: [
               [0, 0.5],
@@ -87,7 +86,7 @@ export default {
           },
           {
             id: "5",
-            img: "/panorama/cube.svg",
+            img: "/panorama_images/cube.svg",
             label: "APP",
             anchorPoints: [
               [0, 0.5],
@@ -96,7 +95,7 @@ export default {
           },
           {
             id: "6",
-            img: "/panorama/cubes.svg",
+            img: "/panorama_images/cubes.svg",
             label: "db",
             anchorPoints: [
               [0, 0.5],
@@ -105,7 +104,7 @@ export default {
           },
           {
             id: "7",
-            img: "/panorama/cubes.svg",
+            img: "/panorama_images/cubes.svg",
             label: "db",
             anchorPoints: [
               [0, 0.5],
@@ -114,7 +113,7 @@ export default {
           },
           {
             id: "8",
-            img: "/panorama/database.svg",
+            img: "/panorama_images/database.svg",
             label: "redis",
             anchorPoints: [
               [0, 0.5],
@@ -123,7 +122,7 @@ export default {
           },
           {
             id: "9",
-            img: "/panorama/database.svg",
+            img: "/panorama_images/database.svg",
             label: "redis",
             anchorPoints: [
               [0, 0.5],
@@ -132,7 +131,7 @@ export default {
           },
           {
             id: "10",
-            img: "/panorama/tree.svg",
+            img: "/panorama_images/tree.svg",
             label: "ELB",
             anchorPoints: [
               [0, 0.5],
@@ -141,7 +140,7 @@ export default {
           },
           {
             id: "11",
-            img: "/panorama/tree.svg",
+            img: "/panorama_images/tree.svg",
             label: "ELB",
             anchorPoints: [
               [0, 0.5],
@@ -150,7 +149,7 @@ export default {
           },
           {
             id: "12",
-            img: "/panorama/cube.svg",
+            img: "/panorama_images/cube.svg",
             label: "APP",
             anchorPoints: [
               [0, 0.5],
@@ -159,7 +158,7 @@ export default {
           },
           {
             id: "13",
-            img: "/panorama/cube.svg",
+            img: "/panorama_images/cube.svg",
             label: "APP",
             anchorPoints: [
               [0, 0.5],
@@ -240,9 +239,7 @@ export default {
 
       // 获取容器图形
       const container = document.getElementById("application");
-      // const width = container.scrollWidth || 1200;
-      // const height = container.scrollHeight || 450;
-      const width = container.scrollWidth||1100;
+      const width = container.scrollWidth || 1100;
       const height = container.scrollHeight || 450;
       console.log(width, height);
       this.graph = new G6.Graph({
@@ -250,7 +247,7 @@ export default {
         width,
         height,
         fitView: true,
-        fitCenter:true,
+        fitCenter: true,
         // fitViewPadding: 20,
         layout: {
           controlPoints: true,
@@ -275,7 +272,6 @@ export default {
         nodeStateStyles: {},
         defaultEdge: {
           type: "hvh",
-          // style: {},
         },
         modes: {
           // default: ["drag-canvas", "zoom-canvas"],
@@ -305,19 +301,6 @@ export default {
       // 渲染画布
       this.renderGraph();
       // this.graph.zoom(1);
-
-      if (typeof window !== "undefined") {
-        window.onresize = () => {
-          if (!this.graph || this.graph.get("destroyed")) {
-            return;
-          }
-          if (!container || !container.scrollWidth || !container.scrollHeight) {
-            return;
-          }
-          console.log(container.scrollWidth, container.scrollHeight);
-          this.graph.changeSize(container.scrollWidth, container.scrollHeight);
-        };
-      }
     },
   },
 };

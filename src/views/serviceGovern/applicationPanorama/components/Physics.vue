@@ -50,7 +50,7 @@ export default {
         nodes: [
           {
             id: "1",
-            img: "/panorama/router.svg",
+            img: "/panorama_images/router.svg",
             // label: "请求",
             anchorPoints: [
               [0, 0.5],
@@ -59,7 +59,7 @@ export default {
           },
           {
             id: "2",
-            img: "/panorama/router.svg",
+            img: "/panorama_images/router.svg",
             // label: "响应",
             anchorPoints: [
               [0, 0.5],
@@ -68,7 +68,7 @@ export default {
           },
           {
             id: "3",
-            img: "/panorama/router.svg",
+            img: "/panorama_images/router.svg",
             // label: "ELB",
             anchorPoints: [
               [0, 0.5],
@@ -77,7 +77,7 @@ export default {
           },
           {
             id: "4",
-            img: "/panorama/exchange.svg",
+            img: "/panorama_images/exchange.svg",
             label: "核心交换机",
             anchorPoints: [
               [0, 0.5],
@@ -86,7 +86,7 @@ export default {
           },
           {
             id: "5",
-            img: "/panorama/firewall.svg",
+            img: "/panorama_images/firewall.svg",
             label: "防火墙",
             anchorPoints: [
               [0, 0.5],
@@ -95,7 +95,7 @@ export default {
           },
           {
             id: "6",
-            img: "/panorama/exchange.svg",
+            img: "/panorama_images/exchange.svg",
             label: "接入交换机",
             anchorPoints: [
               [0, 0.5],
@@ -104,7 +104,7 @@ export default {
           },
           {
             id: "7",
-            img: "/panorama/model.svg",
+            img: "/panorama_images/model.svg",
             // label: "db",
             anchorPoints: [
               [0, 0.5],
@@ -113,7 +113,7 @@ export default {
           },
           {
             id: "8",
-            img: "/panorama/model.svg",
+            img: "/panorama_images/model.svg",
             // label: "redis",
             anchorPoints: [
               [0, 0.5],
@@ -122,7 +122,7 @@ export default {
           },
           {
             id: "9",
-            img: "/panorama/model.svg",
+            img: "/panorama_images/model.svg",
             // label: "redis",
             anchorPoints: [
               [0, 0.5],
@@ -131,7 +131,7 @@ export default {
           },
           {
             id: "10",
-            img: "/panorama/model.svg",
+            img: "/panorama_images/model.svg",
             // label: "ELB",
             anchorPoints: [
               [0, 0.5],
@@ -140,7 +140,7 @@ export default {
           },
           {
             id: "11",
-            img: "/panorama/exchange.svg",
+            img: "/panorama_images/exchange.svg",
             label: "接入交换机",
             anchorPoints: [
               [0, 0.5],
@@ -149,7 +149,7 @@ export default {
           },
           {
             id: "12",
-            img: "/panorama/model.svg",
+            img: "/panorama_images/model.svg",
             // label: "APP",
             anchorPoints: [
               [0, 0.5],
@@ -158,7 +158,7 @@ export default {
           },
           {
             id: "13",
-            img: "/panorama/model.svg",
+            img: "/panorama_images/model.svg",
             // label: "APP",
             anchorPoints: [
               [0, 0.5],
@@ -167,7 +167,7 @@ export default {
           },
           {
             id: "14",
-            img: "/panorama/model.svg",
+            img: "/panorama_images/model.svg",
             // label: "APP",
             anchorPoints: [
               [0, 0.5],
@@ -176,7 +176,7 @@ export default {
           },
           {
             id: "15",
-            img: "/panorama/model.svg",
+            img: "/panorama_images/model.svg",
             // label: "APP",
             anchorPoints: [
               [0, 0.5],
@@ -273,15 +273,16 @@ export default {
         width,
         height,
         fitView: true,
-        fitViewPadding: 20,
+        fitCenter: true,
+        // fitViewPadding: 20,
         layout: {
           controlPoints: true,
           type: "dagre",
           rankdir: "LR", // 图的延展方向，节点对齐方式，可选： 'TB' | 'BT' | 'LR' | 'RL'
           nodeSize: 20,
           // ranker: "network-simplex", // 节点分层算法，可选：'tight-tree' 'longest-path' 'network-simplex'
-          ranksep: 50, // 图的各个层次之间的间距
-          nodesep: 20, // 同层各个节点之间的间距
+          ranksep: 30, // 图的各个层次之间的间距
+          nodesep: 10, // 同层各个节点之间的间距
         },
         defaultNode: {
           type: "image", // 类型
@@ -297,7 +298,6 @@ export default {
         nodeStateStyles: {},
         defaultEdge: {
           type: "hvh",
-          // style: {},
         },
         modes: {
           // default: ["drag-canvas", "zoom-canvas"],
