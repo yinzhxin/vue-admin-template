@@ -6,8 +6,8 @@
       </div>
     </template>
 
-    <div style="width: 1200px; height: 450px">
-      <div id="business" ref="card" />
+    <div style="width: 1200px; height: 400px">
+      <div id="business" />
     </div>
   </el-card>
 </template>
